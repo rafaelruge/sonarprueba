@@ -1,0 +1,6 @@
+projectKey=FRONTEND-PROYECTO_QC
+serverUrl=http://localhost:9000
+serverVersion=9.9.4.87374
+dashboardUrl=http://localhost:9000/dashboard?id=FRONTEND-PROYECTO_QC
+ceTaskId=AY8dhbt-y8LP6dzjq_s-
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AY8dhbt-y8LP6dzjq_s-

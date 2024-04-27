@@ -1,0 +1,173 @@
+<nav id="sidebar" class="sidebar" [ngClass]="{'sidebar-bg' : hasBackgroundImage()}">
+    <div class="sidebar-content">
+
+        <perfect-scrollbar>
+            <div class="section-close">
+                <em class="fas fa-times" (click)="toggleSidebar()"></em>
+            </div>
+
+            <div class="sidebar-profile" style="position: sticky !important;top: 0;background-color: #3850eb; z-index: 1;">
+                <div class="user-info">
+                    <span class="user-name" style="font-size: 16px;">
+            <strong>{{username}}</strong>
+          </span>
+                    <span class="user-role" style="font-size: 14px;">{{rolname}}</span>
+                </div>
+                <div>
+
+                </div>
+                <div class="user-pic">
+                    <img [src]="'data:image/jpg;base64,'+foto | defaultImage" class="img-responsive img-rounded" alt="User picture">
+                </div>
+
+            </div>
+
+            <div class="sidebar-menu">
+                <ul>
+                    <li *ngFor="let menu of MenusXuserid; let i = index;" [ngClass]="{'active': menu.Active , 'sidebar-dropdown':typeMenu === 'dropdown', 'header-menu':typeMenu === 'header'}" style="font-size: 16px;">
+                        <a (click)='toggle(menu)' style="padding: 8px; margin-left: 20px">
+                            <span>{{menu.label}}</span>
+                            <img *ngIf="menu.menuIcon.includes('iconos/') && menu.label !== 'Preanalítico' && menu.label !== 'Postanalítico' && menu.label !== 'Mantenimiento y calibradores'" [src]="menu.menuIcon" style="margin-left:12%;" class="bell" >
+                            <img *ngIf="menu.menuIcon.includes('iconos/') && menu.label == 'Preanalítico' " [src]="menu.menuIcon" style="margin-left:46%;" class="bell" >
+                            <img *ngIf="menu.menuIcon.includes('iconos/') &&  menu.label == 'Postanalítico'" [src]="menu.menuIcon" style="margin-left:43%;" class="bell" >
+                            <img *ngIf="menu.menuIcon.includes('iconos/') &&  menu.label == 'Mantenimiento y calibradores'" [src]="menu.menuIcon" style="margin-right: 5%;" class="bell" >
+
+                            <i class="{{menu.menuIcon}}"></i>
+                        </a>
+                        <div *ngIf="typeMenu === 'dropdown'" class="sidebar-submenu" [@slide]="getStateItemsMenu(menu)">
+
+                            <ul>
+                                <li id="menuid" *ngFor="let submenu of this.MenusXuserid[i].items;let j = index;" [ngClass]="{'active': submenu.Active, 'sidebar-dropdown':typeMenu === 'dropdown'}" style="font-size: 15px;">
+
+                                  <li id="menuid" *ngFor="let submenu of this.MenusXuserid[i].items; let j = index;" [ngClass]="{'active': submenu.Active,
+                                                'sidebar-dropdown': typeMenu === 'dropdown' && this.MenusXuserid[i].items[j].items.length > 0,
+                                                'sidebar-not-dropdown': this.MenusXuserid[i].items[j].items.length === 0}" style="font-size: 14px;" class="row">
+
+                                                <a (click)='togglesubMenu(submenu)' (click)="navigate((submenu.items && submenu.items.length === 0) ? submenu.Url : '#')" style="height: 30px; margin-left: 20px" [ngClass]="{ 'active-li' : urlSelected === submenu.Url, 'active-li-parent': submenu | matchSubmenu:urlSelected }">
+                                            <div class="col-sm-8">
+                                              <span>{{submenu.label}}</span>
+
+                                            </div>
+                                            <div class="col-sm-1 " >
+                                              <img *ngIf="submenu.menuIcon.includes('iconos/')"  [src]="submenu.menuIcon" alt="">
+                                              <p *ngIf="!submenu.menuIcon.includes('iconos/')" class="{{submenu.menuIcon}} align-self-end"></p>
+
+                                            </div>
+
+                                        </a>
+
+
+                                        <div *ngIf="typeMenu === 'dropdown'" class="sidebar-submenu" [@slide]="getStateItemsMenu(submenu)">
+                                            <ul>
+                                                <li *ngFor="let nivel3 of this.MenusXuserid[i].items[j].items" style="height: 30px; font-size: 14px; margin-left: 20px;width: 36em;">
+                                                    <a (click)="navigate(nivel3.Url)" class="a-level-3" [ngClass]="{ 'active-li' : nivel3.Url === urlSelected }">
+                                                  {{nivel3.label}}
+                                                </a>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                            </ul>
+                        </div>
+                        </li>
+                </ul>
+            </div>
+        </perfect-scrollbar>
+
+
+    </div>
+
+    <div class="text-center" style="padding-top: 20px;">
+        <button class="btn-sm btn-logout" (click)="logout()">
+      <span> {{ 'MODULES.MENU.LOGOUT' | translate }} </span>
+      <em class="fas fa-sign-out-alt"></em>
+    </button>
+    </div>
+    <div class="sidebar-footer">
+        <img class="img-responsive" style="margin: auto;" [src]="'by_ it_health_blanco.png' | imageCdn">
+    </div>
+</nav>
+
+<ng-template #templateEditPerfilUser>
+    <div class="modal-header">
+        <h3 class="modal-title titulo">{{tituloAccion}}</h3>
+        <button type="button" class="close pull-right" arial-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="table-responsive-sm table table-striped">
+            <form [formGroup]="formEditPerfil" autocomplete="off">
+
+                <div class="form-row">
+
+                    <div class="col-md-12 mb-6 form-group flex">
+
+                        <div class="spin" *ngIf="spin">
+                            <div class="spinner-border text-primary" role="status"></div>
+                        </div>
+
+                        <input type="file" id="userPicture" style="display: none;" accept=".png, .jpg, .jpeg" (change)="getFoto( $event.target.files[0] )">
+                        <img [src]="'data:image/jpg;base64,'+foto | defaultImage" class="animate__animated animate__fadeIn fast" *ngIf="!spin" width="100px" height="100px" style="border-radius: 100%;">
+                        <img src="../../../../assets/imagenes/camera.svg" onclick="userPicture.click();" class="camera">
+
+                    </div>
+
+                    <div class="col-12 mb-6 form-group">
+                        <div role="group">
+                            <label for="name" class="labelProfile">{{'MODULES.USUARIOS.FORMULARIO.NOMBRES' |
+                                translate}}</label><span class="colorAsterisco"> *</span>
+                            <input formControlName="name" type="text" class="form-control styleForm" id="name">
+                            <small *ngIf="formEditPerfil.get('name').errors?.required" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                                translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-6 form-group">
+                        <div role="group">
+                            <label for="rolid" class="labelProfile">{{'MODULES.USUARIOS.FORMULARIO.CARGO' |
+                                translate}}</label><span class="colorAsterisco"> *</span>
+                            <input type="text" class="form-control styleForm" id="rolid" [value]="nombreRol" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-6 form-group">
+                        <div role="group">
+                            <label for="phone" class="labelProfile">{{'MODULES.USUARIOS.FORMULARIO.TELEFONO' |
+                                translate}}</label><span class="colorAsterisco"> *</span>
+                            <input formControlName="phone" type="number" class="form-control styleForm" id="phone">
+                            <small *ngIf="formEditPerfil.get('phone').errors?.required" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                                translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-6 form-group">
+                        <div role="group">
+                            <label for="email" class="labelProfile">{{'MODULES.USUARIOS.FORMULARIO.CORREO' |
+                                translate}}</label><span class="colorAsterisco"> *</span>
+                            <input formControlName="email" type="text" class="form-control styleForm" id="email">
+                            <small *ngIf="formEditPerfil.get('email').errors?.required" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                                translate}}</small>
+                            <small *ngIf="formEditPerfil.get('email').errors?.pattern" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.EMAIL' | translate}}</small>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-6 form-group">
+                        <div role="group">
+                            <label for="pass" class="labelProfile">{{'MODULES.USUARIOS.FORMULARIO.NUEVACLAVE' | translate}}</label>
+                            <input formControlName="pass" type="password" class="form-control styleForm" id="pass">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div>
+                    <div class="col-12 boxBtn form-group">
+                        <button class="btnUpdate boton" (click)="EditarPerfilUsuario()">{{'MODULES.USUARIOS.FORMULARIO.ACTUALIZAR' |
+                            translate}}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</ng-template>

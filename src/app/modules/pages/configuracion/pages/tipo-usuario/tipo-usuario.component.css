@@ -1,0 +1,15 @@
+span {
+    color: #D11C22;
+}
+
+label {
+    color: #D2D0D0;
+}
+
+button {
+    border-radius: 25px;
+    height: 30px;
+    color: #fff;
+    background: var(--purple-01);
+    border: var(--purple-01);
+}

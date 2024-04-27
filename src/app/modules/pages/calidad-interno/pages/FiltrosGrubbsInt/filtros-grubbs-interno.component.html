@@ -1,0 +1,299 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'grubbs.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+          <div class="col-12 titulo"> {{'MODULES.GRUBBS.TITLE' | translate}}</div>
+          <div class="col-11 boxFilterData">
+            <form [formGroup]="formaBuscarDatos">
+              <div class="form-row">
+                <div class="col-lg-3 p-0 form-group">
+                  <div role="group">
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SEDES'
+                            | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="numLaboratorio" class="form-control styleForm"
+                        [disabled]="habilitarSede">
+                        <mat-option value="">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SELECCIONE' |
+                              translate}}</mat-option>
+                        <mat-option *ngFor="let sede of sedesActive" [value]="sede.idheadquarters">
+                          {{ sede.desheadquarters | titlecase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SECCION'
+                          | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput [matAutocomplete]="auto01" formControlName="seccion" #seccionPr
+                        style="font-family: 'Open Sans' !important;font-size: 16px;">
+                      <mat-autocomplete #auto01="matAutocomplete" (optionSelected)="cambiarSeccion(seccionPr.value)">
+                        <mat-option *ngFor="let option of (filteredOptionsSections | async);"
+                          [value]="option.namesection" [matTooltip]="option.namesection | NombreSeccion">
+                          {{option.namesection | NombreSeccion}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.NUMMATERIALCONTROL'
+                          | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput [matAutocomplete]="auto02" formControlName="numMaterialControl"
+                        #contmatPr style="font-family: 'Open Sans' !important;font-size: 16px;">
+                      <mat-autocomplete #auto02="matAutocomplete"
+                        (optionSelected)="cambiarControlMaterial(contmatPr.value)">
+                        <mat-option *ngFor="let option of (filteredOptionsControlmaterial | async);"
+                          [value]="option.descontmat" [matTooltip]="option.descontmat | NombreControlmaterial">
+                          {{option.descontmat | NombreControlmaterial}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.NUMLOTE'
+                          | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput [matAutocomplete]="auto03" formControlName="numLote" #lotPr
+                        style="font-family: 'Open Sans' !important;font-size: 16px;">
+                      <mat-autocomplete #auto03="matAutocomplete" (optionSelected)="lotesPre(lotPr.value)">
+                        <mat-option *ngFor="let option of (filteredOptionsLots | async);" [value]="option.Numlot" [matTooltip]="option.Numlot | nombreLote">
+                          {{option.Numlot | nombreLote}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row animate__animated animate__fadeIn fast" *ngIf="tests.length !== 0">
+
+                <div class="col-lg-12 p-0 form-group">
+                  <div class="d-flex align-items-center  " role="group">
+                      <mat-form-field style="padding-left: 0;" class="sf-2 col-lg-6">
+                        <mat-label class="matLabelForm">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.TEST'
+                              | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                        <mat-select disableOptionCentering class="form-control styleForm" formControlName="idtest"
+                          (selectionChange)="setTest($event)">
+                          <mat-option value="">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SELECCIONE' |
+                                translate}}</mat-option>
+                          <mat-option *ngFor="let test of tests" [value]="test.IdTest">
+                            {{ test.Desanalytes | titlecase }} | {{ test.Desunits }} |
+                            {{ test.Desmethods | titlecase }} | {{ test.Desreagents | titlecase }} |
+                            {{ test.NameAnalyzer | titlecase }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    <div class="col-lg-4 boxBtnSearch">
+                      <button class="boton btnSearch animate__animated animate__fadeIn fast" type="button"
+                        (click)="loadData()" *ngIf="verBtn">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.BOTON' |
+                              translate}}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div *ngIf="ver" style="gap: 2em;" class="d-flex justify-content-center col-lg-10 box2 animate__animated animate__fadeIn fast">
+
+            <table *ngFor="let tabla of tablaTotales;index as i" class="table-responsive col-lg-4" 
+                  style=" height: 250px; overflow-y: scroll;position: relative;">
+              <thead>
+                <tr style="background: blue; border-bottom: 1px solid white;">
+                  <th colspan="2">Nivel {{i+1}}</th>
+                </tr>
+                <tr style="background: blue;">
+                  <th colspan="2">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Resultado</th>
+                          <th>Z-Score</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody style="color: black !important;">
+                <tr *ngFor="let item of tabla;index as j" class="tr-principal">
+                  <td  [style]="item.Aberrante?'background:#FFECA3;':''" class="td-externo" colspan="2">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td *ngIf="item.Valuelevel1 || item.Valuelevel1 != undefined">{{item.Valuelevel1}}</td>
+                          <td *ngIf="item.Valuelevel2 || item.Valuelevel2 != undefined">{{item.Valuelevel2}}</td>
+                          <td *ngIf="item.Valuelevel3 || item.Valuelevel3 != undefined">{{item.Valuelevel3}}</td>
+                          <td *ngIf="item.Zlevel1 || item.Zlevel1 === 0" [style]="item.Aberrante?'color:#D11C22;':''">{{item.Zlevel1}}</td>
+                          <td *ngIf="item.Zlevel2 || item.Zlevel2 === 0" [style]="item.Aberrante?'color:#D11C22;':''">{{item.Zlevel2}}</td>
+                          <td *ngIf="item.Zlevel3 || item.Zlevel3 === 0" [style]="item.Aberrante?'color:#D11C22;':''">{{item.Zlevel3}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="ver" style="margin-top: 2em;" class="col-lg-10 boxTable animate__animated animate__fadeIn fast">
+
+            <table class="table2">
+              <thead>
+                <tr>
+                  <th colspan="2"></th>
+                  <th *ngIf="tablaNiveles1.length !== 0" colspan="3" class="fondo-niveles">Nivel 1</th>
+                  <th *ngIf="tablaNiveles2.length !== 0" colspan="3" class="fondo-niveles">Nivel 2</th>
+                  <th *ngIf="tablaNiveles3.length !== 0" colspan="3" class="fondo-niveles">Nivel 3</th>
+                </tr>
+                <tr class="fuente-color">
+                  <th colspan="2"> </th>
+                  <th *ngIf="tablaNiveles1.length !== 0" colspan="3">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Media</th>
+                          <th>DS</th>
+                          <th>CV</th>
+                          <th>N Datos</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </th>
+                  <th *ngIf="tablaNiveles2.length !== 0" colspan="3">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Media</th>
+                          <th>DS</th>
+                          <th>CV</th>
+                          <th>N Datos</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </th>
+                  <th *ngIf="tablaNiveles3.length !== 0" colspan="3">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Media</th>
+                          <th>DS</th>
+                          <th>CV</th>
+                          <th>N Datos</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="tr-principal2">
+                  <td class="td-externo2" colspan="2">Datos Iniciales</td>
+                  <td *ngIf="tablaNiveles1.length !== 0" class="td-externo2" colspan="3">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>{{dataInicial.averageInitiallvl1}}</td>
+                          <td>{{dataInicial.sdInitiallvl1}}</td>
+                          <td>{{dataInicial.cvInitiallvl1}}</td>
+                          <td>{{dataInicial.ndataInitiallvl1}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td *ngIf="tablaNiveles2.length !== 0" class="td-externo2" colspan="3">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>{{dataInicial.averageInitiallvl2}}</td>
+                          <td>{{dataInicial.sdInitiallvl2}}</td>
+                          <td>{{dataInicial.cvInitiallvl2}}</td>
+                          <td>{{dataInicial.ndataInitiallvl2}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td *ngIf="tablaNiveles3.length !== 0" class="td-externo2" colspan="3">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>{{dataInicial.averageInitiallvl3}}</td>
+                          <td>{{dataInicial.sdInitiallvl3}}</td>
+                          <td>{{dataInicial.cvInitiallvl3}}</td>
+                          <td>{{dataInicial.ndataInitiallvl3}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr class="tr-principal2">
+                  <td class="td-externo2" colspan="2">Datos Finales</td>
+                  <td *ngIf="tablaNiveles1.length !== 0" class="td-externo2" colspan="3">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>{{dataFinal.averagefinallvl1}}</td>
+                          <td>{{dataFinal.sdfinallvl1}}</td>
+                          <td>{{dataFinal.cvfinallvl1}}</td>
+                          <td>{{dataFinal.ndatafinallvl1}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td *ngIf="tablaNiveles2.length !== 0" class="td-externo2" colspan="3">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>{{dataFinal.averagefinallvl2}}</td>
+                          <td>{{dataFinal.sdfinallvl2}}</td>
+                          <td>{{dataFinal.cvfinallvl2}}</td>
+                          <td>{{dataFinal.ndatafinallvl2}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td *ngIf="tablaNiveles3.length !== 0" class="td-externo2" colspan="3">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>{{dataFinal.averagefinallvl3}}</td>
+                          <td>{{dataFinal.sdfinallvl3}}</td>
+                          <td>{{dataFinal.cvfinallvl3}}</td>
+                          <td>{{dataFinal.ndatafinallvl3}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="ver" style="margin-top: 2em;" class="col-lg-10 d-flex justify-content-center">
+            <button class="boton btnSearch animate__animated animate__fadeIn fast" type="button" (click)="updateConfigAvergadsxtest()">Actualizar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>

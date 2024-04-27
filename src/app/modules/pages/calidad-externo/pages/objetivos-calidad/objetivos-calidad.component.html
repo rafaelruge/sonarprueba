@@ -1,0 +1,423 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'Fuentes.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> {{'MODULES.OBLETIVOSCALIDADQCE.TITLE' | translate}}</div>
+          <div class="col-11 mt-4 justify-content-center">
+            <div class="row boxForm">
+              <div class="col-lg-3">
+
+              </div>
+              <div class="col-lg-3">
+                <form [formGroup]="formulario">
+                  <mat-form-field class="sf-2">
+                    <mat-label class="matLabelForm">{{'MODULES.INGRESODATOSEXTERNO.FORMULARIO.PROGRAMA' | translate}}
+                      <span class="colorAsterisco"> *</span>
+                    </mat-label>
+                    <mat-select disableOptionCentering formControlName="idProgram" class="form-control styleForm"
+                      (selectionChange)="changeValue($event.value)">
+                      <mat-option value="">{{'MODULES.INGRESODATOSEXTERNO.FORMULARIO.SELECCIONE' | translate}}
+                      </mat-option>
+                      <mat-option *ngFor="let program of programasActive" (click)="enviarId(program.idProgram)" [value]="program.idProgram" [matTooltip]="program.desprogram | titlecase">
+                        {{ program.desprogram | titlecase }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <small *ngIf="idProgramInvalido.invalid  && idProgramInvalido.touched"
+                    class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                    translate}}</small>
+                </form>
+              </div>
+
+              <div class="col-lg-3 boxBtnSearch">
+
+                <button class="boton btnSearch" (click)="filtrar()" type="submit">{{'MODULES.BUSCAR' |
+                  translate}}</button>
+
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="bandera" class="col-11 col-lg-8 col-xl-8">
+            <div class="row boxBtnFilter">
+
+              <div class="col-sm-4 boxBtnCreate form-group">
+                <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                  (click)="openModalRegistro(templateRegistro, '')">{{'MODULES.OBLETIVOSCALIDADQCE.BOTONCREAR'
+                  | translate}}</button>
+              </div>
+
+
+              <div class="col-sm-8 boxFilter">
+                <i class="fa fa-search"></i>
+                <mat-form-field class="filter">
+                  <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                  <input matInput (keyup)="applyFilter($event)"
+                    placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+          <div *ngIf="bandera" class="col-11 col-lg-8 col-xl-8 animate__animated animate__fadeIn fast">
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+              <ng-container matColumnDef="Desanalytes">
+                <th style="width: 330px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.OBLETIVOSCALIDADQCE.COLUMNS.ANALITO' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Desanalytes}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="Dessource">
+                <th style="width: 330px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.OBLETIVOSCALIDADQCE.COLUMNS.FUENTE' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Dessource}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="Objective">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.OBLETIVOSCALIDADQCE.COLUMNS.OBJETIVO' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Objective}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="Codunits">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.OBLETIVOSCALIDADQCE.COLUMNS.UNIDADES' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Codunits}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="Active">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.OBLETIVOSCALIDADQCE.COLUMNS.ESTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Active" (change)="actualizarEstado(row)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="editar">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.OBLETIVOSCALIDADQCE.COLUMNS.EDITAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <img [src]="'imagenEditar.png' | imageCdn" (click)="openModalRegistroEdit(templateRegistroEdit, row)"
+                    style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="borrar">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.OBLETIVOSCALIDADQCE.COLUMNS.ELIMINAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row; let i = index;">
+                  <img [src]="'imagenEliminar.png' | imageCdn" (click)="eliminar(row.Idconfobjquaprogramanalyte)"
+                    style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #templateRegistro>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col flex2">
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+    </div>
+
+    <div class="col-md-12 titleDetalle">
+      {{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.PROGRAMA' | translate}}: {{selectedProgram}}
+    </div>
+    <form [formGroup]="formularioRegistroEditar" (ngSubmit)="crearEditar()">
+      <div class="form-row">
+        <div class="col-md-5 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label class="matLabelForm">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.ANALITO' | translate}}<span
+                  class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="Idanalytes" class="form-control"
+                [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let analito of listaAnalitos" [value]="analito.Idanalytes">
+                  {{ analito.Desanalytes }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-label class="matLabelForm" style="font-size: 16px !important;">
+              {{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.ANALITO' | translate}}<span class="colorAsterisco"> *</span>
+            </mat-label>
+            <mat-form-field class="serial-tamanio "
+              style="width: 230px !important; display: unset !important;top: 7px;">
+              <input type="text" matInput [matAutocomplete]="autoanalytecreate" formControlName="Idanalytes"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autoanalytecreate="matAutocomplete">
+                <mat-option *ngFor="let analito of filteredOptionsAnalyteCreate | async" [value]="analito.Desanalytes">
+                  {{ analito.Desanalytes}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="IdanalytesNoValido.invalid  && IdanalytesNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-5 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label class="matLabelForm">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.FUENTE' | translate}}<span
+                  class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="Idsource" class="form-control"
+                [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let fuente of listaFuentes" [value]="fuente.idsource">
+                  {{ fuente.dessource }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-label class="matLabelForm" style="font-size: 16px !important;">
+              {{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.FUENTE' | translate}}<span class="colorAsterisco"> *</span>
+            </mat-label>
+            <mat-form-field class="serial-tamanio "
+              style="width: 230px !important; display: unset !important;top: 7px;">
+              <input type="text" matInput [matAutocomplete]="autosourcecreate" formControlName="Idsource"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autosourcecreate="matAutocomplete">
+                <mat-option *ngFor="let fuente of filteredOptionsSourceCreate | async" [value]="fuente.dessource">
+                  {{ fuente.dessource}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="IdsourceNoValido.invalid  && IdsourceNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-5 form-group">
+          <div role="group">
+            <label class="labelForm" for="Objective">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.OBJETIVO' |
+              translate}}<span class="colorAsterisco"> *</span></label>
+            <input formControlName="Objective" class="form-control" type="number" step="any"
+              [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'" id="Objective">
+            <small *ngIf="ObjectiveNoValido.errors?.required  && ObjectiveNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            <small *ngIf="ObjectiveNoValido.errors?.maxlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOVEINTE' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-5 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label class="matLabelForm">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.UNIDADES' | translate}}<span
+                  class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="Idunits" class="form-control"
+                [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let unidad of listaUnits" [value]="unidad.idunits">
+                  {{ unidad.codunits }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-label class="matLabelForm" style="font-size: 16px !important;">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.UNIDADES' | translate}}<span
+              class="colorAsterisco"> *</span></mat-label>
+            <mat-form-field class="serial-tamanio " style="width: 230px !important; display: unset !important;top: 7px;">
+              <input type="text" matInput [matAutocomplete]="autounitscreate" formControlName="Idunits"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autounitscreate="matAutocomplete">
+                <mat-option *ngFor="let unidad of filteredOptionsUnitsCreate | async" [value]="unidad.codunits">
+                  {{ unidad.codunits}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="IdunitsNoValido.invalid  && IdunitsNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-2 form-group btnActive">
+          <div role="group">
+            <label class="labelForm" for="Active">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.ESTADO' |
+              translate}}</label><br>
+            <mat-slide-toggle formControlName="Active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button [disabled]="desactivar" class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' |
+            translate}}</button>
+          <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' |
+            translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #templateRegistroEdit>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col flex2">
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+    </div>
+
+    <div class="col-md-12 titleDetalle">
+      {{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.PROGRAMA' | translate}}: {{selectedProgram}}
+    </div>
+    <form [formGroup]="formularioRegistroEditarPre" (ngSubmit)="crearEditarPred()">
+      <div class="form-row">
+        <div class="col-md-5 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label class="matLabelForm">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.ANALITO' | translate}}<span
+                  class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="Idanalytes" class="form-control"
+                [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let analito of listaAnalitos" [value]="analito.Idanalytes">
+                  {{ analito.Desanalytes }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-label class="matLabelForm" style="font-size: 16px !important;">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.ANALITO' | translate}}<span
+              class="colorAsterisco"> *</span></mat-label>
+            <mat-form-field class="serial-tamanio "
+              style="width: 230px !important; display: unset !important;top: 7px;">
+              <input type="text" matInput [matAutocomplete]="autoanalyteedit" formControlName="Idanalytes"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autoanalyteedit="matAutocomplete">
+                <mat-option *ngFor="let analito of filteredOptionsAnalyteCreate | async" [value]="analito.Desanalytes">
+                  {{ analito.Desanalytes}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="IdanalytesNoValidoEdit.invalid  && IdanalytesNoValidoEdit.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-5 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label class="matLabelForm">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.FUENTE' | translate}}<span
+                  class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="Idsource" class="form-control"
+                [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let fuente of listaFuentes" [value]="fuente.idsource">
+                  {{ fuente.dessource }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-label class="matLabelForm" style="font-size: 16px !important;">
+              {{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.FUENTE' | translate}}<span class="colorAsterisco"> *</span>
+            </mat-label>
+            <mat-form-field class="serial-tamanio "
+              style="width: 230px !important; display: unset !important;top: 7px;">
+              <input type="text" matInput [matAutocomplete]="autosourcecreate" formControlName="Idsource"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autosourcecreate="matAutocomplete">
+                <mat-option *ngFor="let fuente of filteredOptionsSourceCreate | async" [value]="fuente.dessource">
+                  {{ fuente.dessource}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="IdsourceNoValidoEdit.invalid  && IdsourceNoValidoEdit.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-5 form-group">
+          <div role="group">
+            <label class="labelForm" for="Objective">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.OBJETIVO' |
+              translate}}<span class="colorAsterisco"> *</span></label>
+            <input formControlName="Objective" class="form-control" type="number" step="any"
+              [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'" id="Objective">
+            <small *ngIf="ObjectiveNoValidoEdit.errors?.required  && ObjectiveNoValidoEdit.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            <small *ngIf="ObjectiveNoValidoEdit.errors?.maxlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOVEINTE' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-5 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label class="matLabelForm">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.UNIDADES' | translate}}<span
+                  class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="Idunits" class="form-control"
+                [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let unidad of listaUnits" [value]="unidad.idunits">
+                  {{ unidad.codunits }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-label class="matLabelForm" style="font-size: 16px !important;">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.UNIDADES' | translate}}<span
+              class="colorAsterisco"> *</span></mat-label>
+            <mat-form-field class="serial-tamanio " style="width: 230px !important; display: unset !important;top: 7px;">
+              <input type="text" matInput [matAutocomplete]="autounitscreate" formControlName="Idunits"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autounitscreate="matAutocomplete">
+                <mat-option *ngFor="let unidad of filteredOptionsUnitsCreate | async" [value]="unidad.codunits">
+                  {{ unidad.codunits}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="IdunitsNoValidoEdit.invalid  && IdunitsNoValidoEdit.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-2 form-group btnActive">
+          <div role="group">
+            <label class="labelForm" for="Active">{{'MODULES.OBLETIVOSCALIDADQCE.FORMULARIO.ESTADO' |
+              translate}}</label><br>
+            <mat-slide-toggle formControlName="Active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button [disabled]="desactivar" class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' |
+            translate}}</button>
+          <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' |
+            translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

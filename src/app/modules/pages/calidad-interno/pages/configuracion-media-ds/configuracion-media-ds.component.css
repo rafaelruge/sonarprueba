@@ -1,0 +1,115 @@
+.boxTable {
+
+  margin-top: 40px;
+
+}
+
+.btnCancel {
+
+  margin-left: 8px;
+
+}
+
+.boxBtnAceptCancel {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+
+}
+
+@media(min-width: 320px) {
+
+  .btnAceptar,
+  .btnCancel {
+
+    width: 76px;
+
+  }
+
+  .boxBtnSearch {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 16px;
+
+  }
+
+  .boxFilter {
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+  }
+
+  .boxFilter .filter {
+
+    width: 80%;
+    margin-left: 8px;
+
+  }
+
+  .btnSearch {
+
+    width: 70px;
+
+  }
+
+}
+
+
+@media(min-width: 425px) {
+
+  .boxFilter .filter {
+
+    width: 60%;
+
+  }
+
+}
+
+@media(min-width: 576px) {
+
+  .boxBtnSearch {
+
+    width: 70%;
+
+  }
+
+  .boxFilter .filter {
+
+    width: 80%;
+
+  }
+
+
+}
+
+@media(min-width: 992px) {
+
+  .boxBtnSearch {
+
+    width: 46%;
+
+  }
+
+  .boxFilter .filter {
+
+    width: 60%;
+
+  }
+
+}
+
+@media(min-width: 1300px) {
+
+  .boxBtnSearch {
+
+    width: 38%;
+
+  }
+
+}

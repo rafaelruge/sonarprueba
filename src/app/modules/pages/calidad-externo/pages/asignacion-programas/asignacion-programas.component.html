@@ -1,0 +1,247 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'CasasComerciales.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> {{'MODULES.ASIGNACIONPROGRAMA.TITLE' | translate}}</div>
+
+          <div class="col-10 my-4 ">
+            <form [formGroup]="formaBuscarDatos" (submit)="buscar()"  autocomplete="off" class="d-flex justify-content-center  boxBtnSelects">
+              <div class="col-md-4 col-xl-3">
+                  <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.RONDASQCE.FILTRO.CLIENTE' | translate}}<span class="colorAsterisco">*</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="cliente"
+                          class="form-control styleForm">
+                          <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                          </mat-option>
+                          <mat-option *ngFor="let cliente of clientes" [value]="cliente.idclient" [matTooltip]="cliente.name" (click)="selectFilter(1,cliente)">
+                              {{ cliente.name }}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+
+              <div class="col-md-4 col-xl-3">
+                  <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.ASIGNACIONPROGRAMA.FORMULARIO.SEDE' | translate}}<span class="colorAsterisco">*</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="sede"
+                          class="form-control styleForm">
+                          <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                          </mat-option>
+                          <mat-option *ngFor="let sede of sedesActive" [value]="sede.idheadquarters" [matTooltip]="sede.desheadquarters" (click)="selectFilter(2,sede)">
+                            {{ sede.desheadquarters | titlecase }}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+
+              <div class="col-md-4 col-xl-3">
+                  <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.ASIGNACIONPROGRAMA.FORMULARIO.PROGRAMA' | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="programa"
+                          class="form-control styleForm">
+                          <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                          </mat-option>
+                          <mat-option *ngFor="let programa of listaProgramas" [value]="programa.IdProgram" [matTooltip]="programa.Desprogram" (click)="selectFilter(3,programa)">
+                            {{ programa.Desprogram }}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+
+              <div class="col-xl-2 boxBtnSearch" style="display: flex; justify-content: center; align-items: center;">
+                  <button class="boton btnSearch animate__animated animate__fadeIn fast" style="width: 10em;" type="submit">{{'MODULES.RONDASQCE.FILTRO.BOTON' | translate}}</button>
+              </div>
+          </form>
+          </div>
+
+
+          <div class="col-11 col-lg-9 col-xl-9" *ngIf="verTabla">
+
+            <div>
+              <p style="text-align: center;"><b>Configuración Inicial de programa : {{desprogramconfig}}</b></p>
+            </div>
+
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort *ngIf="verTabla">
+
+              <ng-container matColumnDef="analito">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.ANALITO' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Desanalytes}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="equipo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.EQUIPO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.NameAnalyzer }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="reactivo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.REACTIVO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.Desreagents }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="metodo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.METODO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.Desmethods }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="unidades">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.UNIDADES' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.Codunits }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="active">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.PROGRAMAS.COLUMNS.ESTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Active" (change)="actualizarEstadoGestionProgramas(row)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+              </tr>
+            </table>
+            <mat-paginator  [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+            <!-- Btns Guardar - Cancelar -->
+            <div class="row justify-content-center mt-3" *ngIf="verTabla">
+              <div class="col-10 row">
+                <div class="col-6 contBtn mt-2">
+                    <button type="button" class="boton float-right" [disabled]="buttonClicked" (click)="crearAsignacion()">Asignar</button>
+                </div>
+                <div class="col-6 contBtn mt-2">
+                    <button type="button" class="boton-back" (click)="cancelarAsig()">Cancelar</button>
+                </div>
+              </div>
+            </div>
+           <br>
+           <br>
+
+           <!-------------------------------- ASINGACION DE PROGRAMAS ---------------------------------------------->
+            <div>
+              <p style="text-align: center;"><b>Asignaciones del programa : {{desprogramconfig}}</b></p>
+            </div>
+            <table mat-table [dataSource]="dataSourceconfig" class="table-responsive" matSort *ngIf="verTabla">
+
+              <ng-container matColumnDef="analito">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.ANALITO' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.desanalytes}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="equipo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.EQUIPO' | translate}}</th>
+                <td mat-cell *matCellDef="let row" style="width: 3em !important;">
+                  <div class="col m-auto">
+
+                    <select id="analizador{{row.idProgramConfClientHeadq}}" class="form-control select" (change)="selectOne(1,row,$event)">
+                      <option *ngFor="let analizador of analyzers" [value]="analizador.idAnalyzer" >{{ analizador.nameAnalyzer }}</option>
+                    </select>
+                  </div>
+                </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="reactivo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.REACTIVO' | translate}}</th>
+                <td mat-cell *matCellDef="let row" style="width: 3em !important;">
+                  <div class="col m-auto">
+
+                    <select id="react{{row.idProgramConfClientHeadq}}" class="form-control select" (change)="selectOne(2,row,$event)">
+                      <option  *ngFor="let react of reactivos" [value]="react.idreagents" >
+                        {{ react.desreagents }}</option>
+                    </select>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="metodo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.METODO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <div class="col m-auto">
+
+                    <select  id="metodo{{row.idProgramConfClientHeadq}}" class="form-control select" (change)="selectOne(3,row,$event)">
+                      <option  *ngFor="let metodo of methodsActive" [value]="metodo.idmethods" >
+                        {{ metodo.desmethods }}</option>
+                    </select>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="unidades">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.UNIDADES' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <div class="col m-auto">
+
+
+                    <select id="unit{{row.idProgramConfClientHeadq}}" class="form-control select"  (click)="selectOne(4,row,$event)">
+                      <option  *ngFor="let unidad of listaUnits" [value]="unidad.idunits">
+                        {{ unidad.codunits }}</option>
+                    </select>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="active">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.ESTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row" [id]="row.idProgramConfClientHeadq">
+                  <mat-slide-toggle [checked]="row.active" (change)="selectOne(5,row,row.idProgramConfClientHeadq)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <!-- <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td> -->
+              </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+        <!-- Btns Guardar - Cancelar -->
+        <div class="row justify-content-center mt-3" *ngIf="verTabla">
+          <div class="col-10 row">
+            <div class="col-6 contBtn mt-2">
+                <button type="button" class="boton float-right" (click)="guardar()">Actualizar</button>
+            </div>
+            <div class="col-6 contBtn mt-2">
+                <button type="button" class="boton-back" (click)="cancelarAsig()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>
+</div>
+
+

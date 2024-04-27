@@ -1,0 +1,151 @@
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="row">
+            <div class="col-12 mb-5 mt-5 text-center titulo"> {{'MODULES.INICIO.TITLE' | translate}}</div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img class="img-fluid" style="cursor: pointer;" (click)="navigate('calidad-interno/ingreso-datos')"  [src]="'laboratorio.png' | imageCdn"><br>
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="iconosInicio"> {{'MODULES.INICIO.INGRESODATOSCUANTITATIVOS' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img class="img-fluid" style="cursor: pointer;" (click)="navigate('calidad-interno/ingreso-datos-cualitativos')" [src]="'pruebas.png' | imageCdn">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="iconosInicio"> {{'MODULES.INICIO.INGRESODATOSCUALITATIVOS' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img class="img-fluid" style="cursor: pointer;" (click)="navigate('calidad-interno/gestion-test')"  [src]="'casaComercial.png' | imageCdn">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="iconosInicio">{{'MODULES.INICIO.TEST' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mt-3">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img class="img-fluid" style="cursor: pointer;" (click)="navigate('calidad-interno/gestion-lotes')" [src]="'lotes.png' | imageCdn">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="iconosInicio">{{'MODULES.INICIO.LOTES' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img class="img-fluid" style="cursor: pointer;" (click)="navigate('calidad-interno/gestion-analiticos')" [src]="'analitos.png' | imageCdn">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="iconosInicio">{{'MODULES.INICIO.ANALITOS' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img class="img-fluid" style="cursor: pointer;" (click)="navigate('calidad-interno/gestion-metodos')"  [src]="'metodos.png' | imageCdn">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="iconosInicio">{{'MODULES.INICIO.METODOS' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="col-md-4 d-flex justify-content-center">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img class="img-fluid" style="cursor: pointer;" [routerLink]="['/panel/gestion-analiticos']" [src]="'Analizador.png' | imageCdn">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="col-md-4 d-flex justify-content-center iconosInicio"> {{'MODULES.INICIO.GESTIONANALITOS' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-center">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <img class="img-fluid" style="cursor: pointer;" [routerLink]="['/panel/gestion-materiales-control']" [src]="'Control material.png' | imageCdn">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <div class="col-md-4 d-flex justify-content-center iconosInicio"> {{'MODULES.INICIO.GESTIONMATERIALES' | translate}}</div>
+                            </div>
+                        </div>
+                    </div>-->
+
+                    <!--<div class="col-md-2 mt-4 d-flex justify-content-center">
+
+                        <div class="widget-chart-content">
+                            <div class="widget-subheading">Capital Gains</div>
+                            <div class="widget-numbers text-success"><span>$563</span></div>
+                            <div class="widget-description text-focus">
+                                Increased by
+                                <span class="text-warning pl-1">
+                                    <i  class="far fa-check-square botonActive"></i>
+                                    <span class="pl-1">7.35%</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-center">
+                        <span>34%</span>
+                        <round-progress [current]="34" [max]="100" [color]="'#3ac47d'" [background]="'#e3e3e3'" [radius]="26" [stroke]="5" [semicircle]="false" [rounded]="true" [clockwise]="false" [responsive]="true" [duration]="1400" [animation]="'easeInOutQuart'" [animationDelay]="0"></round-progress>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-center">
+                        <div class="widget-chart-content">
+                            <div class="widget-subheading">Capital Gains</div>
+                            <div class="widget-numbers text-success"><span>$563</span></div>
+                            <div class="widget-description text-focus">
+                                Increased by
+                                <span class="text-warning pl-1">
+                                    <i  class="far fa-check-square botonActive"></i>
+                                    <span class="pl-1">7.35%</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-center">
+                        <span>34%</span>
+                        <round-progress [current]="34" [max]="100" [color]="'#3ac47d'" [background]="'#e3e3e3'" [radius]="16" [stroke]="5" [semicircle]="false" [rounded]="true" [clockwise]="false" [responsive]="true" [duration]="1400" [animation]="'easeInOutQuart'" [animationDelay]="0"></round-progress>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-center">
+                        <div class="widget-chart-content">
+                            <div class="widget-subheading">Capital Gains</div>
+                            <div class="widget-numbers text-success"><span>$563</span></div>
+                            <div class="widget-description text-focus">
+                                Increased by
+                                <span class="text-warning pl-1">
+                                    <i  class="far fa-check-square botonActive"></i>
+                                    <span class="pl-1">7.35%</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-md-2 d-flex justify-content-center">
+                        <span>34%</span>
+                        <round-progress [current]="34" [max]="100" [color]="'#3ac47d'" [background]="'#e3e3e3'" [radius]="16" [stroke]="5" [semicircle]="false" [rounded]="true" [clockwise]="false" [responsive]="true" [duration]="1400" [animation]="'easeInOutQuart'" [animationDelay]="0"></round-progress>
+                     </div>-->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- alerta de bienvenida -->
+
+<app-alert-welcome *ngIf="welcome"></app-alert-welcome>

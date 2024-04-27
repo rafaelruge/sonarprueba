@@ -1,0 +1,157 @@
+.btnCancel {
+
+  margin-left: 8px;
+
+}
+
+.boxFilterData {
+
+  margin-top: 48px;
+
+}
+
+.boxFilter{
+
+  padding: 0;
+
+}
+
+.form-row{
+
+  margin-left: 0;
+  margin-right: 0;
+
+}
+
+@media(min-width: 320px) {
+
+  .boxBtnAceptCancel {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24px;
+
+  }
+
+  .btnAceptar,
+  .btnCancel {
+
+    width: 76px;
+
+  }
+
+  .boxBtn {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+  }
+
+  .btnCreate {
+
+    width: 70px;
+    margin-bottom: 16px;
+
+  }
+
+  .boxFilter {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  .filter {
+
+    margin-left: 8px;
+    width: 80%;
+
+  }
+
+  .boxBtnSearch {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  .btnSearch {
+
+    width: 70px;
+    margin-bottom: 8px;
+
+  }
+
+}
+
+@media(min-width: 425px) {
+
+  .boxBtn {
+
+    flex-direction: unset;
+
+  }
+
+  .btnCreate {
+
+    margin-bottom: 0;
+    margin-right: 8px;
+
+  }
+
+}
+
+@media(min-width: 576px) {
+
+  .btnActive{
+
+    text-align: center;
+
+  }
+
+}
+
+@media(min-width: 992px) {
+
+  .boxFilterData,
+  .boxInfoPrueba,
+  .boxBtn,
+  .boxTable {
+
+    padding: 0;
+
+  }
+
+  .boxBtnSearch {
+
+    justify-content: flex-start;
+    align-items: unset;
+
+  }
+
+  .boxBtn {
+
+    margin: 0;
+    justify-content: flex-start;
+
+  }
+
+  .boxFilter {
+
+    justify-content: flex-end;
+
+  }
+
+  .btnSearch {
+
+    margin-top: 32px;
+    margin-left: 12px;
+
+  }
+
+}

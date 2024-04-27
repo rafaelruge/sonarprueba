@@ -1,0 +1,126 @@
+::ng-deep .mat-form-field-infix {
+  display: block;
+  position: relative;
+  flex: auto;
+  min-width: auto;
+  width: auto !important;
+}
+::ng-deep .mat-form-field.mat-form-field-invalid .mat-form-field-label {
+  font-size: 15px !important;
+}
+
+.boxBtnAceptCancel {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+
+}
+
+.btnCancel {
+
+  margin-left: 8px;
+
+}
+
+.btnCancel,
+.btnAceptar {
+
+  width: 76px;
+
+}
+
+.boxBtnFilter {
+
+  margin-top: 24px;
+
+}
+
+.boxBtnCreate {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.btnCreate {
+
+  width: 70px;
+
+}
+
+.boxFilter {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.filter {
+
+  width: 80%;
+  margin-left: 4px;
+
+}
+
+.btn-precarga{
+  width: 24px;
+  height: 24px;
+  background: var(--purple-01);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--purple-01);
+  margin: 0 auto;
+}
+.btn-precarga:disabled{
+  background: var(--gray-02);
+  border: 1px solid var(--gray-02);
+}
+
+
+@media(min-width: 500px) {
+
+  .filter {
+
+    width: 60%;
+  }
+
+}
+
+@media(min-width: 576px) {
+
+  .boxBtnCreate {
+
+    margin: 0;
+    justify-content: flex-start;
+
+  }
+
+  .boxFilter {
+
+    justify-content: flex-end;
+
+  }
+
+  .filter {
+
+    width: 80%;
+
+  }
+
+}
+
+@media(min-width: 992px) {
+
+  .btnActive {
+
+    text-align: center;
+
+  }
+
+}

@@ -1,0 +1,170 @@
+#fondo {
+  font-family: "Roboto", sans-serif;
+  background: url("../../../../assets/imagenes/fondo.jpg") #2c2d31 no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: #fff;
+  font-weight: bolder;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-control {
+  background-color: white !important;
+}
+
+p.recuperacionContrasena {
+  font-size: 12px;
+}
+
+button#enviar {
+  border-radius: 25px;
+  background-color: #fff;
+  color: #3850EB;
+  font-size: 17px;
+}
+
+button#cancelar {
+  color: antiquewhite;
+  border-radius: 25px;
+  border-color: #fff;
+  background-color: transparent;
+  font-size: 17px;
+}
+
+.username {
+  border-radius: 25px;
+}
+
+form {
+
+  padding: 8px;
+
+}
+
+.boxForm {
+
+  display: flex;
+  justify-content: center;
+
+}
+
+.hover {
+
+  cursor: pointer;
+
+}
+
+.row {
+
+  margin-right: 0px;
+
+}
+
+.contAlerta {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.contAlerta .alerta {
+  background-color: var(--purple-01);
+  display: flex;
+  width: auto;
+  padding: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+.alerta p {
+
+  font-size: 14px;
+  margin: 0;
+  margin: 0px 4px !important;
+  font-weight: normal;
+
+}
+
+.logo {
+
+  width: 170px;
+  margin-bottom: 16px;
+
+}
+
+input{
+
+  width: 250px;
+
+}
+
+.boxBtns{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+}
+
+.action{
+
+  margin-left: 8px;
+
+}
+
+label{
+
+  font-weight: 500;
+  font-size: 18px;
+
+}
+
+button{
+
+  width: 100px;
+
+}
+
+@media(min-width: 992px) {
+
+  #fondo {
+
+    justify-content: flex-end;
+
+  }
+
+  input{
+
+    width: 300px;
+
+  }
+
+}
+
+@media(min-width: 1200px) {
+
+
+  .boxForm{
+
+    margin-right: 60px;
+
+  }
+
+}
+
+@media(min-width: 1600px) {
+
+  .boxForm{
+
+    margin-right: 120px;
+
+  }
+
+}
+

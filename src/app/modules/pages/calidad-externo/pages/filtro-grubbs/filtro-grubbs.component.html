@@ -1,0 +1,208 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'grubbs.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> {{'MODULES.GRUBBS.TITLE' | translate}}</div>
+
+          <div class="col-11 p-0 mt-4">
+
+            <form [formGroup]="filtroGrubbs">
+
+              <div class="form-row">
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.GRUBBS.FORMULARIO.PROGRAMA'
+                                                | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="programa" class="form-control styleForm">
+                        <mat-option value="">{{'MODULES.GRUBBS.FORMULARIO.SELECCIONE' |
+                                                translate}}</mat-option>
+                        <mat-option *ngFor="let p of programas" [value]="p.idProgram"
+                        [matTooltip]="p.desprogram">
+                          {{ p.desprogram | titlecase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.RONDASQCE.FORMULARIO.RONDAS'
+                                                | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="ronda" class="form-control styleForm">
+                        <mat-option value="">{{'MODULES.GRUBBS.FORMULARIO.SELECCIONE' |
+                                                translate}}</mat-option>
+                        <mat-option *ngFor="let ronda of rondas" [value]="ronda.Nroround">
+                          {{ ronda.Nroround }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.GRUBBS.FORMULARIO.ANALITO'
+                                                | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="analito" class="form-control styleForm">
+                        <mat-option value="">{{'MODULES.GRUBBS.FORMULARIO.SELECCIONE' |
+                                                translate}}</mat-option>
+                        <mat-option *ngFor="let analyte of analytes" [value]="analyte.Idanalytes"
+                        [matTooltip]="analyte.Desanalytes">
+                          {{ analyte.Desanalytes }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.GRUBBS.FORMULARIO.EQUIPO'
+                                                  | translate}}</mat-label>
+                      <mat-select disableOptionCentering formControlName="equipo" class="form-control styleForm" multiple>
+                        <mat-option value="" (click)="selectNone('equipo')">{{'MODULES.GRUBBS.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                        <mat-option value="-1"(click)="selectAll('equipo')" *ngIf="analyzers.length > 0">{{'MODULES.REPORTECONSOLIDADOICT.ALLEQUIPOS' | translate}}</mat-option>
+                        <mat-option *ngFor="let analyzer of analyzers" [value]="analyzer.IdAnalyzer"
+                         (click)="selectOne('equipo')" [matTooltip]="analyzer.NameAnalyzer">
+                          {{ analyzer.NameAnalyzer }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.GRUBBS.FORMULARIO.METODO'
+                                                    | translate}}</mat-label>
+                      <mat-select disableOptionCentering formControlName="metodo" class="form-control styleForm"
+                        multiple>
+                        <mat-option value="" (click)="selectNone('metodo')">{{'MODULES.GRUBBS.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                        <mat-option value="-1"(click)="selectAll('metodo')" *ngIf="metodos.length > 0">{{'MODULES.REPORTECONSOLIDADOICT.ALLMETODOS' | translate}}</mat-option>
+                        <mat-option *ngFor="let metodo of metodos" [value]="metodo.Idmethods" [matTooltip]="metodo.Desmethods" (click)="selectOne('metodo')">
+                          {{ metodo.Desmethods }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.GRUBBS.FORMULARIO.UNIDADES' | translate}}</mat-label>
+                      <mat-select disableOptionCentering formControlName="unidades" class="form-control styleForm"
+                        multiple>
+                        <mat-option value="" (click)="selectNone('unidades')">{{'MODULES.GRUBBS.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                        <mat-option value="-1" (click)="selectAll('unidades')" *ngIf="unidades.length > 0">{{'MODULES.REPORTECONSOLIDADOICT.ALLUNIDADES' | translate}}</mat-option>
+                        <mat-option *ngFor="let unidad of unidades" [value]="unidad.Idunits"
+                         (click)="selectOne('unidades')" [matTooltip]="unidad.Codunits">
+                          {{ unidad.Codunits }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-11 box">
+            <button class="boton btnSearch" type="submit" (click)="search()">{{'MODULES.GRUBBS.BOTONBUSCAR' |
+                            translate}}</button>
+          </div>
+
+          <div class="col-lg-8 box2 animate__animated animate__fadeIn fast" *ngIf="ver">
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+              <ng-container matColumnDef="num">
+                <th style="width: 130px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                  {{'MODULES.GRUBBS.COLUMNS.NUMERO' | translate}} </th>
+                <td mat-cell *matCellDef="let row; let i = index;"
+                  [ngClass]="{ 'averrante': row.aberrantdataflat == true }">{{ i + 1 }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="res">
+                <th style="width: 120px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.GRUBBS.COLUMNS.RESULTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row" [ngClass]="{ 'averrante': row.aberrantdataflat == true }">
+                  {{row.result }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="z">
+                <th style="width: 120px; border-radius: 0px 8px 0px 0px;" mat-header-cell *matHeaderCellDef
+                  mat-sort-header>
+                  {{'MODULES.GRUBBS.COLUMNS.ZSCORE' | translate}}</th>
+                <td mat-cell *matCellDef="let row"
+                  [ngClass]="{ 'averrante': row.aberrantdataflat == true, 'aRojo': row.aberrantdataflat == true }">
+                  {{ row.zscoreabs | number:'0.1-3' }} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            </table>
+          </div>
+
+          <div class="col-lg-8 boxTable animate__animated animate__fadeIn fast" *ngIf="ver"
+            style="box-shadow: 2px 2px 5px #ccc; border-radius: 10px;max-width: 41%;height: 43%;">
+
+            <table class="table" style="margin-top: 24px;">
+              <thead style="background-color: white;">
+                <tr>
+                  <th scope="col" style="width: 40%;"></th>
+                  <th scope="col" class="enc">{{
+                                        'MODULES.GRUBBS.COLUMNS.MEDIA' | translate }}</th>
+                  <th scope="col" class="enc">{{
+                                        'MODULES.GRUBBS.COLUMNS.SD' | translate }}</th>
+                  <th scope="col" class="enc" style="width: 24%;">{{
+                                        'MODULES.GRUBBS.COLUMNS.NDATOS' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background-color: #f5f5f5; color: black; font-weight: bold;">
+                  <th scope="row">{{ 'MODULES.GRUBBS.COLUMNS.INICIAL' | translate }}</th>
+                  <td>{{ dataInicial.averageInitial }}</td>
+                  <td>{{ dataInicial.sdInitial }}</td>
+                  <td>{{ dataInicial.ndataInitial }}</td>
+                </tr>
+                <tr style="background-color: #413064; color: white; font-weight: bold;">
+                  <th scope="row">{{ 'MODULES.GRUBBS.COLUMNS.FINAL' | translate }}</th>
+                  <td>{{ dataFinal.averagefinal }}</td>
+                  <td>{{ dataFinal.sdfinal }}</td>
+                  <td>{{ dataFinal.ndatafinal }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>

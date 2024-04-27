@@ -1,0 +1,96 @@
+.stylePicker {
+
+  display: inherit;
+
+}
+
+.contDates{
+
+  margin-top: 40px;
+
+}
+
+.contForm{
+
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+
+}
+
+div[role="group"] {
+
+  width: 170px;
+  margin-right: 8px;
+
+}
+
+input[type="number"] {
+
+  margin-top: 3px;
+
+}
+
+.boxBtn{
+
+  text-align: center;
+  margin-top: 16px;
+
+}
+
+.boton{
+
+  width: 126px;
+
+}
+
+.pdf{
+
+  width: 160px;
+  margin: 40px 0px;
+  margin-left: 16px;
+
+}
+
+.boxLogo{
+
+  text-align: center;
+  margin-bottom: 40px;
+
+}
+
+.boxLogo img{
+
+  width: 250px;
+
+}
+
+.boxInfo{
+
+  background: #E8E8E8;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0px;
+
+}
+
+.boxGeneral{
+
+  text-align: center;
+  margin-bottom: 16px;
+
+}
+
+.boxGeneral, .boxInfo h3{
+
+  color: #1A1A1A;
+  font-weight: 500;
+
+}
+
+.boxGeneral h2{
+
+  color: var(--purple-01);
+
+}

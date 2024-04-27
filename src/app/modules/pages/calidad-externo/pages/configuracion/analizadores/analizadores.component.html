@@ -1,0 +1,133 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'analizadores.svg' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> {{'MODULES.ANALIZADORES.TITLE' | translate}}</div>
+          <div class="col-11 col-lg-8 col-xl-7">
+
+            <div class="row boxBtnFilter">
+
+              <div class="col-sm-4 boxBtnCreate form-group">
+                <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                  (click)="openModalRegistroAnalizador(templateRegistroAnalizador, '')">{{'MODULES.ANALIZADORES.BOTONCREAR'
+                                    | translate}}</button>
+              </div>
+
+
+              <div class="col-sm-8 boxFilter">
+                <i class="fa fa-search"></i>
+                <mat-form-field class="filter">
+                  <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                  <input matInput (keyup)="applyFilter($event)"
+                    placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="col-11 col-lg-8 col-xl-7">
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+              <ng-container matColumnDef="nameAnalyzer">
+                <th style="width: 300px" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ANALIZADORES.COLUMNS.NOMBRE' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.nameAnalyzer}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="active">
+                <th style="width: 200px" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.ANALIZADORES.COLUMNS.ESTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.active" (change)="actualizarEstadoAnalizador(row)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="editar">
+                <th style="width: 200px" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.CIUDADES.COLUMNS.EDITAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <img [src]="'imagenEditar.png' | imageCdn"
+                    (click)="openModalRegistroAnalizador(templateRegistroAnalizador, row)" style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="borrar">
+                <th style="width: 200px" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.CIUDADES.COLUMNS.ELIMINAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row; let i = index;">
+                  <img [src]="'imagenEliminar.png' | imageCdn" (click)="eliminarAnalizador(row.idAnalyzer)"
+                    style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+              </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #templateRegistroAnalizador>
+  <div class="modal-header">
+    <button type="button" class="close pull-right" arial-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col flex2">
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+    </div>
+    <form [formGroup]="formaRegistroAnalizador" (ngSubmit)="crearEditarAnalizador()">
+      <div class="form-row">
+        <div class="col-sm-7 form-group">
+          <div role="group">
+            <label for="nameAnalyzer" class="labelForm">{{'MODULES.ANALIZADORES.FORMULARIO.NOMBRE' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <input formControlName="nameAnalyzer" type="text" class="form-control"
+              [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'" id="nameAnalyzer" autocomplete="off">
+            <small *ngIf="nameNoValido.errors?.minlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMODOS' | translate}}</small>
+            <small *ngIf="nameNoValido.errors?.maxlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCINCUENTA' | translate}}</small>
+            <small
+              *ngIf="nameNoValido.invalid  && nameNoValido.touched && !nameNoValido.errors?.minlength && !nameNoValido.errors?.maxlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-sm-2 form-group btnActive">
+          <div role="group">
+            <label for="active" class="labelForm">{{'MODULES.CLIENTES.FORMULARIO.ESTADO' | translate}}</label><br>
+            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button [disabled]="desactivar" class="boton btnAceptar"
+            type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+          <button class="botonCancelar btnCancel" type="button"
+            (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

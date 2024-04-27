@@ -1,0 +1,116 @@
+.btn-group-toggle>.btn,
+.btn-group-toggle>.btn-group>.btn {
+    margin: 14px;
+    border-radius: 5px !important;
+}
+
+.btn {
+    border: 1px solid #dee2e6 !important;
+    box-shadow: 1px 2px 3px #888888;
+    display: inline-flex;
+    padding: 0px !important;
+    text-align: justify;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-text {
+    color: #3850EB;
+    font-weight: bold;
+    font-size: inherit;
+    padding: 4px;
+    text-align: start;
+    vertical-align: middle !important;
+    width: 95%;
+}
+
+.btn-image:before {
+    content: "";
+    height: 50px;
+    margin-left: 10px;
+    width: 60px;
+}
+
+.monBtn-alerta:before {
+    background-image: url(../../../../../../assets/imagenes/btn_alerta.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.monBtn-consolidado:before {
+    background-image: url(../../../../../../assets/imagenes/btn_consolidado.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.monBtn-competencia:before {
+    background-image: url(../../../../../../assets/imagenes/btn_competencia.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.btn:hover {
+    border-color: #ffffff;
+    box-shadow: 1px 2px 8px #888888;
+}
+
+.active {
+    color: #212529;
+    background-color: #dad3e0;
+    border-color: #f8f9fa;
+}
+
+
+/* // BreakPoints */
+
+
+/* // `sm` applies to x-small devices (portrait phones, less than 576px) */
+
+@media (max-width: 575.98px) {
+    .d-flex {
+        display: block !important;
+    }
+    .btn {
+        padding: 5px !important;
+    }
+    .btn-image:before {
+        display: none;
+    }
+    .btn-text {
+        font-size: 12px;
+        height: auto;
+    }
+}
+
+
+/* // `md` applies to small devices (landscape phones, less than 768px) */
+
+@media (max-width: 767.98px) {
+    .d-flex {
+        display: block !important;
+    }
+    .btn {
+        padding: 8px !important;
+    }
+    .btn-text {
+        height: auto;
+    }
+}
+
+
+/* // `lg` applies to medium devices (tablets, less than 992px) */
+
+@media (max-width: 991.98px) {}
+
+
+/* // `xl` applies to large devices (desktops, less than 1200px) */
+
+@media (max-width: 1199.98px) {}
+
+
+/* // `xxl` applies to x-large devices (large desktops, less than 1400px) */
+
+@media (max-width: 1399.98px) {}

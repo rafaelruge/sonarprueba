@@ -1,0 +1,1076 @@
+<app-cargador></app-cargador>
+<div class="container-fluid">
+  <div class="row" style="margin-right: -13px !important;">
+    <div class="div-container col-md-12 mt-2">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'reporteCuantitativo.png' | imageCdn">
+        </div>
+        <div class="boxIndicadores">
+
+          <div class="indicador" [ngClass]="{'backHover': tipoReporte == 1}" (click)="tipo(1)">
+            <img [src]="'indicador.png' | imageCdn" alt="Reporte cuantitativo">
+            <h2>{{'MODULES.REPORTECUANTITATIVO.REPORTE1' | translate}}</h2>
+          </div>
+
+          <div class="indicador" [ngClass]="{'backHover': tipoReporte == 2}" (click)="tipo(2)">
+            <img [src]="'reporte2.svg' | imageCdn" alt="Reporte cuantitativo" style="width: 48px; height: 50px;">
+            <h2>Reporte Consolidado <br> Cuantitativo</h2>
+          </div>
+
+          <!-- <div class="indicador" [ngClass]="{'backHover': tipoReporte == 3}" (click)="tipo(3)">
+            <h2></h2>
+          </div> -->
+
+        </div>
+        <div class="boxFiltro mb-3" *ngIf="reporteUno">
+          <form [formGroup]="formaCuantitativo" autocomplete="off" class="formulario">
+            <!-- Clientes -->
+            <div style="width: 100%;" *ngIf="flagCliente">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  Cliente<span class="colorAsterisco">*</span>
+                </mat-label>
+                <mat-select disableOptionCentering class="form-control styleForm" formControlName="idclient">
+                  <mat-option value="">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let cliente of clientes" [value]="cliente.idclient" [matTooltip]="cliente.name"
+                    (click)="cargarSedes(cliente.header)">
+                    {{ cliente.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            <!-- Sedes -->
+            <div style="width: 100%;">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  Sede<span class="colorAsterisco"> *</span>
+                </mat-label>
+                <mat-select [disabled]="formaCuantitativo.get('idclient')?.invalid" disableOptionCentering
+                  class="form-control styleForm" formControlName="idsede" (selectionChange)="consultarProgramas()">
+                  <mat-option value="" (click)="formaCuantitativo.get('idsede')?.setValue(null)">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let sede of sedes" [value]="sede.idheadquarters"
+                    [matTooltip]="sede.desheadquarters">
+                    {{ sede.desheadquarters }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!-- programa -->
+            <div style="width: 100%;">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  {{'MODULES.REPORTECUANTITATIVO.FORMULARIO.PROGRAMA' | translate}}<span class="colorAsterisco">
+                    *</span>
+                </mat-label>
+                <mat-select [disabled]="formaCuantitativo.get('idsede')?.invalid" disableOptionCentering
+                  class="form-control styleForm" formControlName="programa">
+                  <mat-option value="">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let programa of programas" [value]="programa.IdProgram"
+                    [matTooltip]="programa.Desprogram">
+                    {{ programa.Desprogram }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!-- ronda -->
+            <div style="width: 100%;">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  {{'MODULES.REPORTECUANTITATIVO.FORMULARIO.RONDA' | translate}}<span class="colorAsterisco"> *</span>
+                </mat-label>
+                <mat-select disableOptionCentering class="form-control styleForm" formControlName="ronda">
+                  <mat-option value="" (click)="selectNone('ronda')">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let ronda of rondas" [value]="ronda.Nroround" (click)="selectOne('ronda')">
+                    {{ ronda.Nroround }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!-- analytes -->
+            <div style="width: 100%;">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  {{'MODULES.REPORTECUANTITATIVO.FORMULARIO.ANALYTE' | translate}}<span class="colorAsterisco"> *</span>
+                </mat-label>
+                <mat-select disableOptionCentering class="form-control styleForm" formControlName="analyte" multiple>
+                  <mat-option value="" (click)="selectNone('analyte')">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option value="-1" (click)="selectAll('analyte')" *ngIf="analitos.length != 0">
+                    {{'MODULES.REPORTECUANTITATIVO.ALLANALITOS' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let analito of analitos" [value]="analito.Idanalytes"
+                    [matTooltip]="analito.Desanalytes" (click)="selectOne('analyte')">
+                    {{ analito.Desanalytes }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!--Radio button-->
+            <div style="width: 100%;">
+              <mat-radio-group class="rbutton" color="primary" formControlName="dataGenerate" aria-label="Select an option">
+                <mat-radio-button value=true>Datos Acumulados</mat-radio-button>
+                <mat-radio-button value=false>Datos Configurados</mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <button type="button" class="boton" (click)="search()">{{'MODULES.REPORTECUANTITATIVO.BOTON' |
+              translate}}</button>
+
+          </form>
+        </div>
+
+        <div class="boxFiltro mb-3" *ngIf="reporteDos">
+          <form [formGroup]="formCuantitativoReporte2" autocomplete="off" class="formulario">
+            <!-- Clientes -->
+            <div role="group" *ngIf="flagCliente">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  Cliente<span class="colorAsterisco">*</span>
+                </mat-label>
+                <mat-select disableOptionCentering class="form-control styleForm" formControlName="Nit">
+                  <mat-option value="">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let cliente of clientes" [value]="cliente.nit" [matTooltip]="cliente.name"
+                    (click)="[datosClienteSelect(cliente.nit),cargarSedes(cliente.header)]">
+                    {{ cliente.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            <div role="group">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  Sede<span class="colorAsterisco"> *</span>
+                </mat-label>
+                <mat-select disableOptionCentering class="form-control styleForm" formControlName="Idheadquarters"
+                  multiple (selectionChange)="limpiar1('Idheadquarters')">
+                  <mat-option value="" (click)="formCuantitativoReporte2.get('Idheadquarters')?.setValue(null)">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option value="-1" *ngIf="sedes.length !== 0"
+                    (click)="formCuantitativoReporte2.get('Idheadquarters')?.setValue(['-1'])">
+                    Todos las sedes
+                  </mat-option>
+                  <mat-option *ngFor="let sede of sedes" [matTooltip]="sede.desheadquarters"
+                    [value]="sede.idheadquarters">
+                    {{ sede.desheadquarters }}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            <div role="group">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  {{'MODULES.REPORTECUANTITATIVO.FORMULARIO.PROGRAMA' | translate}}<span class="colorAsterisco">*</span>
+                </mat-label>
+                <mat-select disableOptionCentering class="form-control styleForm" formControlName="Idprogram">
+                  <mat-option value="">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let programa of programas" [value]="programa.IdProgram"
+                    [matTooltip]="programa.Desprogram">
+                    {{ programa.Desprogram }}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            <div role="group">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  Equipo<span class="colorAsterisco"> *</span>
+                </mat-label>
+                <mat-select disableOptionCentering class="form-control styleForm" formControlName="Idanalyzer" multiple
+                  (selectionChange)="limpiar1('Idanalyzer')">
+                  <mat-option value="" (click)="formCuantitativoReporte2.get('Idanalyzer')?.setValue(null)">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option value="-1" *ngIf="equipoList.length !== 0"
+                    (click)="formCuantitativoReporte2.get('Idanalyzer')?.setValue(['-1'])">
+                    Todas los equipos
+                  </mat-option>
+                  <mat-option *ngFor="let programa of equipoList" [matTooltip]="programa.nameAnalyzer"
+                    [value]="programa.idAnalyzer">
+                    {{ programa.nameAnalyzer }}
+                  </mat-option>
+                </mat-select>
+                <mat-error>Obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            <!-- analytes -->
+            <div role="group">
+              <mat-form-field class="sf-2">
+                <mat-label class="matLabelForm">
+                  {{'MODULES.REPORTECUANTITATIVO.FORMULARIO.ANALYTE' | translate}}<span class="colorAsterisco"> *</span>
+                </mat-label>
+                <mat-select disableOptionCentering class="form-control styleForm" formControlName="IdAnalytes" multiple>
+                  <mat-option value="" (click)="formCuantitativoReporte2.get('IdAnalytes')?.setValue(null)">
+                    {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option value="-1" *ngIf="analitosList.length !== 0"
+                    (click)="[formCuantitativoReporte2.get('IdAnalytes')?.setValue(['-1']),this.analitosFiltradosVer = this.analitosList]">
+                    {{'MODULES.REPORTECUANTITATIVO.ALLANALITOS' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let analito of analitosList" [value]="analito.Idanalytes"
+                    [matTooltip]="analito.Desanalytes" (click)="filtrarAnalitos('IdAnalytes')">
+                    {{ analito.Desanalytes }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <button type="button" class="boton" (click)="consultarReporte2()">{{'MODULES.REPORTECUANTITATIVO.BOTON' |
+              translate}}</button>
+          </form>
+          <div *ngIf="reporteDos && mostrarBotonExportar && mostrarReportes" class="boxSecciones">
+            <div class="arrow-left">
+              <i class="fas fa-angle-left" (click)="scrollCards(-1)"></i>
+            </div>
+            <div #scroll class="boxSeccionesContainer">
+              <div class="mr-2" *ngFor="let item of analitosFiltradosVer; let i = index">
+                <div #btnSecc id="bntSecc-{{i}}" class="styleSeccion"
+                  [ngClass]="{'backHover': seccionSeleccionado === item.Desanalytes }"
+                  (click)="traerInfoAnalitoReporte2Individual(item.Desanalytes)">
+                  <h2 class="text-capitalize text-nowrap mb-0">{{item.Desanalytes | lowercase}}</h2>
+                  <!-- (click)="buscarSeccion(item, btnSecc)" -->
+                </div>
+              </div>
+            </div>
+            <div class="arrow-right" (click)="scrollCards(1)">
+              <i class="fas fa-angle-right"></i>
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="mostrarReportes">
+          <div class="col-md-12 text-right" *ngIf="mostrarBotonExportar">
+            <div class="grid-consolidado">
+              <img *ngIf="reporteUno && itemSeleccionado !== -1" [src]="'pdf2.png' | imageCdn" alt="Reporte cuantitativo"
+                style="height: 30px; cursor: pointer;" (click)="[openSelecionMuestra()]">
+
+            </div>
+            <!--<img [src]="'excel.png' | imageCdn" alt="Reporte cuantitativo" class="mr-1">-->
+            <div class="grid-consolidado">
+              <img *ngIf="reporteDos" [src]="'pdf2.png' | imageCdn" alt="Reporte cuantitativo"
+                style="height: 30px; cursor: pointer;" (click)="reportePDF2()">
+              <img *ngIf="reporteDos" [src]="'PDFconsolidado.svg' | imageCdn" alt="Reporte cuantitativo"
+                style="height: 30px; cursor: pointer;"
+                (click)="traerInfoAnalitoReporte2Grupal(this.dataAnalitoFiltrada)">
+            </div>
+          </div>
+          <div *ngIf="reporteUno" class="col-md-12 text-center">
+            <h3><strong>{{'MODULES.REPORTECUANTITATIVO.TITULO' | translate}}</strong></h3>
+          </div>
+
+          <div class="boxIndicadoresEvaluacion" id="exporEvaluacionExterna">
+
+
+            <ng-container *ngIf="reporteUno">
+              <div class="indicadorEvaluacion">
+                <div>
+                  <div>
+                    <strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.PROGRAMA' |
+                      translate}}</strong>{{programaSeleccionado[0].Desprogram}}
+                  </div>
+                  <div><strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.MUESTRA' | translate}}</strong>{{dataListaMuestra}}
+                  </div>
+                  <div><strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.FECHAREPORTE' | translate}}</strong>{{fechaActual}}
+                  </div>
+                </div>
+              </div>
+              <div class="indicadorEvaluacion">
+                <div>
+                  <div>
+                    <strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.RONDA' |
+                      translate}}</strong>{{this.formaCuantitativo.value.ronda}}
+                  </div>
+                  <div><strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.PARTICIPANTE' |
+                      translate}}</strong>{{participante}}</div>
+                  <div><strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.NLABORATORIO' |
+                      translate}}</strong>{{codigoparticipante}}</div>
+                </div>
+              </div>
+              <div class="indicadorEvaluacion">
+                <div>
+                  <div><strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.TMUESTRA' | translate}}</strong></div>
+                  <div><strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.CONDICIONESM' | translate}}</strong></div>
+                  <div><strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.SI' | translate}}</strong>
+                    <strong>{{'MODULES.REPORTECUANTITATIVO.TABLAS.NO' | translate}}</strong>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="reporteDos">
+
+              <div class="indicadorEvaluacion">
+                <div>
+                  <div><strong>Nombre laboratorio: </strong>{{ datosLab['name'] }}</div>
+                  <div><strong>Programa: </strong>{{ itemData[2] }}</div>
+                  <div><strong>Equipo: </strong>{{ itemData[3] }}</div>
+                </div>
+              </div>
+              <div class="indicadorEvaluacion">
+                <div>
+                  <div><strong>Reactivo: </strong>{{ itemData[4] }}</div>
+                  <div><strong>Analito: </strong>{{ itemData[5] }}</div>
+                  <div><strong>Unidades: </strong>{{ itemData[1] }}</div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div class="boxAnalitos" *ngIf="reporteUno">
+            <div class="arrow-left">
+              <i class="fas fa-angle-left" (click)="scrollCards(-1)"></i>
+            </div>
+            <div #scroll class="boxAnalitosContainer">
+              <div *ngFor="let analito of listaAnalytes">
+                <div class="styleAnalito" [ngClass]="{'backHover': analitoSeleccionado=== analito }">
+                  <h3 (click)="buscarAnalitos(analito)">{{analito}}</h3>
+                </div>
+              </div>
+            </div>
+            <div class="arrow-right" (click)="scrollCards(1)">
+              <i class="fas fa-angle-right"></i>
+            </div>
+          </div>
+          <div class="col-md-12 mt-3 div-container">
+            <div *ngIf="reporteUno" class="row h-500p">
+              <div class="options-1" [ngClass]="itemSeleccionado === -1 ? 'col-md-4' : 'ml-3'">
+                <div class="tipoIndicador" [ngClass]="{'backHover-item': itemSeleccionado == 2}" (click)="setItem(2)">
+                  <img [src]="'evaluacionP.png' | imageCdn" alt="Reporte cuantitativo">
+                  <h2 [ngClass]="{ 'none': itemSeleccionado !== -1}">
+                    {{'MODULES.REPORTECUANTITATIVO.EVALUACIONP' | translate}}</h2>
+                </div>
+                <div class="tipoIndicador" [ngClass]="{'backHover-item': itemSeleccionado == 1}" (click)="setItem(1)">
+                  <img [src]="'estadisticaG.png' | imageCdn" alt="Reporte cuantitativo">
+                  <h2 [ngClass]="{ 'none': itemSeleccionado !== -1}">
+                    {{'MODULES.REPORTECUANTITATIVO.REPORTEG' | translate}}</h2>
+                </div>
+                <div class="tipoIndicador" [ngClass]="{'backHover-item': itemSeleccionado == 3}" (click)="setItem(3)">
+                  <img [src]="'resumenRonda.png' | imageCdn" alt="Reporte cuantitativo">
+                  <h2 [ngClass]="{ 'none': itemSeleccionado !== -1}">
+                    {{'MODULES.REPORTECUANTITATIVO.RESUMENRONDA' | translate}}</h2>
+                </div>
+                <div class="tipoIndicador" [ngClass]="{'backHover-item': itemSeleccionado == 4}" (click)="setItem(4)">
+                  <img [src]="'reporteCiclo.png' | imageCdn" alt="Reporte cuantitativo">
+                  <h2 [ngClass]="{ 'none': itemSeleccionado !== -1}">
+                    {{'MODULES.REPORTECUANTITATIVO.REPORTECICLO' | translate}}</h2>
+                </div>
+              </div>
+              <div [ngClass]="itemSeleccionado === -1 ? 'contP styleRepor' : 'item-content-selected styleRepor contG'">
+                <ng-container [ngSwitch]="itemSeleccionado">
+                  <ng-container *ngSwitchCase="1" [ngTemplateOutlet]="item_1"></ng-container>
+                  <ng-container *ngSwitchCase="2" [ngTemplateOutlet]="item_2"></ng-container>
+                  <ng-container *ngSwitchCase="3" [ngTemplateOutlet]="item_3"></ng-container>
+                  <ng-container *ngSwitchCase="4" [ngTemplateOutlet]="item_4"></ng-container>
+                  <ng-container *ngSwitchDefault [ngTemplateOutlet]="item_noSelect"></ng-container>
+                </ng-container>
+              </div>
+            </div>
+
+            <div *ngIf="reporteDos" class="row h-500p">
+              <div class="options-1" [ngClass]="itemSeleccionado === -1 ? 'col-md-4' : 'ml-3'">
+                <div class="tipoIndicador" [ngClass]="{'backHover-item': itemSeleccionado == 1}"
+                  (click)="reporteDosSeleccionar(1)">
+                  <img [src]="'estadisticaG.png' | imageCdn" alt="Reporte cuantitativo">
+                  <h2 [ngClass]="{ 'none': itemSeleccionado !== -1}">Índice de desvío</h2>
+                </div>
+                <div class="tipoIndicador" [ngClass]="{'backHover-item': itemSeleccionado == 2}"
+                  (click)="reporteDosSeleccionar(2)">
+                  <img [src]="'evaluacionP.png' | imageCdn" alt="Reporte cuantitativo">
+                  <h2 [ngClass]="{ 'none': itemSeleccionado !== -1}">Z-Score</h2>
+                </div>
+                <div class="tipoIndicador" [ngClass]="{'backHover-item': itemSeleccionado == 3}"
+                  (click)="reporteDosSeleccionar(3)">
+                  <img [src]="'resumenRonda.png' | imageCdn" alt="Reporte cuantitativo">
+                  <h2 [ngClass]="{ 'none': itemSeleccionado !== -1}">Fin del ciclo</h2>
+                </div>
+              </div>
+              <div [ngClass]="itemSeleccionado === -1 ? 'contP styleRepor' : 'item-content-selected styleRepor contG'">
+                <ng-container [ngSwitch]="itemSeleccionado">
+                  <ng-container *ngSwitchCase="1" [ngTemplateOutlet]="reporteDos1"></ng-container>
+                  <ng-container *ngSwitchCase="2" [ngTemplateOutlet]="reporteDos2"></ng-container>
+                  <ng-container *ngSwitchCase="3" [ngTemplateOutlet]="reporteDos3"></ng-container>
+                  <ng-container *ngSwitchCase="4" [ngTemplateOutlet]="reporteIndividual"></ng-container>
+                  <ng-container *ngSwitchCase="5" [ngTemplateOutlet]="reporteCompleto"></ng-container>
+                  <ng-container *ngSwitchDefault [ngTemplateOutlet]="item_noSelect"></ng-container>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #item_noSelect>
+  <div class="col-md-5 styleVer">
+    <div class="row">
+      <div class="col-md-12">
+        <i class="fas fa-angle-up styleIcon"></i>
+      </div>
+      <div *ngIf="reporteUno" class="col-md-12">
+        {{'MODULES.REPORTECUANTITATIVO.ANALITOS1' | translate}} <br>
+        {{'MODULES.REPORTECUANTITATIVO.ANALITOS2' | translate}}
+      </div>
+      <div *ngIf="reporteDos" class="col-md-12">
+        Da click en el grafico <br>
+        que deseas ver
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <img [src]="'banner.png' | imageCdn" alt="Reporte cuantitativo" style="width:50%; height: 80%;">
+  </div>
+</ng-template>
+<!-- ? REPORTE UNO -->
+<ng-template #item_1>
+  <div class="row col-12 mb-3">
+    <div class="col-md-12 mt-3">
+      <h4>{{'MODULES.REPORTECUANTITATIVO.VALORASIGNADO' | translate}} {{valorAsignado}}</h4>
+    </div>
+    <div class="col-md-5 divTabla">
+      <table>
+        <tr>
+          <th rowspan="4" class="styleText">
+            <i class="fas fa-circle colorAzul"></i>{{'MODULES.REPORTECUANTITATIVO.METODO' | translate}}<br>
+            <i class="fas fa-circle colorVerde"></i>{{'MODULES.REPORTECUANTITATIVO.EQUIPOMETODO' | translate}}<br>
+            <i class="fas fa-circle colorAmarillo"></i>{{'MODULES.REPORTECUANTITATIVO.TODOSRESULTADOS' | translate}}
+          </th>
+          <th class="thEstyle">{{'MODULES.REPORTECUANTITATIVO.N' | translate}}</th>
+          <th class="thEstyle">{{'MODULES.REPORTECUANTITATIVO.MEDIA' | translate}}</th>
+          <th class="thEstyle">{{'MODULES.REPORTECUANTITATIVO.DS' | translate}}</th>
+          <th class="thEstyle">{{'MODULES.REPORTECUANTITATIVO.CV' | translate}}</th>
+          <th class="thEstyle">{{'MODULES.REPORTECUANTITATIVO.UM' | translate}}</th>
+        </tr>
+        <tr *ngFor="let analito of tablaEstadisticaGeneral">
+          <td class="thEstyle">{{analito![0].participantes}}</td>
+          <td class="thEstyle">{{analito![0].media}}</td>
+          <td class="thEstyle">{{analito![0].DS}}</td>
+          <td class="thEstyle">{{analito![0].CV}}</td>
+          <td class="thEstyle">{{analito![0].Um}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-md-7" id="exporEstadisticaGeneral">
+      <canvas id="myChart" #mychart></canvas>
+    </div>
+  </div>
+  <!--<h1>{{'MODULES.REPORTECUANTITATIVO.REPORTEG' | translate}}</h1>-->
+
+</ng-template>
+
+<ng-template #item_2>
+  <div class="row col-12 mb-3 justify-content-center">
+    <div class="col-md-12 text-center">
+      <h2 style="color: #6b4b8b;">{{'MODULES.REPORTECUANTITATIVO.EVALUACIONP' | translate}}</h2>
+      <span class="reporE">{{'MODULES.REPORTECUANTITATIVO.SMEDICION' | translate}}</span><span
+        class="ml-1">Prueba</span>
+      <span class="reporE">{{'MODULES.REPORTECUANTITATIVO.ANALITO' | translate}}</span><span class="ml-1">Prueba</span>
+      <span class="reporE">{{'MODULES.REPORTECUANTITATIVO.UNIDADES' | translate}}</span><span class="ml-1">Prueba</span>
+    </div>
+    <div class="col-12 row">
+      <div class="col-12 text-center">
+        <span>{{'MODULES.REPORTECUANTITATIVO.SOPCION' | translate}}</span>
+      </div>
+      <form [formGroup]="formaEvaluacion" autocomplete="off" class="col-12 row justify-content-center">
+        <div role="group" class="col-3">
+          <mat-form-field class="sf-2">
+            <mat-select disableOptionCentering class="form-control styleForm" formControlName="tipoFiltro">
+              <mat-option value="">
+                {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+              </mat-option>
+              <mat-option value="1">
+                z-score
+              </mat-option>
+              <mat-option value="2">
+                Valor asignado
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div role="group" class="col-3" *ngIf="formaEvaluacion.value.tipoFiltro">
+          <mat-form-field class="sf-2">
+            <mat-select disableOptionCentering class="form-control styleForm" formControlName="idestadistica"
+              (selectionChange)="tipoOpcion()">
+              <mat-option value="1">
+                Equipo - Método
+              </mat-option>
+              <mat-option value="2">
+                Método
+              </mat-option>
+              <mat-option value="3">
+                Todos los resultados
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </form>
+    </div>
+    <div class="col-12 row justify-content-center" *ngIf="mostrarMuestras">
+      <div class="col-12 mt-3 text-center">
+        <h2 style="color: #6b4b8b;">{{'MODULES.REPORTECUANTITATIVO.ESTADISTICAZSCORE' | translate}}</h2>
+      </div>
+      <div class="col-12 text-center">
+        <span>{{'MODULES.REPORTECUANTITATIVO.TIPOMUESTRA' | translate}}</span>
+      </div>
+      <div class="col-12 row justify-content-center">
+        <form [formGroup]="formaSelecione" autocomplete="off" class="col-3">
+          <div>
+            <mat-form-field class="sf-2">
+              <mat-select disableOptionCentering class="form-control styleForm" formControlName="tipoFiltro">
+                <mat-option value="">
+                  {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let muestra of clientesEvaluacionMuestra" [value]="muestra"
+                  (click)="obtenerDatosCliente()">
+                  {{muestra | json}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <div class="col-4 divTabla" *ngIf="datosClienteTable.length > 0">
+      <table *ngIf="tipoFiltro.value ==='0'">
+        <tr colspan="2" class="text-center" style="color: #007bff;">
+          <td>{{'MODULES.REPORTECUANTITATIVO.MUESTRA' | translate}} {{this.datosClienteTable[0].Serialsample}}</td>
+        </tr>
+        <tr>
+          <th rowspan="6" class="styleTextClient">
+            <i></i>{{'MODULES.REPORTECUANTITATIVO.RESULTADOSRONDA' | translate}}<br>
+            <i></i>{{'MODULES.REPORTECUANTITATIVO.VASIGNADO' | translate}}<br>
+            <i></i>{{'MODULES.REPORTECUANTITATIVO.DESVIO' | translate}}<br>
+            <i></i>{{'MODULES.REPORTECUANTITATIVO.DESVIOACEPTABLE' | translate}}<br>
+            <i></i>{{'MODULES.REPORTECUANTITATIVO.INDICEDESVIO' | translate}}<br>
+            <i></i>{{'MODULES.REPORTECUANTITATIVO.RMID' | translate}}
+          </th>
+        </tr>
+        <tr>
+          <th rowspan="6" class="thEstyleClient" *ngFor="let cliente of datosClienteTable">
+            <i></i>{{cliente.Resultado}}<br>
+            <i></i>{{cliente.ValorAsign}}<br>
+            <i></i>{{cliente.Desvio}}<br>
+            <i></i>{{cliente.DesvAceptable}}<br>
+            <i></i>{{cliente.IndiceDesv}}<br>
+            <i></i>''
+          </th>
+        </tr>
+      </table>
+      <table *ngIf="tipoFiltro.value ==='1'">
+        <tr colspan="2" class="text-center" style="color: #007bff;">
+          <td>{{'MODULES.REPORTECUANTITATIVO.MUESTRA' | translate}} {{this.datosClienteTable[0].Serialsample}}</td>
+        </tr>
+        <tr>
+          <th rowspan="6" class="styleTextClient">
+            <i></i>{{'MODULES.REPORTECUANTITATIVO.RESULTADOSRONDA' | translate}}<br>
+            <i></i>Z-score<br>
+            <i></i>Media<br>
+            <i></i>DS<br>
+            <i></i>RMZs
+          </th>
+        </tr>
+        <tr>
+          <th rowspan="6" class="thEstyleClient" *ngFor="let cliente of datosClienteTable">
+            <i></i>{{cliente.Resultado}}<br>
+            <i></i>{{cliente.Zscore}}<br>
+            <i></i>{{cliente.Media}}<br>
+            <i></i>{{cliente.DS}}<br>
+            <i></i>''<br>
+            <i></i>
+          </th>
+        </tr>
+      </table>
+    </div>
+    <div class="col-6 mt-4 mb-4" *ngIf="datosClienteTable.length > 0" style="overflow-y: scroll; max-height: 240px;">
+      <canvas id="myChart" #mychart></canvas>
+      <canvas id="myChartEvaluacion2" #myChartEvaluacion2></canvas>
+      <canvas *ngIf="tipoFiltro.value ==='2'" id="myChartEvaluacion3" #myChartEvaluacion3></canvas>
+
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #item_3>
+  <div style="grid: 1em; grid-template-columns: 1fr;padding: 1em;width: 100%;">
+
+    <div>
+      <h1>{{'MODULES.REPORTECUANTITATIVO.RESUMENRONDA' | translate}}</h1>
+    </div>
+    <div style="margin-top: 1em;">
+      <table>
+        <tr>
+          <th class="thEstyleResumenRonda">muestra</th>
+          <th class="thEstyleResumenRonda">Resultado</th>
+          <th class="thEstyleResumenRonda">Media</th>
+          <th class="thEstyleResumenRonda">DS</th>
+          <th class="thEstyleResumenRonda">CV</th>
+          <th class="thEstyleResumenRonda">Um</th>
+          <th class="thEstyleResumenRonda">Indice Desvío</th>
+          <th class="thEstyleResumenRonda">Z-score</th>
+        </tr>
+        <tr *ngFor="let analito of listaResumenRonda">
+          <td class="thEstyle">{{analito.Serialsample}}</td>
+          <td class="thEstyle">{{analito.Resultado}}</td>
+          <td class="thEstyle">{{analito.media}}</td>
+          <td class="thEstyle">{{analito.DS}}</td>
+          <td class="thEstyle">{{analito.CV}}</td>
+          <td class="thEstyle">{{analito.Um}}</td>
+          <td class="thEstyle">{{analito.IndiceDesv}}</td>
+          <td class="thEstyle" *ngIf="analito.Zscore !='No Determinado'">{{analito.Zscore}}</td>
+          <td class="thEstyle" *ngIf="analito.Zscore ==='No Determinado'"> &infin;</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+  <!-- <div > -->
+    <!-- <div class="col-md-5 mb-3">
+      <canvas id="myChartGraficaResumenRonda" #myChartGraficaResumenRonda></canvas>
+    </div> -->
+  <!-- </div> -->
+</ng-template>
+
+<ng-template #item_4>
+  <div style="display: grid; grid-template-columns: 1fr;width: 100%;">
+    <h1 style="text-align: center;">Reporte de fin de ciclo</h1>
+    <div class="grid-principal-reporte2">
+      <div class="grid-table-info2">
+        <div class="listasEstilo">
+          <ul class="listas ">
+            <li *ngFor="let x of datosFinRondaTabla.serial;index as j"
+              [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+              {{x}}
+            </li>
+          </ul>
+        </div>
+        <div class="listasEstilo">
+          <ul class="listas ">
+            <li *ngFor="let x of datosFinRondaTabla.resultado;index as j"
+              [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+              {{x}}
+            </li>
+          </ul>
+        </div>
+        <div class="listasEstilo">
+          <ul class="listas ">
+            <li *ngFor="let x of datosFinRondaTabla.media;index as j"
+              [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+              {{x}}
+            </li>
+          </ul>
+        </div>
+        <div class="listasEstilo">
+          <ul class="listas ">
+            <li *ngFor="let x of datosFinRondaTabla.ds;index as j"
+              [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+              {{x}}
+            </li>
+          </ul>
+        </div>
+        <div class="listasEstilo">
+          <ul class="listas ">
+            <li *ngFor="let x of datosFinRondaTabla.cv;index as j"
+              [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+              {{x}}
+            </li>
+          </ul>
+        </div>
+        <div class="listasEstilo">
+          <ul class="listas ">
+            <li *ngFor="let x of datosFinRondaTabla.um;index as j"
+              [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+              {{x}}
+            </li>
+          </ul>
+        </div>
+        <div class="listasEstilo">
+          <ul class="listas ">
+            <li *ngFor="let x of datosFinRondaTabla.desvio;index as j"
+              [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+              {{x}}
+            </li>
+          </ul>
+        </div>
+        <div class="listasEstilo">
+          <ul class="listas ">
+            <li *ngFor="let x of datosFinRondaTabla.zscore;index as j"
+              [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+              {{x}}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="contiene-graficas">
+        <app-grafica-barras [idB]="'ronda01'" [tipoGrafica]="4" [titulo]="'Indice Desvío'" [constantes]="1"
+          [xAxis]="datosFinRondaTabla.desvio" [data]="datosFinRondaTabla.desvio"
+          (base64Barras)="obtenerGraficas(0,$event)"></app-grafica-barras>
+      </div>
+      <div class="contiene-graficas">
+        <app-grafica-barras [idB]="'ronda02'" [tipoGrafica]="4" [titulo]="'Z-score'" [constantes]="2"
+          [xAxis]="datosFinRondaTabla.zscore" [data]="datosFinRondaTabla.zscore"
+          (base64Barras)="obtenerGraficas(1,$event)"></app-grafica-barras>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!-- ? REPORTE UNO -->
+
+<!-- ? REPORTE DOS -->
+<ng-template #reporteDos1>
+  <div class="grid-principal-reporte2">
+    <div class="grid-table-info" *ngFor="let objeto of dataTablaReporte2;index as i">
+      <div *ngIf="objeto.titulo" class="listasEstilo">
+        <ul class="listas " style="color:var(--blue-02);font-weight:bold">
+          <li *ngFor="let x of objeto.titulo;index as j">{{x}}</li>
+        </ul>
+      </div>
+      <div *ngIf="objeto.informacion" class="listasEstilo" style="border: none;">
+        <ul class="listas ">
+          <li *ngFor="let x of objeto.informacion;index as j">{{x}}</li>
+        </ul>
+      </div>
+      <div *ngIf="objeto.sedeNumber" class="listasEstilo">
+        <ul class="listas ">
+          <li *ngFor="let x of objeto.sedeNumber;index as j"
+            [style]="j === 0?'color:var(--blue-02);font-weight:bold':''" class="listaCentro">
+            {{x}}
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="objeto.desvio" class="listasEstilo">
+        <ul class="listas ">
+          <li *ngFor="let x of objeto.desvio;index as j" [style]="j === 0?'color:var(--blue-02);font-weight:bold':''"
+            class="listaCentro">
+            {{x}}
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="objeto.zScore" class="listasEstilo">
+        <ul class="listas ">
+          <li *ngFor="let x of objeto.zScore;index as j" [style]="j === 0?'color:var(--blue-02);font-weight:bold':''"
+            class="listaCentro">
+            {{x}}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="contiene-graficas" *ngIf="dataLineasReporte2[0]">
+      <app-grafica-lineas [idG]="'A01'" [titulo]="'Índice de desvío'" [data]="dataLineasReporte2[0]"
+        (base64Lineas)="obtenerGraficas(0,$event)"></app-grafica-lineas>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #reporteDos2>
+  <div style="display: grid;grid-template-columns: 1fr; justify-content: center;width: 100%;">
+    <div class="contiene-graficas" *ngIf="dataLineasReporte2[1]">
+      <app-grafica-lineas [idG]="'B01'" [data2]="dataLineasReporte2[1]" [titulo]="'Z-Score'"
+        (base64Lineas)="obtenerGraficas(1,$event)"></app-grafica-lineas>
+    </div>
+    <div>
+      <table class="table " style="width: 80% !important;margin: 0 auto 0;">
+        <thead class="thead-dark bg-primary">
+          <tr>
+            <th></th>
+            <th *ngFor="let item of headerMayor;index as i ">
+              {{i+1}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let objeto of dataTablaReporte2;index as i">
+            <td> <strong> {{objeto.sedeNumber[0]}} </strong> </td>
+            <ng-container *ngFor="let x of objeto.zScore;index as j">
+              <td *ngIf="j !== 0">{{x}}</td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #reporteDos3>
+  <div class="contiene-graficas" style="margin-top: 2em;">
+    <app-grafica-barras [idB]="'BB01'" [titulo]="'Resumen de ronda'" [data]="dataBarraReporte2"
+      (base64Barras)="obtenerGraficas(2,$event)"></app-grafica-barras>
+  </div>
+</ng-template>
+
+<ng-template #reporteCompleto>
+  <app-cargador></app-cargador>
+  <ng-container *ngFor="let item of datosCompletosOrdenados;index as i">
+
+    <div class="contiene-graficas">
+      <app-grafica-lineas [idG]="'A0Grafica'+(i+1)" [titulo]="'Índice de desvío'" [multiple]="false"
+        [data]="item.lineas" (base64Lineas1)="item.base64Grafica[0]=($event)">
+      </app-grafica-lineas>
+    </div>
+    <div class="contiene-graficas">
+      <app-grafica-lineas [idG]="'C0Grafica'+(i+1)" [data2]="item.lineas" [titulo]="'Z-Score'" [multiple]="false"
+        (base64Lineas2)="item.base64Grafica[1]=($event)">
+      </app-grafica-lineas>
+    </div>
+    <div class="contiene-graficas">
+      <app-grafica-barras [idB]="'B0Grafica'+(i+1)" [titulo]="'Resumen de ronda'" [multiple]="false"
+        [data]="item.lineas" (base64Barras)="item.base64Grafica[2]=($event)"></app-grafica-barras>
+    </div>
+  </ng-container>
+
+</ng-template>
+
+<ng-template #reporteIndividual>
+  <app-cargador></app-cargador>
+  <div style="display: none;" class="contiene-graficas">
+    <app-grafica-lineas [idG]="'GraficaIndividual01'" [titulo]="'Índice de desvío'" [data]="dataLineasReporte2[0]"
+      (base64Lineas1)="obtenerGraficas(0,$event)"></app-grafica-lineas>
+  </div>
+  <div style="display: none;" class="contiene-graficas">
+    <app-grafica-barras [idB]="'GraficaIndividual02'" [titulo]="'Resumen de ronda'" [data]="dataBarraReporte2"
+      (base64Barras)="obtenerGraficas(2,$event)"></app-grafica-barras>
+  </div>
+  <div style="display: none;" class="contiene-graficas">
+    <app-grafica-lineas [idG]="'GraficaIndividual03'" [data2]="dataLineasReporte2[1]" [titulo]="'Z-Score'"
+      (base64Lineas2)="obtenerGraficas(1,$event)"></app-grafica-lineas>
+  </div>
+</ng-template>
+<!-- ? REPORTE DOS -->
+
+
+<div *ngIf="mostrarDivOculto">
+
+  <div class="row col-12 mb-3">
+    <div class="col-md-7" id="exporEstadisticaGeneral">
+      <canvas id="myChartDiv" #mychartDiv></canvas>
+    </div>
+    <div class="col-md-7" *ngIf="datosClienteTableDivZscore.length > 0" id="divocultoZcoreuno">
+      <canvas id="myChartEvaluacion3DivOcultoZscore" #myChartEvaluacion3DivOcultoZscore></canvas>
+    </div>
+    <div class="col-md-5"></div>
+    <div class="col-md-7" *ngIf="datosClienteTableDivZscore.length > 0" id="divOcultoZcoreDos">
+      <canvas id="myChartEvaluacionDivocultoZescore" #myChartEvaluacionDivocultoZescore></canvas>
+    </div>
+    <div class="col-md-7" *ngIf="datosClienteTableDivVasignado.length > 0" id="divOcultoIndiceUno">
+      <canvas id="mychartDivTres" #mychartDivTres></canvas>
+    </div>
+    <div class="col-md-5"></div>
+    <div class="col-md-7" *ngIf="datosClienteTableDivVasignado.length > 0" id="divOcultoIndiceDos">
+      <canvas id="myChartEvaluacion2DivOculto" #myChartEvaluacion2DivOculto></canvas>
+    </div>
+    <div class="col-md-5"></div>
+    <div class="col-md-7" *ngIf="datosClienteTableDivVasignado.length > 0" id="divOcultoIndiceTres">
+      <canvas id="myChartEvaluacion3DivOculto" #myChartEvaluacion3DivOculto></canvas>
+    </div>
+    <div class="col-md-7" >
+      <canvas id="myChartGraficaResumenRondaDivOculto" #myChartGraficaResumenRondaDivOculto></canvas>
+    </div>
+    <div class="col-md-7" >
+      <canvas id="myChartGraficaResumenRondaDivOculto2" #myChartGraficaResumenRondaDivOculto2></canvas>
+    </div>
+    <!-- <div class="contiene-graficas">
+      <app-grafica-barras [idB]="'ronda01'" [tipoGrafica]="4" [titulo]="'Indice Desvío'" [constantes]="1"
+        [xAxis]="datosFinRondaTabla.desvio" [data]="datosFinRondaTabla.desvio"
+        (base64Barras)="obtenerGraficas(0,$event)"></app-grafica-barras>
+    </div>
+    <div class="contiene-graficas">
+      <app-grafica-barras [idB]="'ronda02'" [tipoGrafica]="4" [titulo]="'Z-score'" [constantes]="2"
+        [xAxis]="datosFinRondaTabla.zscore" [data]="datosFinRondaTabla.zscore"
+        (base64Barras)="obtenerGraficas(1,$event)"></app-grafica-barras>
+    </div> -->
+  </div>
+</div>
+
+<ngx-spinner bdColor="#ccc" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>
+
+<ng-template #seleccionMuestra>
+  <div class="contiene-modal">
+
+    <img class="img" [src]="'DiccionarioParametros.png' | imageCdn">
+    <h3 class="tituloModal">Selección de muestra</h3>
+
+    <div style="margin: 1.5em 3em;">
+      <div style="margin: 5px 5px;">
+        <p style="color: var(--gray-05);font-weight: bold; text-align: left;">Seleccione la muestra que se va a imprimir
+          en "Evaluación de
+          procedimientos"</p>
+      </div>
+      <form [formGroup]="formaSelecionMuestra">
+        <div class="formulario_muestra">
+          <mat-form-field>
+
+            <mat-select disableOptionCentering formControlName="muestra" placeholder="Código de muestra">
+              <mat-option value="">
+                {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+              </mat-option>
+              <mat-option (onSelectionChange)="traerAnaltos($event)" *ngFor="let muestra of clientesEvaluacionMuestra"
+                [value]="muestra">
+                {{muestra | json}}
+              </mat-option>
+            </mat-select>
+            <mat-error>Obligatorio</mat-error>
+          </mat-form-field>
+
+
+          <mat-form-field>
+
+            <input matInput placeholder="Tipo de muestra" formControlName="tipoMuestra">
+            <mat-error>Obligatorio</mat-error>
+          </mat-form-field>
+
+
+          <mat-form-field>
+            <input matInput placeholder="Condicion de la muestra" formControlName="condicionMuestra">
+            <mat-error>Obligatorio</mat-error>
+          </mat-form-field>
+
+          <div>
+            <mat-form-field class="stylePicker" style="width: 100%;">
+              <input disable matInput [matDatepicker]="picker" class="form-control styleForm"
+                style="background-image: none !important;font-size: 12px; height: 16px;"
+                placeholder="Fecha de recepción" formControlName="recepcion">
+              <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker"
+                style="color:#2edad8; width: 18px;">
+              </mat-datepicker-toggle>
+              <mat-datepicker #picker style="color:white !important"></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <div style="display:flex; justify-content: flex-start; gap: 1em; margin-bottom: 1em;">
+          <p style="color: var(--gray-05);font-weight: bold;" id="texto">Muestra recibida en buenas condiciones</p>
+          <mat-radio-group formControlName="calidad" style="display: flex; gap: 1em; justify-content: center;"
+            aria-labelledby="texto">
+            <mat-radio-button value="1">Si </mat-radio-button>
+            <mat-radio-button value="2">No </mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <hr *ngIf="listAnalytesReport.length" >
+        <div *ngIf="listAnalytesReport.length" style="margin: 5px 5px;">
+          <p style="color: var(--gray-05);font-weight: bold; text-align: left;">En este apartado el usuario seleccionará los analitos a agrupar en el resumen de muestra del reporte cuantitativo QCE</p>
+        </div>
+        <div *ngIf="listAnalytesReport.length" style="margin: 5px 5px;">
+          <p style="color: var(--gray-05);font-weight: bold; text-align: left;">Por favor seleccionar si es por Zcore / Valor asignado y su sistema de medicion correspondiente: </p>
+        </div>
+
+        <div *ngIf="listAnalytesReport.length" class="form_muestra_analito">
+          <div style="display: flex; justify-content: flex-start; gap: 1em">
+            <p style="color: var(--gray-05);font-weight: bold; text-align: left; white-space: nowrap;" id="texto">Todos
+              los analitos</p>
+            <mat-slide-toggle [checked]="allAnalytes" (change)="activarTodos($event)">
+            </mat-slide-toggle>
+          </div>
+          <div *ngIf="allAnalytes" style="display:flex; justify-content: flex-start; gap: 1em">
+            <p style="color: var(--gray-05);font-weight: bold; text-align: left; white-space: nowrap;" id="texto">
+              Asignación: </p>
+            <mat-radio-group formControl="asignacion" style="display: flex; gap: 1em; justify-content: center;"
+              aria-labelledby="texto">
+              <mat-radio-button value="Z-Score">Z-Score </mat-radio-button>
+              <mat-radio-button value="Valor asignado">Valor asignado </mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div *ngIf="allAnalytes" style="display:flex; justify-content: flex-start; gap: 1em">
+            <p style="color: var(--gray-05);font-weight: bold; text-align: left;" id="texto">Sistema medición: </p>
+            <mat-radio-group formControl="sistema" (change)="selectSistema($event)"
+              style="display: flex; gap: 0.5em; justify-content: center; align-items: center;" aria-labelledby="texto">
+              <mat-radio-button class="example-radio-button" value="EM"> Equipo - Método </mat-radio-button>
+              <mat-radio-button value="M"> Metodo </mat-radio-button>
+              <mat-radio-button value="T"> Todos los resultados </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+      </form>
+
+
+      <table mat-table [dataSource]="dataSource" class="table-responsive" matSort *ngIf="listAnalytesReport.length">
+
+        <ng-container matColumnDef="checks">
+          <th style="width: 300px;" mat-header-cell *matHeaderCellDef>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <div style="display:flex; justify-content: center; align-items: center;" *ngIf="!allAnalytes">
+              <input type="checkbox" [checked]="row.isSelect" class="form-check-input" id="analyte_{{row.idAnalytes}}"
+                (click)="AgregarAnalito( $event.target.checked, row ,row.idAnalytes)" />
+
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="analito">
+          <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{'MODULES.ASIGNACIONPROGRAMA.COLUMNS.ANALITO' | translate}}</th>
+          <td mat-cell *matCellDef="let row"> {{row.desAnalytes}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="asignacion">
+          <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+            Asignación</th>
+          <td mat-cell *matCellDef="let row">
+            <div *ngIf="allAnalytes">
+              -
+            </div>
+            <div *ngIf="!allAnalytes" class="col m-auto">
+              <select class="form-control select" [disabled]="!row.isSelect">
+                <option [value]="">-</option>
+                <option *ngFor="let asignacion of asignaciones" [value]="asignacion.name">{{ asignacion.name }}</option>
+              </select>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sistema_medicion">
+          <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+            Sistema medición</th>
+          <td mat-cell *matCellDef="let row">
+            <div *ngIf="allAnalytes">-</div>
+            <form *ngIf="!allAnalytes" [formGroup]="formSystem" class="col m-auto">
+
+              <select class="form-control select" [formControlName]="'analyte_' + row.idAnalytes"
+                (change)="selectSistemInInput($event.target.value, row.idAnalytes)">
+                <option [value]="">-</option>
+                <option *ngFor="let sistem of sistema_medicion" [value]="sistem.name">{{ sistem.name }}</option>
+              </select>
+            </form>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      </table>
+      <mat-paginator *ngIf="listAnalytesReport.length" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+    </div>
+    <div>
+      <button class="btnUpdate boton botones-modal" [disabled]="formaSelecionMuestra.invalid"
+        (click)="generarPdf()">Aceptar</button>
+      <button class="btnUpdate boton"
+        (click)="[ventanaModalMuestra.hide(),formaSelecionMuestra.reset(), reiniciarAnalitos()]">Cancelar</button>
+    </div>
+  </div>
+</ng-template>

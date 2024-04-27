@@ -1,0 +1,320 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'calculoDiana.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+          <div class="col-12 titulo">{{'MODULES.VALORES_DIANA.TITLE' | translate}}</div>
+          <div class="col-11 boxFilterData">
+            <form [formGroup]="formaBuscarDatos">
+              <div class="form-row">
+                <div class="col-lg-3 p-0 form-group">
+                  <div role="group">
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm" for="numLaboratorio">
+                        {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SEDES' | translate}}<span
+                          class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="numLaboratorio"
+                        class="form-control styleForm" [disabled]="habilitarSede">
+                        <mat-option value="">
+                          {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SELECCIONE' | translate}}
+                        </mat-option>
+                        <mat-option *ngFor="let sede of sedesActive" [value]="sede.idheadquarters">
+                          {{ sede.desheadquarters | titlecase }}</mat-option>
+                      </mat-select>
+                      <small
+                        *ngIf="formaBuscarDatos.get('numLaboratorio').errors?.required  && formaBuscarDatos.get('numLaboratorio').touched"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                                            translate}}</small>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" for="seccion" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SECCION' | translate}}
+                      <span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto01" formControlName="seccion"   #seccionPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto01="matAutocomplete" (optionSelected)="cambiarSeccion(seccionPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsSections | async);" [value]="option.namesection" [matTooltip]="option.namesection | NombreSeccion">
+                              {{option.namesection | NombreSeccion}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small
+                        *ngIf="formaBuscarDatos.get('seccion').errors?.required  && formaBuscarDatos.get('seccion').touched"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" for="numMaterialControl" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.NUMMATERIALCONTROL' | translate}}<span
+                        class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto02" formControlName="numMaterialControl"  #contmatPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto02="matAutocomplete" (optionSelected)="cambiarControlMaterial(contmatPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsControlmaterial | async);" [value]="option.descontmat" [matTooltip]="option.descontmat | NombreControlmaterial">
+                              {{option.descontmat | NombreControlmaterial}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small
+                        *ngIf="formaBuscarDatos.get('numMaterialControl').errors?.required  && formaBuscarDatos.get('numMaterialControl').touched"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" for="numLote" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.NUMLOTE' | translate}}
+                      <span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto03" formControlName="numLote"  #lotPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto03="matAutocomplete" (optionSelected)="lotesPre(lotPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsLots | async);" [value]="option.Numlot" [matTooltip]="option.Numlot | nombreLote">
+                              {{option.Numlot | nombreLote}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small
+                        *ngIf="formaBuscarDatos.get('numLote').errors?.required  && formaBuscarDatos.get('numLote').touched"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="form-row animate__animated animate__fadeIn fast" *ngIf="tests.length !== 0">
+                <div class="col-lg-12 p-0 form-group">
+                  <div role="group">
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm" for="tests">
+                        {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.TEST' | translate}}<span
+                          class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering class="form-control styleForm"
+                        [ngClass]="{ 'is-valid': verBtn }" (selectionChange)="setTest( $event.value )"
+                        formControlName="idtest">
+                        <mat-option value="">
+                          {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SELECCIONE' | translate}}
+                        </mat-option>
+                        <mat-option *ngFor="let test of tests" [value]="test.IdTest"> {{ test.Desanalytes | titlecase }} |
+                          {{ test.Desunits }} | {{ test.Desmethods | titlecase }} | {{ test.Desreagents | titlecase }} |
+                          {{ test.NameAnalyzer | titlecase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 boxBtnSearch">
+                  <button class="boton btnSearch animate__animated animate__fadeIn fast" type="button"
+                    (click)="loadData()" *ngIf="verBtn">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.BOTON' |
+                  translate}}</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-11" *ngIf="ver">
+            <div class="row mt-4">
+              <div class="col-lg-6 boxBtn form-group"></div>
+              <div class="col-lg-6 boxFilter">
+                <i class="fa fa-search"></i>
+                <mat-form-field class="filter">
+                  <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                  <input matInput (keyup)="applyFilter($event)"
+                    placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="col-11 animate__animated animate__fadeIn fast boxTable" [hidden]="!ver">
+
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+              <ng-container matColumnDef="desanalytes">
+                <th style="width: 270px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.VALORES_DIANA.COLUMNS.ANALITO' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Desanalytes | titlecase }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="level">
+                <th style="width: 270px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.VALORES_DIANA.COLUMNS.NIVEL' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Level}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="dianavalue">
+                <th style="width: 270px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.VALORES_DIANA.COLUMNS.VALOR_DIANA' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Dianavalue}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="lowlimit">
+                <th style="width: 270px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.VALORES_DIANA.COLUMNS.LIMITE_INFERIOR' | translate}}
+                </th>
+                <td mat-cell *matCellDef="let row"> {{row.Lowlimit}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="upperlimit">
+                <th style="width: 270px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.VALORES_DIANA.COLUMNS.LIMITE_SUPERIOR' | translate}}
+                </th>
+                <td mat-cell *matCellDef="let row"> {{row.Upperlimit}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="active">
+                <th style="width: 150px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.VALORES_DIANA.COLUMNS.ESTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Active" (change)="actualizarEstado(row)"></mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="editar">
+                <th style="width: 150px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.VALORES_DIANA.COLUMNS.EDITAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <iMG [src]="'imagenEditar.png' | imageCdn" (click)="openModalRegistro(templateRegistro, row)"
+                    style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="borrar">
+                <th style="width: 150px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.VALORES_DIANA.COLUMNS.ELIMINAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row; let i = index;">
+                  <img [src]="'imagenEliminar.png' | imageCdn" (click)="eliminar(row.Iddianavalue)"
+                    style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #templateRegistro>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="col flex2">
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+      </div>
+    </div>
+
+    <form [formGroup]="formularioRegistroEditar" (ngSubmit)="crearEditar()">
+      <div class="form-row">
+        <div class="col-md-10 form-group">
+          <div role="group">
+            <mat-form-field class="sf-2">
+              <mat-label class="matLabelForm" for="idDianacalculate">
+                {{'MODULES.VALORES_DIANA.FORMULARIO.ESTABLECER' | translate}}<span class="colorAsterisco"> *</span>
+              </mat-label>
+              <mat-select disableOptionCentering formControlName="idDianacalculate" class="form-control"
+                (selectionChange)="changeValue()" [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.USUARIOS.FORMULARIO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let tipo of arrayTipoActive" [value]='tipo.idDianacalculate'>
+                  {{ tipo.desdianacalculate }}
+                </mat-option>
+              </mat-select>
+              <small *ngIf="mesNoValido.invalid  && mesNoValido.touched" class="text-danger animated fadeIn fast">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                            translate}}</small>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-sm-10 form-group" *ngIf="show">
+          <div role="group">
+            <label class="labelForm"
+              for="dianavalue">{{'MODULES.VALORES_DIANA.FORMULARIO.VALOR_DIANA' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <input formControlName="dianavalue" type="number" class="form-control"
+              [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'" id="dianavalue">
+            <small *ngIf="DianaNoValido.errors?.required  && DianaNoValido.touched" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+
+          </div>
+        </div>
+
+        <div *ngIf="hidden" class="col-md-5 form-group">
+          <div role="group">
+            <label class="labelForm"
+              for="fechaInicio">{{'MODULES.VALORES_DIANA.FORMULARIO.FECHAINICIO' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <mat-form-field style="display: inherit;">
+              <input matInput [matDatepicker]="picker" formControlName="fechaInicio" class="form-control"
+                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" id="fechaInicio" autocomplete="off"
+                style="font-size: 16px;">
+              <mat-datepicker-toggle matSuffix [for]="picker" style="color:#2edad8; width: 18px;">
+              </mat-datepicker-toggle>
+              <mat-datepicker #picker style="color:white !important"></mat-datepicker>
+            </mat-form-field>
+            <small *ngIf="fechaInicioNoValido.invalid  && fechaInicioNoValido.touched"
+              class="text-danger animated fadeIn fast">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+
+        <div *ngIf="hidden" class="col-md-5 form-group">
+          <div role="group">
+            <label class="labelForm"
+              for="fechaInicio">{{'MODULES.VALORES_DIANA.FORMULARIO.FECHAINICIO' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <mat-form-field style="display: inherit;">
+              <input matInput [matDatepicker]="picker" formControlName="fechaFin" class="form-control"
+                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" id="fechaFin" autocomplete="off"
+                style="font-size: 16px;">
+              <mat-datepicker-toggle matSuffix [for]="picker" style="color:#2edad8; width: 18px;">
+              </mat-datepicker-toggle>
+              <mat-datepicker #picker style="color:white !important"></mat-datepicker>
+            </mat-form-field>
+            <small *ngIf="fechaFinNoValido.invalid  && fechaFinNoValido.touched"
+              class="text-danger animated fadeIn fast">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-2 form-group btnActive">
+          <div role="group">
+            <label class="labelForm" for="active">{{'MODULES.VALORES_DIANA.FORMULARIO.ESTADO' | translate}}</label><br>
+            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button *ngIf="!accionEditar" class="boton btnAceptar"
+            type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+          <button *ngIf="accionEditar" class="boton btnAceptar"
+            type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+          <button class="botonCancelar btnCancel" type="button"
+            (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>

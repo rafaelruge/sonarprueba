@@ -1,0 +1,137 @@
+.tb-country td,
+th {
+    width: 25%;
+}
+
+@media(min-width: 320px) {
+    .boxBtnAceptCancel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 24px;
+    }
+    .btnCancel {
+        margin-left: 8px;
+    }
+    .btnCancel,
+    .btnAceptar {
+        width: 76px;
+    }
+    .boxBtnFilter {
+        margin-top: 24px;
+    }
+    .boxBtnCreate {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .btnCreate {
+        width: 70px;
+    }
+    .boxFilter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .filter {
+        width: 80%;
+        margin-left: 4px;
+    }
+}
+
+@media(min-width: 500px) {
+    .filter {
+        width: 60%;
+    }
+}
+
+@media(min-width: 576px) {
+    .btnActive {
+        text-align: center;
+    }
+    .boxBtnCreate {
+        margin: 0;
+        justify-content: flex-start;
+    }
+    .boxFilter {
+        justify-content: flex-end;
+    }
+    .filter {
+        width: 80%;
+    }
+}
+
+@media(min-width: 1200px) {
+    .filter {
+        width: 60%;
+    }
+}
+
+.file-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.file-container img {
+    height: 100px;
+    width: 100px;
+}
+
+.file-container input[type="file"] {
+    display: none;
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.inputfile+label {
+    max-width: 80%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 5px 10px 5px 5px;
+}
+
+.iborrainputfile {
+    font-size: 14px;
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+
+/* style 1 */
+
+.inputfile-1+label {
+    color: #fff;
+    background-color: #6b4b8b;
+    border-radius: 3px;
+}
+
+.inputfile-1:focus+label,
+.inputfile-1.has-focus+label,
+.inputfile-1+label:hover {
+    background-color: #6b4b8b;
+}
+
+.abajo-derecha:before {
+    content: "";
+    position: absolute;
+    bottom: -17px;
+    left: 270px;
+    width: 0px;
+    height: 0;
+    border-width: 8px 8px 8px 8px;
+    border-style: solid;
+    border-color: #aac2f4 transparent transparent;
+}

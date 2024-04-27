@@ -1,0 +1,152 @@
+<div class="container">
+    <div class="abs-center">
+        <div class="col-12 mt-5 text-center titulo">REGISTRO USUARIOS</div>
+        <div class="col-12 mt-5">
+            <form [formGroup]="formaRegistroParametro" (ngSubmit)="creaUsuario()">
+                <div class="form-row">
+                    <div class="col-md-4 mb-4 form-group">
+                        <div role="group">
+                            <label for="nombres">Nombres</label><span> *</span>
+                            <input formControlName="nombres" type="text" class="form-control styleForm" id="nombres"
+                                placeholder="Nombres">
+                            <small *ngIf="nombreNoValido.invalid  && nombreNoValido.touched"
+                                class="text-danger animated fadeIn">Campo requerido</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4 form-group">
+                        <div role="group">
+                            <label for="apellidos">Apellidos</label><span> *</span>
+                            <input formControlName="apellidos" type="text" class="form-control styleForm" id="apellidos"
+                                placeholder="Apellidos">
+                            <small *ngIf="apellidoNoValido" class="text-danger animated fadeIn">Campo requerido</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4 form-group">
+                        <div role="group">
+                            <label for="estado">Nombre usuario</label><span> *</span>
+                            <input formControlName="nombreUsuario" type="text" class="form-control styleForm"
+                                id="nombreUsuario" placeholder="Nombre Usuario">
+                            <small *ngIf="nombreUsuarioNoValido" class="text-danger animated fadeIn">Campo
+                                requerido</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-4 form-group">
+                        <div role="group">
+                            <label for="tipoDocumento">Tipo Documento</label><span> *</span>
+                            <ngx-select formControlName="tipoDocumento" [allowClear]="true" [items]="listaDocs"
+                                optionValueField="idparametro" optionTextField="desparam">
+                            </ngx-select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 form-group">
+                        <div role="group">
+                            <label for="numeroDocumento">N° Documento </label><span> *</span>
+                            <input formControlName="numeroDocumento" type="text" class="form-control styleForm"
+                                id="numeroDocumento" placeholder="Número Documento">
+                            <small *ngIf="numeroDocumentoNoValido" class="text-danger animated fadeIn">Campo
+                                requerido</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-4 form-group">
+                        <div role="group">
+                            <label for="celular">Celular</label><span> *</span>
+                            <input formControlName="celular" type="text" class="form-control styleForm" id="celular"
+                                placeholder="Celular">
+                            <small *ngIf="celularNoValido" class="text-danger animated fadeIn">Campo requerido</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 form-group">
+                        <div role="group">
+                            <label for="fechaNacimiento">Fecha nacimiento</label><span> *</span>
+                            <input formControlName="fechaNacimiento" type="date" class="form-control styleForm"
+                                id="fechaNacimiento">
+                            <small *ngIf="fechaNacimientoNoValido" class="text-danger animated fadeIn">Campo
+                                requerido</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-3 mb-3 form-group">
+                        <div role="group">
+                            <label for="tarjetaProfesional">Tarjeta profesional</label><span> *</span>
+                            <input formControlName="tarjetaProfesional" type="text" class="form-control styleForm"
+                                id="tarjetaProfesional" placeholder="Tarjeta Profesional">
+                            <small *ngIf="tarjetaProfesionalNoValido" class="text-danger animated fadeIn">Campo
+                                requerido</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4 form-group">
+                        <div role="group">
+                            <label for="correoElectronico">Correo Electrónico</label><span> *</span>
+                            <input formControlName="correoElectronico" type="text" class="form-control styleForm"
+                                id="correoElectronico" placeholder="Correo Electrónico">
+                            <small *ngIf="correoElectronicoNoValido" class="text-danger animated fadeIn">Campo
+                                requerido</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-4 form-group">
+                        <div role="group">
+                            <label for="typeid">Tipo usuario</label><span> *</span>
+                            <input formControlName="typeid" type="text" class="form-control usuario" id="typeid"
+                                placeholder="tipo usuario">
+
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 form-group">
+                        <div role="group">
+                            <label for="rol">Rol</label><span> *</span>
+                            <ngx-select formControlName="rol" [allowClear]="true" [items]="listaRoles"
+                                optionValueField="rolid" optionTextField="namerol">
+                            </ngx-select>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 mb-4 form-group">
+                        <div role="group">
+                            <label for="sede">Sede</label><span> *</span>
+                            <ngx-select formControlName="sede" [allowClear]="true" [items]="listaSedes"
+                                optionValueField="idheadquarters" optionTextField="desheadquarters">
+                            </ngx-select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-4 form-group">
+                        <div role="group">
+                            <label for="Estado">Estado</label><span> *</span><br>
+                            <ui-switch formControlName="estado" color="#D2D0D0" switchColor="#6B4B8B"></ui-switch>
+                            <small *ngIf="estadoNoValido" class="text-danger animated fadeIn">Campo requerido</small>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="form-row">
+                    <div class="col-md-3 mb-4 form-group">
+                        <div role="group">
+                            <label for="fechaCreacion">Fecha creación</label>
+                            <input formControlName="fechaCreacion" type="date" class="form-control styleForm"
+                                id="fechaCreacion">
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 form-group">
+                        <div role="group">
+                            <label for="fechaExpiracion">Fecha expiración </label><span> *</span>
+                            <input formControlName="fechaExpiracion" type="date" class="form-control styleForm"
+                                id="fechaExpiracion">
+                            <small *ngIf="fechaExpiracionNoValido" class="text-danger animated fadeIn">Campo
+                                requerido</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 form-group text-right">
+                        <button class="col-md-4 mt-4" type="submit">Crear</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

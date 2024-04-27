@@ -1,0 +1,10 @@
+.activo{
+    /* background: rgb(199, 195, 195); */
+    background: red !important;
+    border: 2px solid red !important;
+}
+
+.backHover {
+  background: red !important;
+  border: 2px solid red !important;
+}

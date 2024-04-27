@@ -1,0 +1,174 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'criteriosAceptacion.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+          <div class="col-12 mb-5 mt-5 text-center titulo"> {{'MODULES.CONSOLIDADORESULTADOS.TITLE' | translate}}
+          </div>
+          <div class="col-md-11 mb-3">
+
+            <form [formGroup]="formaBuscarDatos" (ngSubmit)="loadData()">
+              <div class="form-row justify-content-center">
+
+                <div class="col-md-3 col-lg-3 form-group">
+                  <div role="group" style="width: 85%;">
+                    <mat-label for="cliente"
+                    class="labelForm">{{'MODULES.CONSOLIDADORESULTADOS.FORMULARIO.CLIENTES' | translate}}<span
+                    class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="sf-2">
+                      <mat-select formControlName="cliente" class="form-control styleForm" style="margin-top: -1.2rem">
+                        <mat-option value="">{{'MODULES.CONSOLIDADORESULTADOS.FORMULARIO.SELECCIONE' | translate}}
+                        </mat-option>
+                        <mat-option *ngFor="let client of clientes" [value]="client.Idclient" [matTooltip]="client.Name">
+                          {{ client.Name | titlecase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <small *ngIf="clienteNoValido.invalid  && clienteNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+                <div class="col-md-3 col-lg-3 form-group">
+                  <div role="group" style="width: 85%;">
+                    <mat-form-field style="display: inherit;padding-top: 5px;">
+                      <mat-label for="fechadesde" class="labelForm">{{'MODULES.CONSOLIDADORESULTADOS.FORMULARIO.FECHADESDE' | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <input matInput [matDatepicker]="picker" formControlName="fechadesde"
+                        class="form-control styleForm" id="fechadesde"
+                        style="background-image: none !important;font-size: 1rem">
+                      <mat-datepicker-toggle matSuffix [for]="picker" style="color:#2edad8; width: 18px;">
+                      </mat-datepicker-toggle>
+                      <mat-datepicker #picker style="color:white !important"></mat-datepicker>
+                    </mat-form-field>
+                    <small *ngIf="fechadesdeNoValido.invalid  && fechadesdeNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+
+                <div class="col-md-3 col-lg-3 form-group">
+                  <div role="group" style="width: 85%;">
+                    <mat-form-field style="display: inherit;padding-top: 5px;">
+                      <mat-label for="fechahasta" class="labelForm">{{'MODULES.CONSOLIDADORESULTADOS.FORMULARIO.FECHAHASTA' | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <input matInput [matDatepicker]="picker2" formControlName="fechahasta"
+                        class="form-control styleForm" id="fechaNacimiento"
+                        style="background-image: none !important;font-size: 1rem">
+                      <mat-datepicker-toggle matSuffix [for]="picker2" style="color:#2edad8; width: 18px;">
+                      </mat-datepicker-toggle>
+                      <mat-datepicker #picker2 style="color:white !important"></mat-datepicker>
+                    </mat-form-field>
+                    <small *ngIf="fechahastaNoValido.invalid  && fechahastaNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+
+                  </div>
+                </div>
+                <div class="col-md-3 col-lg-3 form-group">
+                  <div role="group" style="width: 85%;">
+                    <mat-label for="programa" class="labelForm">{{'MODULES.CONSOLIDADORESULTADOS.FORMULARIO.PROGRAMA' | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="sf-2">
+                      <mat-select disableOptionCentering formControlName="programa" class="form-control styleForm"
+                        style="margin-top: -1.2rem">
+                        <mat-option value="">{{'MODULES.CONSOLIDADORESULTADOS.FORMULARIO.SELECCIONE' | translate}}
+                        </mat-option>
+                        <mat-option *ngFor="let program of programas" id="marker" [value]="program.idProgram" [matTooltip]="program.desprogram | titlecase">
+                          {{ program.desprogram | titlecase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <small *ngIf="programaNoValido.invalid  && programaNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                                        translate}}</small>
+                  </div>
+                </div>
+                <div class="col-12 boxBtnSearch">
+                  <button class="boton btnSearch"
+                    type="submit">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.BOTON' | translate}}</button>
+                </div>
+
+              </div>
+
+            </form>
+
+          </div>
+
+          <div class="col col-lg-11" *ngIf="show">
+            <div class="row">
+              <div class="col-sm-5 form-group med">
+              </div>
+
+
+              <div class="col-sm-7 form-group med1 text-right">
+                <i class="fa fa-search mr-2" style="font-size: 20px;"></i>
+                <mat-form-field>
+                  <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                  <input matInput (keyup)="applyFilter($event)"
+                    placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div class="col col-lg-11 animate__animated animate__fadeIn fast" [hidden]="!show">
+
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+              <ng-container matColumnDef="programa">
+                <th style="width: 345px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONSOLIDADORESULTADOS.COLUMNS.PROGRAMA' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.desprogram}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="ronda">
+                <th style="width: 345px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONSOLIDADORESULTADOS.COLUMNS.RONDA' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.nroround}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="nummuestras">
+                <th style="width: 345px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONSOLIDADORESULTADOS.COLUMNS.NUMEROMUESTRA' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.nrosample}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="muestra">
+                <th style="width: 345px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONSOLIDADORESULTADOS.COLUMNS.MUESTRA' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.serialsample}} </td>
+              </ng-container>
+
+
+
+              <ng-container matColumnDef="analito">
+                <th style="width: 345px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONSOLIDADORESULTADOS.COLUMNS.ANALITO' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.desanalytes}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="resultado">
+                <th style="width: 345px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONSOLIDADORESULTADOS.COLUMNS.RESULTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.result}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="date">
+                <th style="width: 345px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONSOLIDADORESULTADOS.COLUMNS.FECHAREPORTE' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.date | date: 'dd-MM-yyyy' }} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>

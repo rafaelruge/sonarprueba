@@ -1,0 +1,88 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+                <div class="col-12 d-flex justify-content-center">
+                    <img class="imageSobreBorde" [src]="'ICT.png' | imageCdn">
+                </div>
+
+                <!-- <div class="row justify-content-center mt-4">
+                    <div class="col-12 titulo">{{'MODULES.REPORTEANALITOSALERTA.TITLE' | translate}}</div>
+                </div> -->
+                <br>
+                <br>
+
+                <div class="row justify-content-center mx-auto mt-5">
+                    <div class="col text-center">
+                        <div class="btn-group btn-group-toggle d-flex justify-content-around" ngbRadioGroup name="radioBasic" [(ngModel)]="radioSelect">
+                            <label ngbButtonLabel class="btn btn-image monBtn-competencia" [ngClass]="{ 'active': radioSelect == 1 }">
+                              <input ngbButton type="radio" [value]="1"> 
+                              <span class="btn-text">Indicadores de Competencia Técnica</span>
+                            </label>
+                            <label ngbButtonLabel class="btn btn-image monBtn-consolidado" [ngClass]="{ 'active': radioSelect == 2 }">
+                              <input ngbButton type="radio" [value]="2"> 
+                              <span class="btn-text">Reporte Consolidado ICT</span>
+                            </label>
+                            <label ngbButtonLabel class="btn btn-image monBtn-alerta" [ngClass]="{ 'active': radioSelect == 3 }">
+                              <input ngbButton type="radio" [value]="3"> 
+                              <span class="btn-text">Reporte de Analitos con alerta</span>
+                            </label>
+                            <label ngbButtonLabel class="btn btn-image monBtn-alerta" [ngClass]="{ 'active': radioSelect == 4 }">
+                              <input ngbButton type="radio" [value]="4"> 
+                              <span class="btn-text">Reporte de Analitos cualitativos</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row justify-content-center mx-auto mt-5">
+
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3 text-center">
+                        <button type="button" class="btn btn-image monBtn">
+                            <span class="btn-text">Indicadores de Competencia Técnica o ICT</span>
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3 text-center">
+                        <button type="button" class="btn btn-image monBtn">
+                            <span class="btn-text">Reporte Consolidado ICT</span>
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3 text-center">
+                        <button type="button" class="btn btn-image monBtn">
+                            <span class="btn-text">Reporte de Analitos con alerta</span>
+                        </button>
+                    </div>
+
+
+                </div> -->
+
+                <!-- loader -->
+                <div class="row" *ngIf="loader">
+                    <div class="col-12 boxCargador">
+                        <div class="spinner-border cargador" role="status"></div>
+                    </div>
+                </div>
+
+                <!-- Llama los componentes -->
+                <div class="row animate__animated animate__fadeIn" *ngIf="radioSelect === 1">
+                    <div class="col">
+                        <app-indicadores-competencia-tecnica [flagFromParent]="hideElemts"></app-indicadores-competencia-tecnica>
+                    </div>
+                </div>
+                <div class="row animate__animated animate__fadeIn" *ngIf="radioSelect === 2">
+                    <div class="col">
+                        <app-reporte-consolidado-ict [flagFromParent]="hideElemts"></app-reporte-consolidado-ict>
+                    </div>
+                </div>
+                <div class="row animate__animated animate__fadeIn" *ngIf="radioSelect === 3">
+                    <div class="col">
+                        <app-reporte-analitos-alerta [flagFromParent]="hideElemts"></app-reporte-analitos-alerta>
+                    </div>
+                </div>
+                <div class="row animate__animated animate__fadeIn" *ngIf="radioSelect === 4">
+                    <div class="col">
+                        <app-reporte-analito-cualitativo></app-reporte-analito-cualitativo>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

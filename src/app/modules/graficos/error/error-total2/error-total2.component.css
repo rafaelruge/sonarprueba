@@ -1,0 +1,87 @@
+.error-2 {
+    max-width: 1040px !important;
+    padding: 8px;
+}
+
+
+/******************** MEDIA BREAKING POINTS *************************/
+
+
+/*=============================================
+PORTATIL 1366
+=============================================*/
+
+@media (max-width:1499px) and (min-width:1200px) {
+    .flex2 {
+        margin-bottom: 12px !important;
+    }
+    .tituloModal {
+        margin-top: 2px !important;
+    }
+}
+
+
+/*=============================================
+TABLET HORIZONTAL (LG revisamos en 1024px)
+=============================================*/
+
+@media (max-width:1199px) and (min-width:992px) {
+    .flex2 {
+        margin-bottom: 12px !important;
+    }
+    .error-2 {
+        max-width: 610px !important;
+        overflow-x: scroll !important;
+    }
+    .tituloModal {
+        margin-top: 2px !important;
+    }
+}
+
+
+/*---------------------------------------------------------------------*/
+
+
+/*=============================================
+TABLET VERTICAL (MD revisamos en 768px)
+=============================================*/
+
+@media (max-width:991px) and (min-width:768px) {
+    .error-2 {
+        max-width: 660px !important;
+        overflow-x: scroll !important;
+    }
+}
+
+
+/*---------------------------------------------------------------------*/
+
+
+/*=============================================
+MÓVIL HORIZONTAL (SM revisamos en 576px)
+=============================================*/
+
+@media (max-width:767px) and (min-width:576px) {
+    .error-2 {
+        max-width: 470px !important;
+        overflow-x: scroll !important;
+    }
+}
+
+
+/*---------------------------------------------------------------------*/
+
+
+/*=============================================
+MOVIL VERTICAL (revisamos en 320px)
+=============================================*/
+
+@media screen and (max-width:575px) {
+    .error-2 {
+        max-width: 390px !important;
+        overflow-x: scroll !important;
+    }
+}
+
+
+/******************** MEDIA MEDIA BREAKING POINTS  END *************************/

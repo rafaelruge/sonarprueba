@@ -1,0 +1,300 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'reglasWestgard.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> {{'MODULES.CONFIGURACIONWESTGARD.TITLE' | translate}}</div>
+
+          <div class="col-11 boxMainFilters">
+
+            <form [formGroup]="formaFiltroConfigWestgard">
+
+              <div class="form-row">
+
+                <div class="col-md-6 col-lg-3 form-group">
+                  <div role="group">
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm" for="numLaboratorio">
+                        {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SEDES' | translate}}<span
+                          class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="numLaboratorio"
+                        class="form-control styleForm" [disabled]="habilitarSede">
+                        <mat-option value="">
+                          {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SELECCIONE' | translate}}
+                        </mat-option>
+                        <mat-option *ngFor="let sede of sedesActive" [value]="sede.idheadquarters">
+                          {{ sede.desheadquarters | titlecase }}</mat-option>
+                      </mat-select>
+                      <small *ngIf="numLaboratorioNoValido.invalid  && numLaboratorioNoValido.touched"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" for="seccion" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SECCION' | translate}}
+                      <span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto01" formControlName="seccion"   #seccionPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto01="matAutocomplete" (optionSelected)="cambiarSeccion(seccionPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsSections | async);" [value]="option.namesection" [matTooltip]="option.namesection | NombreSeccion">
+                              {{option.namesection | NombreSeccion}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="seccionNoValido.invalid  && seccionNoValido.touched"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                                            translate}}</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" for="numMaterialControl" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.NUMMATERIALCONTROL' | translate}}<span
+                        class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto02" formControlName="numMaterialControl"  #contmatPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto02="matAutocomplete" (optionSelected)="cambiarControlMaterial(contmatPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsControlmaterial | async);" [value]="option.descontmat" [matTooltip]="option.descontmat | NombreControlmaterial">
+                              {{option.descontmat | NombreControlmaterial}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="numMaterialControlNoValido.invalid  && numMaterialControlNoValido.touched"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" for="numLote" style="font-size: 17px !important; ">
+                      {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.NUMLOTE' | translate}}
+                      <span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto03" formControlName="numLote"  #lotPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto03="matAutocomplete" (optionSelected)="lotesPre(lotPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsLots | async);" [value]="option.Numlot" [matTooltip]="option.Numlot | nombreLote">
+                              {{option.Numlot | nombreLote}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="numLoteNoValido.invalid  && numLoteNoValido.touched"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="form-row animate__animated animate__fadeIn fast" *ngIf="tests.length !== 0">
+
+                <div class="col-lg-12 p-0 form-group">
+                  <div role="group">
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm" for="tests">
+                        {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.TEST' | translate}}<span
+                          class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering class="form-control styleForm"
+                        [ngClass]="{ 'is-valid': verBtn }" (selectionChange)="setTest( $event.value )"
+                        formControlName="idtest">
+                        <mat-option value="">
+                          {{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SELECCIONE' | translate}}
+                        </mat-option>
+                        <mat-option *ngFor="let test of tests" [value]="test.IdTest"> {{ test.Desanalytes | titlecase }} |
+                          {{ test.Desunits }} | {{ test.Desmethods | titlecase }} | {{ test.Desreagents | titlecase }} |
+                          {{ test.NameAnalyzer | titlecase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-3 boxBtnSearch">
+                  <button class="boton btnSearch animate__animated animate__fadeIn fast" type="button"
+                    (click)="loadData()" *ngIf="verBtn">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.BOTON' | translate}}</button>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+
+          <div class="col-11 col-xl-9" [hidden]="!ver" style="margin-bottom: 16px;">
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+              <ng-container matColumnDef="code">
+                <th style="width: 170px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGURACIONWESTGARD.COLUMNS.CODE' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Code}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="notice">
+                <th style="width: 170px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.CONFIGURACIONWESTGARD.COLUMNS.NOTICE' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Notice" (change)="actualizarEstadoWestgard(row, 1)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="reject">
+                <th style="width: 170px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.CONFIGURACIONWESTGARD.COLUMNS.REJECT' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Reject" (change)="actualizarEstadoWestgard(row,2)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="disabled">
+                <th style="width: 170px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.CONFIGURACIONWESTGARD.COLUMNS.DISABLED' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Disabled" (change)="actualizarEstadoWestgard(row,3)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="intracorrida">
+                <th style="width: 140px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.CONFIGURACIONWESTGARD.COLUMNS.INTRACORRIDA' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Intracorrida" (change)="actualizarEstadoWestgard(row,5)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="intercorrida">
+                <th style="width: 160px; border-radius: 0px 8px 0px 0px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.CONFIGURACIONWESTGARD.COLUMNS.INTERCORRIDA' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Intercorrida" (change)="actualizarEstadoWestgard(row,4)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            </table>
+            <mat-paginator [pageSize]="4" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page"></mat-paginator>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<ng-template #templateRegistroConfiguracionWestgard>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="col flex2">
+
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+    </div>
+    <form [formGroup]="formaConfiguracionWestgard" (ngSubmit)="crearEditarConfiguracionWestgard()">
+      <div class="form-row">
+        <div class="col-md-6 mb-4 form-group">
+          <div role="group">
+            <label for="idwesgardrules">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.WESTGARD' |
+                            translate}}<span class="colorAsterisco"> *</span></label>
+            <select formControlName="idwesgardrules" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+              <option value="">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.SELECCIONE' | translate}}
+              </option>
+              <option *ngFor="let Westgard of listaWestgard" [value]="Westgard.idwesgardrules"> {{
+                                Westgard.code }}
+            </select>
+            <small *ngIf="idwesgardrulesNoValido.invalid  && idwesgardrulesNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-6 mb-1 form-group">
+          <div role="group">
+            <label for="idtest">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.IDTEST' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <select formControlName="idtest" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+              <option value="">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.SELECCIONE' | translate}}
+              </option>
+              <option *ngFor="let test of listaGestionTest" [value]="test.idTest"> {{ test.level }}
+            </select>
+            <small *ngIf="idTestNoValido.invalid  && idTestNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-4 mb-1 form-group">
+          <div role="group">
+            <label for="notice">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.NOTICE' |
+                            translate}}</label><br>
+            <mat-slide-toggle formControlName="notice"></mat-slide-toggle>
+          </div>
+        </div>
+        <div class="col-md-4 mb-1 form-group">
+          <div role="group">
+            <label for="reject">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.REJECT' |
+                            translate}}</label><br>
+            <mat-slide-toggle formControlName="reject"></mat-slide-toggle>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-1 form-group">
+          <div role="group">
+            <label for="disabled">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.DISABLED' |
+                            translate}}</label><br>
+            <mat-slide-toggle formControlName="disabled"></mat-slide-toggle>
+          </div>
+        </div>
+        <div class="col-md-4 mb-1 form-group">
+          <div role="group">
+            <label for="intercorrida">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.INTERCORRIDA' |
+                            translate}}</label><br>
+            <mat-slide-toggle formControlName="intercorrida"></mat-slide-toggle>
+          </div>
+        </div>
+        <div class="col-md-4 mb-1 form-group">
+          <div role="group">
+            <label for="intracorrida">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.INTRACORRIDA' |
+                            translate}}</label><br>
+            <mat-slide-toggle formControlName="intracorrida"></mat-slide-toggle>
+          </div>
+        </div>
+        <div class="col-md-4 mb-1 form-group">
+          <div role="group">
+            <label for="active">{{'MODULES.CONFIGURACIONWESTGARD.FORMULARIO.ESTADO' |
+                            translate}}</label><br>
+            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-12 mb-1 form-group text-center">
+          <button *ngIf="!accionEditar" class="col-4 col-md-3 mr-1 boton"
+            type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+          <button *ngIf="accionEditar" class="col-4 col-md-3 mr-1 boton"
+            type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+          <button class="col-4 col-md-3 ml-1 botonCancelar" type="button"
+            (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>

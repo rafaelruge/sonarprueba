@@ -1,0 +1,309 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'Lote-MaterialControl.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo">{{'MODULES.GESTIONLOTMATCONTROL.TITLE' | translate}}</div>
+
+          <div class="col-11 col-lg-8 col-xl-7">
+
+            <div class="row boxBtnFilter">
+
+              <div class="col-12 col-sm-4 boxBtnCreate form-group">
+                <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                  (click)="openModalGestionLotMatControl(templateGestionLotMatControl, '')">{{'MODULES.GESTIONLOTMATCONTROL.BOTONCREAR'
+                  | translate}}</button>
+              </div>
+
+
+              <div class="col-12 col-sm-8 boxFilter">
+                <i class="fa fa-search"></i>
+                <mat-form-field class="filter">
+                  <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                  <input matInput (keyup)="applyFilter($event)"
+                    placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-11 col-lg-8 col-xl-7">
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+              <ng-container matColumnDef="idlot">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.GESTIONLOTMATCONTROL.COLUMNS.IDLOT' | translate}} </th>
+                <td mat-cell *matCellDef="let row">{{row.Numlot}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="idcontrolmaterial">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.GESTIONLOTMATCONTROL.COLUMNS.IDCONTROLMATERIAL' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Descontmat}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="active">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.GESTIONLOTMATCONTROL.COLUMNS.ACTIVE' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Active" (change)="actualizarGestionLotMatControl(row)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="editar">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.GESTIONLOTMATCONTROL.COLUMNS.EDITAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <img [src]="'imagenEditar.png' | imageCdn"
+                    (click)="openModalGestionLotMatControlEdit(templateGestionLotMatControlEdit, row)" style="cursor: pointer;">
+
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="borrar">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.GESTIONLOTMATCONTROL.COLUMNS.ELIMINAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row let i = index;">
+                  <img [src]="'imagenEliminar.png' | imageCdn"
+                    (click)=" eliminarGestionLotMatControl(row.IdLotControlMaterial)" style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+              </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #templateGestionLotMatControl>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <form [formGroup]="formaGestionLotMatControl" (ngSubmit)="crearEditarGestionLotMatControl()">
+      <div class="form-row">
+        <div class="col-sm-6 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label for="idLot" class="matLabelForm">
+                {{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.IDLOT' | translate}}<span class="colorAsterisco"> *</span>
+              </mat-label>
+              <mat-select disableOptionCentering formControlName="idLot" class="form-control"
+                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'"
+                (change)="onSelectControlMat($event.target.value)">
+                <mat-option value="">{{'MODULES.USUARIOS.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                <mat-option *ngFor="let lot of lotsActive" [value]="lot.idLot"> {{ lot.numlot }}
+                </mat-option>
+              </mat-select>
+              <small *ngIf="lotNoValido.invalid  && lotNoValido.touched"
+                class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            </mat-form-field> -->
+            <mat-label for="idLot" class="matLabelForm" style="font-size: 16px !important;">
+              {{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.IDLOT' | translate}}<span class="colorAsterisco"> *</span>
+            </mat-label>
+            <mat-form-field class="serial-tamanio " style="width: 230px !important;">
+              
+              <input type="text" matInput [matAutocomplete]="autolotcreate" formControlName="idLot"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autolotcreate="matAutocomplete">
+                <mat-option *ngFor="let lots of filteredOptionsLotsCreate | async" [value]="lots.numlot">
+                  {{ lots.numlot | titlecase }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-sm-6 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label for="idControlMaterial" class="matLabelForm">
+                {{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.IDCONTROLMATERIAL' | translate}}
+                <span class="colorAsterisco"> *</span>
+              </mat-label>
+              <mat-select disableOptionCentering formControlName="idControlMaterial" class="form-control"
+                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.USUARIOS.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                <mat-option *ngFor="let conmat of controlmaterialActive" [value]="conmat.idControlMaterial">
+                  {{ conmat.descontmat }}
+                </mat-option>
+              </mat-select>
+              <small *ngIf="controlMaterialNoValido.invalid  && controlMaterialNoValido.touched"
+                class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            </mat-form-field> -->
+            <mat-label for="idControlMaterial" class="matLabelForm" style="font-size: 16px !important;">
+              {{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.IDCONTROLMATERIAL' | translate}}
+              <span class="colorAsterisco"> *</span>
+            </mat-label>
+            <mat-form-field class="serial-tamanio " style="width: 230px !important;">
+              
+              <input type="text" matInput [matAutocomplete]="autocontcreate" formControlName="idControlMaterial"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autocontcreate="matAutocomplete">
+                <mat-option *ngFor="let conmat of filteredOptionsContmatCreate | async" [value]="conmat.descontmat">
+                  {{ conmat.descontmat | titlecase }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="controlMaterialNoValido.invalid  && controlMaterialNoValido.touched"
+                class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-sm-6 form-group">
+          <div role="group">
+            <label for="active" class="labelForm">{{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.ACTIVE' |
+              translate}}</label><br>
+            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button [disabled]="desactivar" class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' |
+            translate}}</button>
+          <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' |
+            translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #templateGestionLotMatControlEdit>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <form [formGroup]="formLotContmatEdit" (ngSubmit)="crearEditarGestionLotMatControlEdit()">
+      <div class="form-row">
+        <div class="col-sm-6 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label for="idLot" class="matLabelForm">
+                {{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.IDLOT' | translate}}<span class="colorAsterisco"> *</span>
+              </mat-label>
+              <mat-select disableOptionCentering formControlName="idLot" class="form-control"
+                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'"
+                (change)="onSelectControlMat($event.target.value)">
+                <mat-option value="">{{'MODULES.USUARIOS.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                <mat-option *ngFor="let lot of lotsActive" [value]="lot.idLot"> {{ lot.numlot }}
+                </mat-option>
+              </mat-select>
+              <small *ngIf="lotNoValido.invalid  && lotNoValido.touched"
+                class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            </mat-form-field> -->
+            <mat-label for="idLot" class="matLabelForm">
+              {{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.IDLOT' | translate}}<span class="colorAsterisco"> *</span>
+            </mat-label>
+            <mat-form-field class="serial-tamanio ">
+              <input type="text" matInput [matAutocomplete]="autolot" formControlName="idLot"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autolot="matAutocomplete">
+                <mat-option *ngFor="let lotes of filteredOptionslotsEdit | async"  [value]="lotes.numlot">
+                  {{ lotes.numlot }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-sm-6 form-group">
+          <div role="group">
+            <!-- <mat-form-field class="sf-2">
+              <mat-label for="idControlMaterial" class="matLabelForm">
+                {{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.IDCONTROLMATERIAL' | translate}}
+                <span class="colorAsterisco"> *</span>
+              </mat-label>
+              <mat-select disableOptionCentering formControlName="idControlMaterial" class="form-control"
+                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.USUARIOS.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                <mat-option *ngFor="let conmat of controlmaterialActive" [value]="conmat.idControlMaterial">
+                  {{ conmat.descontmat }}
+                </mat-option>
+              </mat-select>
+              <small *ngIf="controlMaterialNoValido.invalid  && controlMaterialNoValido.touched"
+                class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            </mat-form-field> -->
+            <mat-label for="idControlMaterial" class="matLabelForm">
+              {{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.IDCONTROLMATERIAL' | translate}}
+              <span class="colorAsterisco"> *</span>
+            </mat-label>
+            <mat-form-field class="serial-tamanio ">
+              <input type="text" matInput [matAutocomplete]="autocontmat" formControlName="idControlMaterial"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autocontmat="matAutocomplete">
+                <mat-option *ngFor="let contmat of filteredOptionsControlmaterialEdit | async"  [value]="contmat.descontmat">
+                  {{ contmat.descontmat }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-sm-6 form-group">
+          <div role="group">
+            <label for="active" class="labelForm">{{'MODULES.GESTIONLOTMATCONTROL.FORMULARIO.ACTIVE' |
+              translate}}</label><br>
+            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button [disabled]="desactivar" class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' |
+            translate}}</button>
+          <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' |
+            translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

@@ -1,0 +1,481 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+                <div class="contDates">
+                    <form [formGroup]="formDates" autocomplete="off" class="contForm">
+                        <!-- desde -->
+                        <div role="group">
+                            <mat-form-field style="width: 100%;" class="stylePicker">
+                                <mat-label class="labelForm">{{'MODULES.REPORTECONSOLIDADOICT.DESDE' | translate}}<span
+                                        class="colorAsterisco"> *</span></mat-label>
+                                <input matInput [matDatepicker]="picker" class="form-control styleForm"
+                                    style="background-image: none !important;font-size: 1rem" formControlName="desde"
+                                    (dateChange)="observeFechas('desde')">
+                                <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker"
+                                    style="color:#2edad8; width: 18px;">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker style="color:white !important"></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- hasta -->
+                        <div role="group">
+                            <mat-form-field style="width: 100%;"  class="stylePicker">
+                                <mat-label class="labelForm">{{'MODULES.REPORTECONSOLIDADOICT.HASTA' | translate}}
+                                    <span class="colorAsterisco"> *</span>
+                                </mat-label>
+                                <input matInput [matDatepicker]="picker1" class="form-control styleForm"
+                                    style="background-image: none !important;font-size: 1rem" formControlName="hasta"
+                                    (dateChange)="observeFechas('hasta')">
+                                <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker1"
+                                    style="color:#2edad8; width: 18px;">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker1 style="color:white !important"></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </form>
+
+                        <form [formGroup]="formOne" autocomplete="off" class="contForm">
+
+                            <!-- Sedes -->
+                            <div role="group">
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.SEDE' | translate}}<span class="colorAsterisco">
+                                            *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="sedes" multiple>
+                                        <mat-option value="" (click)="selectNone('sedes', 'formOne')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" (click)="selectedAllheadquaerter('sedes')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLSEDES' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let sede of sedes" [value]="sede.idheadquarters"
+                                            [matTooltip]="sede.desheadquarters" (click)="selectedHeadquarter0('sedes')">
+                                            {{sede.desheadquarters}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+    
+                            <!-- Secciones -->
+                            <div role="group" class="w20">
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.SECCION' | translate}}<span class="colorAsterisco">
+                                            *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="secciones" multiple>
+                                        <mat-option value="" (click)="selectNone('secciones', 'formOne')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" *ngIf="vertodassecciones"
+                                            (click)="selectedAllsection('secciones')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLSECCIONES' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let seccion of secciones_Tmp"
+                                            [value]="seccion.idsection" [matTooltip]="seccion.namesection" (click)="selectedsection('secciones')">
+                                            {{seccion.namesection}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+    
+                            <!-- Equipos -->
+                            <div role="group" class="mr-3 w20">
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.EQUIPO' | translate}}<span class="colorAsterisco">
+                                            *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="equipos" multiple>
+                                        <mat-option value="" (click)="selectNone('equipos', 'formOne')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" *ngIf="vertodosequipos"
+                                            (click)="selectedAllanalyzer('equipos')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLEQUIPOS' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let equipo of equipos" [value]="equipo.idAnalyzer"
+                                            [matTooltip]="equipo.nameAnalyzer" (click)="selectedanalyzer('equipos')">
+                                            {{equipo.nameAnalyzer}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+    
+                        </form>
+
+                        <form [formGroup]="formTwo" autocomplete="off" class="contForm">
+                            <!-- Analitos -->
+                            <div role="group" class="mr-3 w20">
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.ANALITOS' | translate}}<span
+                                            class="colorAsterisco"> *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="analitos" multiple>
+                                        <mat-option value="" (click)="selectNone('analitos', 'formTwo')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" *ngIf="vertodosanalitos"
+                                            (click)="selectedAllanalyte('analitos')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLANALITOS' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let analito of analitos" [value]="analito.idanalytes"
+                                            [matTooltip]="analito.desanalytes" (click)="selectedanalyte('analitos')">
+                                            {{analito.desanalytes}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+    
+                            <!-- Lotes -->
+                            <div role="group">
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.LOTE' | translate}}<span class="colorAsterisco">
+                                            *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="lotes" multiple>
+                                        <mat-option value="" (click)="selectNone('lotes', 'formTwo')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" (click)="selectAll('lotes', 'formTwo')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLOTES' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let lote of lotes" [value]="lote.idLot"
+                                            [matTooltip]="lote.numlot" (click)="selectOne('lotes', 'formTwo')">
+                                            {{lote.numlot}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+    
+                            <!-- Tipo -->
+                            <div role="group">
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.TIPO' | translate}}<span class="colorAsterisco">
+                                            *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="reportes" multiple>
+                                        <mat-option value="" (click)="selectNone('reportes', 'formTwo')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" (click)="selectAll('reportes', 'formTwo')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.TIPO6' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let reporte of reportes" [value]="reporte.value"
+                                            (click)="selectOne('reportes', 'formTwo')">
+                                            {{reporte.item}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+    
+                        </form>
+    
+                   
+
+                        <p *ngIf="verFormAdicional" class="animate__animated animate__fadeIn fast textoAlertaCliente">
+                            {{'MODULES.REPORTEANALITOSALERTA.TEXTO' | translate}}</p>
+
+                            <form [formGroup]="formThree" autocomplete="off" class="contForm" *ngIf="formAdicional">
+
+                                <!-- ict -->
+                                <div role="group">
+                                    <mat-form-field class="sf-2">
+                                        <mat-label class="matLabelForm">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ICT' | translate}}<span class="colorAsterisco">
+                                                *</span>
+                                        </mat-label>
+                                        <mat-select disableOptionCentering class="form-control styleForm" formControlName="ict">
+                                            <mat-option value="">
+                                                {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                            </mat-option>
+                                            <mat-option *ngFor="let ict of ict" [value]="ict.value">
+                                                {{ict.item}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+        
+                                <!-- Programas -->
+                                <div role="group">
+                                    <mat-form-field class="sf-2">
+                                        <mat-label class="matLabelForm">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.PROGRAMA' | translate}}<span
+                                                class="colorAsterisco"> *</span>
+                                        </mat-label>
+                                        <mat-select disableOptionCentering class="form-control styleForm"
+                                            formControlName="programas" multiple>
+                                            <mat-option value="" (click)="selectNone('programas', 'formThree')">
+                                                {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                            </mat-option>
+                                            <mat-option value="-1" (click)="selectAll('programas', 'formThree')">
+                                                {{'MODULES.REPORTECONSOLIDADOICT.ALLPROGRAMAS' | translate}}
+                                            </mat-option>
+                                            <mat-option *ngFor="let programa of programas" [value]="programa.idProgram"
+                                                (click)="selectOne('programas', 'formThree')">
+                                                {{programa.desprogram}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+        
+                                <!-- analitos externo -->
+                                <div role="group">
+                                    <mat-form-field class="sf-2">
+                                        <mat-label class="matLabelForm">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ANALITOS' | translate}}<span
+                                                class="colorAsterisco"> *</span>
+                                        </mat-label>
+                                        <mat-select disableOptionCentering class="form-control styleForm"
+                                            formControlName="analitosExterno" multiple>
+                                            <mat-option value="" (click)="selectNone('analitosExterno', 'formThree')">
+                                                {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                            </mat-option>
+                                            <mat-option value="-1" (click)="selectAll('analitosExterno', 'formThree')">
+                                                {{'MODULES.REPORTECONSOLIDADOICT.ALLANALITOS' | translate}}
+                                            </mat-option>
+                                            <mat-option *ngFor="let analito of analitosExterno" [value]="analito.idanalytes"
+                                                (click)="selectOne('analitosExterno', 'formThree')">
+                                                {{analito.desanalytes}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+        
+                                <!-- equipos externo -->
+                                <div role="group">
+                                    <mat-form-field class="sf-2">
+                                        <mat-label class="matLabelForm">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.EQUIPO' | translate}}<span class="colorAsterisco">
+                                                *</span>
+                                        </mat-label>
+                                        <mat-select disableOptionCentering class="form-control styleForm" multiple
+                                            formControlName="equiposExterno">
+                                            <mat-option value="" (click)="selectNone('equiposExterno', 'formThree')">
+                                                {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                            </mat-option>
+                                            <mat-option value="-1" (click)="selectAll('equiposExterno', 'formThree')">
+                                                {{'MODULES.REPORTECONSOLIDADOICT.ALLEQUIPOS' | translate}}
+                                            </mat-option>
+                                            <mat-option *ngFor="let equipos of equiposExterno" [value]="equipos.idAnalyzer"
+                                                (click)="selectOne('equiposExterno', 'formThree')">
+                                                {{equipos.nameAnalyzer}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </form>
+
+                        <!-- boton -->
+                    <div class="boxBtn">
+                        <button class="boton" (click)="filtrar()">{{'MODULES.REPORTECONSOLIDADOICT.BOTON' |
+                            translate}}</button>
+                    </div>
+                </div>
+
+                <!-- infoprueba general -->
+                <div class="row boxAll">
+
+                    <!-- img -->
+                    <div class="col-11 boxExport" *ngIf="datatablefilter !== undefined">
+                        <img [src]="'pdf.png' | imageCdn" class="pdf" (click)="downloadPDF()">
+                        <!-- <img [src]="'descargar_Excel.png' | imageCdn" alt="Reporte cuantitativo" style="margin-right: 20px; cursor: pointer;padding-left: 20px;" (click)="exportToExcel()"> -->
+                    </div>
+
+                </div>
+
+                <div *ngIf="ver" id="htmlData">
+
+
+                    <div class="row" *ngIf="ver">
+                        <div class="col-12 contCompany">
+                            <img [src]="logoSource" style="width: 250px;">
+                        </div>
+                    </div>
+                    <div class="boxInfo">
+                        <div class="row col-9 boxInfo2">
+                            <div class="col md-9 titulos">
+                                {{'MODULES.REPORTEANALITOSALERTA.TITULOREPORTE' | translate}}
+                            </div>
+                        </div>
+                        <div class="row col-9 boxInfo2">
+                            <div class="col md-9">
+                                {{'MODULES.REPORTEANALITOSALERTA.FECHAS' | translate}} {{this.desde}} - {{this.hasta}}
+                            </div>
+                        </div>
+                        <div class="row col-9 boxInfo2">
+                            <div class="col md-9">
+                                {{'MODULES.REPORTEANALITOSALERTA.REPORTEG' | translate}} {{this.actual}}
+                            </div>
+                        </div>
+                        <hr style="border: 1px solid; width: 600px;">
+                        <div class="row col-9 boxInfo2">
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.SECCIONEX' | translate}}:
+                                {{txtSecciones}}</div>
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.SEDE' | translate}}: {{txtSedes}}
+                            </div>
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.EQUIPOEX' | translate}}:
+                                {{txtEquipos}}</div>
+                        </div>
+                        <div class="row col-9 boxInfo2">
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.ANALITOS' | translate}}:
+                                {{txtAnalitos}}</div>
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.LOTE' | translate}}: {{txtLotes}}
+                            </div>
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.TIPO' | translate}}: {{txtReportes}}
+                            </div>
+                        </div>
+                        <div class="row col-9 boxInfo2" *ngIf='verCalidadExterno'>
+                            <div class="col md-9 titulos">{{'MODULES.REPORTEANALITOSALERTA.INFOCALIDADEXT' | translate}}
+                            </div>
+                        </div>
+                        <div class="row col-12 boxInfo2" *ngIf='verCalidadExterno'>
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.ITCCALCULADO' | translate}}:
+                                {{txtICT}}</div>
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.PROGRAMA' | translate}}:
+                                {{txtProgramas}}</div>
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.EQUIPOEX' | translate}}:
+                                {{txtEquiposExterno}}
+                            </div>
+                            <div class="col md-3">{{'MODULES.REPORTEANALITOSALERTA.ANALITOSEX' | translate}}:
+                                {{txtAnalitosExterno}}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- tabla general -->
+                    <div class="row" style="margin-top: 25px;">
+                        <div class="col-10 contTables">
+                            <table class="table table-striped" style="width: 120% !important;">
+                                <thead class="backTh">
+                                    <tr>
+                                        <th colspan="10">
+                                            {{'MODULES.REPORTEANALITOSALERTA.QCI' | translate}}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.SEDE' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.SECCION' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.ANALITOSEX' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.NIVEL' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.SIGOMETRIA' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.CVR' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.SR' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.IET' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.OBSERVACIONES' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.VALIDAR' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let dato of datatablefilter; let i = index">
+
+                                        <td>{{ dato.Sede }}</td>
+                                        <td>{{ dato.Seccion }}</td>
+                                        <td>{{ dato.Analito }}</td>
+                                        <td>{{ dato.Nivel }}</td>
+                                        <!-- <td
+                                            [ngClass]="{ 'white text-dark': dato.SIG == '--', 'rojo': dato.SIG < dato.Constz, 'azul': dato.SIG > dato.Constz && dato.SIG < 3, 'amarillo': dato.SIG >= 3 && dato.SIG < 4, 'verdeClaro': dato.SIG >=4  && dato.SIG < 6, 'verdeOscuro': dato.SIG > 6}">
+                                            {{ dato.SIG < dato.Constz ?'--' : dato.SIG }}</td> -->
+                                        <td
+                                        [ngClass]="{ 'white text-dark': dato.SIG == '--', 'rojo': dato.SIG < dato.Constz}">{{ dato.SIG > 1 ?'--': dato.SIG}}</td>
+                                        <td [ngClass]="dato.CVR != '--' ? dato.CVR >=1 ? 'rojo': '' : ''">{{ dato.CVR < 1 ?'--' : dato.CVR }}</td>
+                                        <td [ngClass]="dato.SR != '--' ? dato.SR >= 1 ? 'rojo':'' :''">{{ dato.SR < 1 ?'--' : dato.SR }}</td>
+                                        <td [ngClass]="dato.IET != '--' ?dato.IET >=1 ? 'rojo': '' : ''">{{ dato.IET < 1 ?'--' : dato.IET }}</td>
+                                        <!-- <td [ngClass]="dato.CVR != '--' ? dato.CVR >=1 ? 'rojo': '' : ''">{{dato.CVR }}</td>
+                                        <td [ngClass]="dato.SR != '--' ? dato.SR >= 1 ? 'rojo':'' :''">{{  dato.SR }}</td>
+                                        <td [ngClass]="dato.IET != '--' ?dato.IET >=1 ? 'rojo': '' : ''">{{  dato.IET }}</td> -->
+                                        <div>
+                                            <td>
+                                                <!-- <input style="width: 100px;" [value]="dato.obsXY?dato.obsXY:''" type="string" id="descripcion-{{dato.idconsecutivo}}" />  -->
+                                                <textarea style="width: 150px;"  rows="3" [value]="dato.obsXY?dato.obsXY:''"  id="descripcion-{{dato.idconsecutivo}}"></textarea>
+                                            </td>
+                                            <td><button (click)="validReportObservations(dato)" type="button" class="btn btn-primary" style="background: #6B4B8B; border: 0px;" ><img [src]="'guardarobs.png' | imageCdn"></button></td>
+
+                                        </div>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-4 contTables" *ngIf="verCalidadExterno">
+                            <table class="table table-striped">
+                                <thead class="backTh">
+                                    <tr>
+                                        <th colspan="2">
+                                            {{'MODULES.REPORTEANALITOSALERTA.QCE' | translate}}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.ANALITOSEX' | translate}}</th>
+                                        <th scope="col">{{'MODULES.REPORTEANALITOSALERTA.INDICEDES' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let dato of dataTableQCE; let i = index">
+
+                                        <td>{{ dato.Analito }}</td>
+                                        <td
+                                            [ngClass]="dato.Indicedesvio != '--' ?dato.Indicedesvio >= 1 ? 'rojo': '' : ''">
+                                            {{ dato.Indicedesvio < 1 ?'--' : dato.Indicedesvio }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row col-12">
+                        <div class="cajas espacio">
+                            <p class="sigometria">{{'MODULES.REPORTEANALITOSALERTA.SIGOMETRIA' | translate}}</p>
+                        </div>
+                        <div class="cuadroAzul cajas"></div>
+                        <div class="cajas">
+                            <p>
+                                {{'MODULES.REPORTEANALITOSALERTA.ENTRE' |
+                                translate}}{{constante}}{{'MODULES.REPORTEANALITOSALERTA.ENTRE1' | translate}}
+                            </p>
+                        </div>
+                        <div class="cuadroRojo cajas espacio1"></div>
+                        <div class="cajas">
+                            <p>{{'MODULES.REPORTEANALITOSALERTA.MENOR' | translate}}{{constante}}</p>
+                        </div>
+                    </div>
+                    <hr style="border: 1px solid; width: 90%; margin: auto; margin-top: 25px;">
+                    <div class="col-12 titulos">{{'MODULES.REPORTEANALITOSALERTA.ABREVIATURA' | translate}}</div>
+                    <div class="row col-12">
+                        <div class="col-md-6">
+                            <p class="espacioP">{{'MODULES.REPORTEANALITOSALERTA.CVRABRE' | translate}}</p>
+                            <p class="espacioP">{{'MODULES.REPORTEANALITOSALERTA.SRABRE' | translate}}</p>
+                            <p class="espacioP">{{'MODULES.REPORTEANALITOSALERTA.IETABRE' | translate}}</p>
+                            <p class="espacioP">&#963; : Sigma</p>
+                            <!-- <p class="espacioP">{{'MODULES.REPORTEANALITOSALERTA.O' | translate}}</p> -->
+                        </div>
+                        <div class="col-md-6">
+                            <p class="espacioP">{{'MODULES.REPORTEANALITOSALERTA.ETAABRE' | translate}}</p>
+                            <p class="espacioP">{{'MODULES.REPORTEANALITOSALERTA.DSABRE' | translate}}</p>
+                            <p class="espacioP">{{'MODULES.REPORTEANALITOSALERTA.CVAABRE' | translate}}</p>
+                            <p class="espacioP">{{'MODULES.REPORTEANALITOSALERTA.BIAS' | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+        <p style="font-size: 20px; color: white">Por favor, espere.</p>
+    </ngx-spinner>
+</div>

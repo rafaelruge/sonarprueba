@@ -1,0 +1,189 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+                <div class="col-12 d-flex justify-content-center">
+                    <img class="imageSobreBorde" [src]="'ConfiguracionDeObjetivos.png' | imageCdn">
+                </div>
+                <div class="row justify-content-center mt-4">
+
+                    <div class="col-12 titulo"> {{'MODULES.CONFIGURACION_DE_OBJETIVOS.TITLE' | translate}}</div>
+
+                    <div class="col-lg-10 col-xl-8">
+
+                        <div class="row boxBtnCreateFilter">
+
+                            <div class="col-12 col-sm-4 boxBtnCreate form-group">
+                                <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                                    (click)="openModalRegistro(templateRegistro, '')">{{'MODULES.CONFIGURACION_DE_OBJETIVOS.BOTONCREAR'
+                                    | translate}}</button>
+                            </div>
+
+
+                            <div class="col-12 col-sm-8 boxFilter">
+                                <i class="fa fa-search"></i>
+                                <mat-form-field class="filter">
+                                    <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                                    <input matInput (keyup)="applyFilter($event)"
+                                        placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-10 col-xl-8">
+                        <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+                            <ng-container matColumnDef="objetivoetmp">
+                                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.CONFIGURACION_DE_OBJETIVOS.COLUMNS.OBJETIVO_ETMP' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{ row.idsourceanalyteDetalle.objetivoetmp |
+                                    titlecase}} </td>
+                            </ng-container>
+
+
+                            <ng-container matColumnDef="active">
+                                <th style="width: 300px;" mat-header-cell *matHeaderCellDef>
+                                    {{'MODULES.CONFIGURACION_DE_OBJETIVOS.COLUMNS.ESTADO' | translate}}</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <i *ngIf="!row.active" class="far fa-check-square botonInactive"
+                                        (click)="actualizarEstado(row)"></i>
+                                    <i *ngIf="row.active" class="far fa-check-square botonActive"
+                                        (click)="actualizarEstado(row)"></i>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="editar">
+                                <th style="width: 300px;" mat-header-cell *matHeaderCellDef>
+                                    {{'MODULES.CONFIGURACION_DE_OBJETIVOS.COLUMNS.EDITAR' | translate}}</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <i class="far fa-edit botonEditar"
+                                        (click)="openModalRegistro(templateRegistro, row)"></i>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="borrar">
+                                <th style="width: 300px;" mat-header-cell *matHeaderCellDef>
+                                    {{'MODULES.CONFIGURACION_DE_OBJETIVOS.COLUMNS.ELIMINAR' | translate}}</th>
+                                <td mat-cell *matCellDef="let row; let i = index;">
+                                    <i class="fas fa-eraser botonEliminar"
+                                        (click)="openModalEliminar(templateEliminar, row.idconfqualityobject)"></i>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                            <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                            </tr>
+                        </table>
+                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #templateRegistro>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row">
+
+            <div class="col flex2">
+
+                <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+                <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+                <h3 class="tituloModal">{{tituloAccion}}</h3>
+                <div class="hr"></div>
+
+                <app-alert-update *ngIf="way"></app-alert-update>
+
+            </div>
+
+        </div>
+
+        <form [formGroup]="formularioRegistroEditar" (ngSubmit)="crearEditar()">
+            <div class="form-row">
+
+                <div class="col-sm-10 mb-4 form-group">
+                    <div role="group">
+                        <mat-form-field class="sf-2">
+                            <mat-label class="matLabelForm">{{'MODULES.CONFIGURACION_DE_OBJETIVOS.FORMULARIO.OBJETIVO_ETMP' 
+                                | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                            <mat-select formControlName="idsourceanalyte" class="form-control" [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+                                <mat-option value="">{{'MODULES.CIUDADES.FORMULARIO.SELECCIONE' |
+                                translate}}</mat-option>
+                                <mat-option *ngFor="let analito of listaAnalitos" [value]="analito.idsourceanalyte"> {{
+                                    analito.objetivoetmp }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <small *ngIf="objetivoNoValido.invalid  && objetivoNoValido.touched"
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                            translate}}</small>
+                    </div>
+                </div>
+
+                <div class="col-sm-2 form-group">
+                    <div role="group">
+                        <label for="active">{{'MODULES.CONFIGURACION_DE_OBJETIVOS.FORMULARIO.ESTADO' |
+                            translate}}</label><br>
+                        <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-row">
+                <div class="boxBtnAceptCancel">
+                    <button *ngIf="!accionEditar" class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                    <button *ngIf="accionEditar" class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                    <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<ng-template #templateEliminar>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row">
+
+            <div class="col flex3">
+
+                <img class="img" [src]="'delete.png' | imageCdn">
+                <h3 class="tituloModal">{{'MODULES.SWAL.ELIMINAR' | translate}}</h3>
+                <div class="col-12 text-center" style="font-size: 18px;"> {{'MODULES.SWAL.PERMANENTE' | translate}}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-12 mt-4 mb-2 text-center">
+            <button class="col-5 col-md-3 mr-2 boton" type="button" (click)="eliminar()">{{'MODULES.SWAL.SI' |
+                translate}}</button>
+            <button class="col-5 col-md-3 ml-2 botonCancelar" type="button" (click)="closeVentana()">{{'MODULES.SWAL.NO'
+                | translate}}</button>
+        </div>
+    </div>
+</ng-template>

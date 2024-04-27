@@ -1,0 +1,372 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'IngresoDatos.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+          <div class="col-12 mb-5 mt-5 text-center titulo"> {{'MODULES.INGRESODATOSEXTERNO.TITLE' |
+                        translate}}</div>
+          <div class="col-md-11 mb-3">
+
+            <form [formGroup]="formulario">
+
+              <div class="row boxInputBtn">
+
+                <div class="boxInput col-11 col-sm-7 col-lg-5 col-xl-3">
+                  <mat-form-field class="sf-2">
+                    <mat-label class="matLabelForm">{{'MODULES.INGRESODATOSEXTERNO.FORMULARIO.PROGRAMA' 
+                                            | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-select disableOptionCentering formControlName="idProgram" class="form-control styleForm">
+                      <mat-option value="">{{'MODULES.INGRESODATOSEXTERNO.FORMULARIO.SELECCIONE' |
+                                            translate}}</mat-option>
+                      <mat-option *ngFor="let program of programasActive" [value]="program.IdProgram" [matTooltip]="program.Desprogram">
+                        {{ program.Desprogram | titlecase }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                </div>
+
+                <div class="col-lg-2 boxBtnSearch">
+                  <button class="boton btnSearch" (click)="filtrar()" type="submit">{{'MODULES.BUSCAR' |
+                    translate}}</button>
+                </div>
+
+              </div>
+
+            </form>
+
+            <div class="row mt-4 justify-content-center" [hidden]="!bandera">
+
+              <!-- table -->
+
+              <div class="col col-xl-8">
+
+                <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+                  <ng-container matColumnDef="rondas">
+                    <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                      {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.RONDAS' | translate}} </th>
+                    <td mat-cell *matCellDef="let row"> {{row.Nroround }} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="muestras">
+                    <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                      {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.MUESTRAS' | translate}} </th>
+                    <td mat-cell *matCellDef="let row"> {{row.Nrosample }} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="vencido">
+                    <th style="width: 150px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                      {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.VENCIDO' | translate}} </th>
+                    <td mat-cell *matCellDef="let row">
+                      <img src="../../../../../../assets/imagenes/desbloqueado.png" alt="Desbloqueado" class="icon"
+                        *ngIf="row.Enddate > fechaActual">
+                      <img src="../../../../../../assets/imagenes/Bloqueado.png" alt="Bloqueado" class="icon"
+                        *ngIf="row.Enddate < fechaActual">
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="responder">
+                    <th style="width: 150px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                      {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.RESPONDER' | translate}} </th>
+                    <td mat-cell *matCellDef="let row">
+                     
+                      <img src="../../../../../../assets/imagenes/Responder_on.png" alt="Desbloqueado" 
+                        (click)="openModalResponder(templateResponder, row)" class="icon" >
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="ver">
+                    <th style="width: 150px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                      {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.VISUALIZAR' | translate}} </th>
+                    <td mat-cell *matCellDef="let row">
+                      <img src="../../../../../../assets/imagenes/visualizar2.png" alt="Ver"
+                        (click)="openModalVisualizar(templateVisualizar, row)" class="icon">
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                </table>
+                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+              </div>
+              <!-- end table -->
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #templateResponder>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+
+        <img class="img" [src]="'Responder.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div class="col">
+        <h2>Programa: {{programS | titlecase }}</h2>
+        <p>N° ronda: {{ numRondas }}</p>
+      </div>
+
+    </div>
+
+    <div class="row mt-4 contRow">
+
+      <div class="col col-md-8 col-lg-5">
+
+        <form [formGroup]="formFiltroMuestra" class="formMuestra">
+
+          <mat-form-field class="sf-2">
+            <mat-label class="matLabelForm">{{'MODULES.INGRESODATOSEXTERNO.FORMULARIO.MUESTRA' 
+                            | translate}}<span class="colorAsterisco"> *</span></mat-label>
+            <mat-select disableOptionCentering formControlName="idMuestra" class="form-control styleForm">
+              <mat-option value="">{{'MODULES.INGRESODATOSEXTERNO.FORMULARIO.SELECCIONE' |
+                            translate}}</mat-option>
+              <mat-option *ngFor="let muestra of muestrasActive" [value]="muestra.IdSample" [matTooltip]="muestra.Serialsample">
+                {{ muestra.Serialsample }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </form>
+
+        <form [formGroup]="formFiltroresult" class="formMuestra">
+          <mat-form-field class="sf-2 mt-4 animate__animated animate__fadeIn fast" *ngIf="isCuanti == false">
+            <mat-label class="matLabelForm">{{'MODULES.INGRESODATOSEXTERNO.COLUMNS.RESULTADO' 
+                                          | translate}}<span class="colorAsterisco"> *</span></mat-label>
+            <mat-select disableOptionCentering formControlName="idresult" class="form-control styleForm"
+              (valueChange)="crearObjetoUpdate($event)">
+              <mat-option value="">{{'MODULES.INGRESODATOSEXTERNO.FORMULARIO.SELECCIONE' |
+                                          translate}}</mat-option>
+              <mat-option *ngFor="let resultado of listaResultados" [value]="resultado.Idresultsdictionary">
+                {{ resultado.Desresults }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <label class="labelForm mt-4 animate__animated animate__fadeIn fast" for="edit"
+            *ngIf="isCuanti == true">{{'MODULES.INGRESODATOSEXTERNO.COLUMNS.RESULTADO' | translate}}</label>
+          <input type="number" class="form-control styleForm" id="edit" *ngIf="isCuanti == true"
+            (input)="crearObjetoUpdate($event.target.value)">
+
+          <div class="boxFormUpdate animate__animated animate__fadeIn fast"
+            *ngIf="isCuanti == true || isCuanti == false">
+            <div class="btnUpdate animate__animated animate__fadeIn fast"><i class="fas fa-check" title="Guardar"
+                (click)="actualizarResultado()"></i></div>
+            <div class="btnCancelUpdate animate__animated animate__fadeIn fast"><i class="fas fa-times" title="Cancelar"
+                (click)="cancelUpdate()"></i></div>
+          </div>
+
+        </form>
+
+
+      </div>
+
+    </div>
+
+    <div class="row mt-4" *ngIf="bandera2">
+
+      <!-- table -->
+
+      <div class="col">
+
+        <table mat-table [dataSource]="dataSource2" class="table-responsive" matSort
+          style="overflow-y: scroll; max-height: 300px;">
+
+          <ng-container matColumnDef="analito">
+            <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.ANALITO' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.Desanalytes}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="analizador">
+            <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.ANALIZADORES.COLUMNS.NOMBRE' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.NameAnalyzer}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="metodo">
+            <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.METODOSQCE.COLUMNS.DESCRIPCION' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.Desmethods}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="resultado">
+            <th style="width: 100px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.RESULTADO' | translate}} </th>
+            <td mat-cell *matCellDef="let row" style="padding: 4px;">
+              <p class="p-table">{{ row.Result }}</p>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="inicio">
+            <th style="width: 170px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.INICIOREPORTE' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.Begindate | date:'dd-MM-yyyy' }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fin">
+            <th style="width: 170px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.FINREPORTE' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.Enddate | date:'dd-MM-yyyy' }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="editar">
+            <th style="width: 170px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.EDITRESULT' | translate}} </th>
+            <td mat-cell *matCellDef="let row">
+              <img src="../../../../../../assets/imagenes/Responder_on.png" alt="Desbloqueado" 
+             
+              *ngIf="editarResultados === true"
+              (click)="editResult(row,row.Idresult)" class="icon">
+             
+              <img src="../../../../../../assets/imagenes/Responder_off.png" alt="bloqueado" class="icon" 
+              *ngIf="editarResultados=== false"
+              matTooltip="La plataforma no se encuentra disponible"
+              [matTooltipPosition]="'above'"
+              [matTooltipShowDelay]="1000">
+
+             
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+
+        </table>
+      </div>
+
+      <!-- end table -->
+
+    </div>
+
+  </div>
+
+</ng-template>
+
+<ng-template #templateVisualizar>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+
+        <img class="img" [src]="'Visualizar.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div class="col">
+        <h2>Programa: {{ programa2 | titlecase }}</h2>
+        <p>N° ronda: {{ numRonda }}</p>
+      </div>
+
+    </div>
+
+    <div class="row mt-4">
+
+      <!-- table -->
+
+      <div class="col">
+
+        <table mat-table [dataSource]="dataSource3" class="table-responsive" matSort>
+
+          <ng-container matColumnDef="muestra">
+            <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.MUESTRA' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.Serialsample }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="analito">
+            <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.ANALITO' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.Desanalytes | titlecase }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="analizador">
+            <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.ANALIZADORES.COLUMNS.NOMBRE' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.NameAnalyzer | titlecase }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="metodo">
+            <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.METODOSQCE.COLUMNS.DESCRIPCION' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.Desmethods | titlecase }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="resultado">
+            <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.RESULTADO' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{ row.Result }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="inicio">
+            <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.INICIOREPORTE' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{ row.Begindate | date:'dd-MM-yyy' }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fin">
+            <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{'MODULES.INGRESODATOSEXTERNO.COLUMNS.FINREPORTE' | translate}} </th>
+            <td mat-cell *matCellDef="let row"> {{row.Enddate | date:'dd-MM-yyy' }} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+
+        </table>
+      </div>
+
+      <!-- end table -->
+
+    </div>
+
+  </div>
+
+</ng-template>
+
+
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>

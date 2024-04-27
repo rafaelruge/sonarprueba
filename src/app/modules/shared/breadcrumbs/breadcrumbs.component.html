@@ -1,0 +1,9 @@
+<nav aria-label="breadcrumb">
+  <div class="bread-container">
+    <ol class="breadcrumb" *ngIf="!!pathFull">
+      <li class="breadcrumb-item"><a href="#"> {{ pathFull?.menuNameLevel1 }} </a></li>
+      <li *ngIf="!!pathFull?.menuNameLevel2" class="breadcrumb-item"><a href="#"> {{ pathFull?.menuNameLevel2 }} </a></li>
+      <li *ngIf="!!pathFull?.menuNameLevel3" class="breadcrumb-item active" [routerLink]="pathFull?.menuUrlLevel3" aria-current="page"> {{ pathFull?.menuNameLevel3 }} </li>
+    </ol>
+  </div>
+</nav>

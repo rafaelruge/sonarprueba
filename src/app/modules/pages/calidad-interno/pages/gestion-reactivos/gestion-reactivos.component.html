@@ -1,0 +1,147 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'Reactivos.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo">{{'MODULES.GESTIONREACTIVOS.TITLE' | translate}}</div>
+
+          <div class="col-11 col-lg-8 col-xl-7">
+
+            <div class="row boxBtnFilter">
+
+              <div class="col-sm-4 boxBtnCreate form-group">
+                <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                  (click)="openModalGestionReactivos(templateGestionReactivos, '')">{{'MODULES.GESTIONREACTIVOS.BOTONCREAR'
+                                    | translate}}</button>
+              </div>
+
+
+              <div class="col-sm-8 boxFilter">
+                <i class="fa fa-search"></i>
+                <mat-form-field class="filter">
+                  <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                  <input matInput (keyup)="applyFilter($event)"
+                    placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-11 col-lg-8 col-xl-7">
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+              <ng-container matColumnDef="desReagents">
+                <th style="width: 400px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.GESTIONREACTIVOS.COLUMNS.DESCRIPCION' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.desreagents}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="active">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.GESTIONREACTIVOS.COLUMNS.ESTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.active" (change)="actualizarEstadoGestionReactivos(row)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="editar">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.GESTIONREACTIVOS.COLUMNS.EDITAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <img [src]="'imagenEditar.png' | imageCdn"
+                    (click)="openModalGestionReactivos(templateGestionReactivos, row)" style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="borrar">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.GESTIONREACTIVOS.COLUMNS.ELIMINAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row; let i = index;">
+                  <img [src]="'imagenEliminar.png' | imageCdn" (click)="eliminarGestionReactivos(row.idreagents)"
+                    style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+              </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #templateGestionReactivos>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <form [formGroup]="formaGestionReactivos" (ngSubmit)="crearEditarGestionReactivos()">
+      <div class="form-row">
+        <div class="col-sm-8 form-group">
+          <div role="group">
+            <label class="labelForm"
+              for="desreagents">{{'MODULES.GESTIONREACTIVOS.FORMULARIO.DESCRIPCION' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <input formControlName="desreagents" type="text" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" id="desReagents" autocomplete="off">
+            <small *ngIf="desReagentsNoValido.errors?.minlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMODOS' | translate}}</small>
+            <small *ngIf="desReagentsNoValido.errors?.maxlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMODOCIENTOS' | translate}}</small>
+            <small
+              *ngIf="desReagentsNoValido.invalid  && desReagentsNoValido.touched && !desReagentsNoValido.errors?.minlength && !desReagentsNoValido.errors?.maxlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-sm-2 form-group btnActive">
+          <div role="group">
+            <label class="labelForm"
+              for="active">{{'MODULES.GESTIONREACTIVOS.FORMULARIO.ESTADO' | translate}}</label><br>
+            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button [disabled]="desactivar" class="boton btnAceptar"
+            type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+          <button class="botonCancelar btnCancel" type="button"
+            (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

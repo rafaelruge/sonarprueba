@@ -1,0 +1,254 @@
+
+
+table {
+    text-align: center !important;
+}
+
+.mat-header-cell {
+    border: 1px solid white;
+    border-left: var(--side-bg-color);
+    color: white;
+    font-size: 15px;
+    background: var(--side-bg-color);
+    text-align: center;
+}
+
+::ng-deep .mat-sort-header-arrow {
+    color: white;
+}
+
+.fa-search {
+    color: var(--purple-01);
+}
+
+.mat-row,
+.mat-header-row {
+    width: 100%;
+    width: max-content;
+}
+
+.mat-cell,
+.mat-footer-cell {
+    font-size: 14px;
+    padding: 0px;
+    border: 1px solid var(--side-bg-color);
+    text-align: center;
+}
+
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+    background-color: var(--purple-01) !important;
+}
+
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+    background-color: #DCDCDC !important;
+}
+
+::ng-deep .mat-slide-toggle-thumb {
+    background-color: #C2AEF4 !important;
+}
+
+::ng-deep .mat-slide-toggle-bar {
+    background-color: #D9CCED !important;
+}
+
+::ng-deep .th.mat-header-cell:last-of-type,
+td.mat-cell:last-of-type,
+td.mat-footer-cell:last-of-type {
+    padding-right: 5px;
+}
+
+::ng-deep .th.mat-header-cell:first-of-type,
+td.mat-cell:first-of-type,
+td.mat-footer-cell:first-of-type {
+    padding-left: 0px;
+}
+
+::ng-deep .mat-form-field-infix {
+    display: block;
+    position: relative;
+    flex: auto;
+    min-width: 0;
+    width: 250px !important;
+}
+
+
+
+.boton {
+
+    border-radius: 25px;
+    height       : 30px;
+    color        : #fff;
+    background   : var(--purple-01);
+    border       : var(--purple-01);
+  
+  }
+  
+  @media(min-width: 320px){
+  
+    .boxBtnSearch{
+  
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 16px;
+  
+    }
+  
+    .boxBtnCreate{
+  
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0px;
+        margin-bottom: 40px;
+        margin-top: 16px;
+  
+    }
+  
+    .boxFilter{
+  
+        display: flex;
+        align-items: center;
+        justify-content: center;
+  
+    }
+  
+    .boxFilter .filter{
+  
+        width: 80%;
+        margin-left: 8px;
+  
+    }
+  
+    .btnSearch, .btnCreate{
+  
+        width: 30%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 375px){
+  
+      .btnSearch, .btnCreate{
+  
+          width: 24%;
+    
+      }
+  
+  }
+  
+  @media(min-width: 425px){
+  
+    .boxFilter .filter{
+  
+        width: 60%;
+  
+    }
+  
+    .btnSearch, .btnCreate{
+  
+        width: 22%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 500px){
+  
+      .btnSearch, .btnCreate{
+  
+          width: 18%;
+    
+      }
+  
+  }
+  
+  @media(min-width: 576px){
+  
+    .boxBtnSearch .btnSearch{
+  
+        width: 70%;
+  
+    }
+  
+    .boxBtnCreate{
+  
+        margin: 0px;
+        justify-content: flex-start;
+  
+    }
+  
+    .boxBtnCreate .btnCreate{
+  
+        width: 40%;
+  
+    }
+  
+    .boxFilter{
+  
+      justify-content: flex-end;
+  
+    }
+  
+    .boxFilter .filter{
+  
+        width: 80%;
+  
+    }
+  
+    .boxBtnCreateFilter{
+  
+        margin-top: 40px;
+  
+    }
+  
+  }
+  
+  @media(min-width: 768px){
+  
+      .boxBtnCreate .btnCreate{
+  
+          width: 34%;
+    
+      }
+  
+  }
+  
+  @media(min-width: 992px){
+  
+    .boxBtnSearch .btnSearch{
+  
+        width: 46%;
+  
+    }
+  
+    .boxBtnCreate .btnCreate{
+  
+        width: 28%;
+  
+    }
+  
+    .boxFilter .filter{
+  
+        width: 60%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 1300px){
+  
+    .boxBtnSearch .btnSearch{
+  
+        width: 38%;
+  
+    }
+  
+    .boxBtnCreate .btnCreate{
+  
+        width: 24%;
+  
+    }
+  
+  }

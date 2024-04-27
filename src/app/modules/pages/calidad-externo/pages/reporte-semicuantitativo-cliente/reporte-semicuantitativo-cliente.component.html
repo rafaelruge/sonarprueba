@@ -1,0 +1,447 @@
+<div class="container-fluid">
+  <div class="row" style="margin-right: -13px !important;">
+    <div class="div-container col-md-12 mt-2">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'CasasComerciales.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> {{'MODULES.REPORTESDATOSSEMICUALITATIVOS.TITLE' | translate}}</div>
+
+          <div class="col-10 my-4 ">
+            <form [formGroup]="formulario" (ngSubmit)="buscar()" autocomplete="off">
+              <div class="d-flex justify-content-around">
+
+                <div role="group">
+                  <mat-label class="matLabelForm"
+                    style="font-size: 16px !important;">{{'MODULES.REPORTESDATOSCUALITATIVOS.FORMULARIO.PROGRAMA'
+                    | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                  <mat-form-field class="serial-tamanio "
+                    style="width: 230px !important; display: unset !important;top: 7px;">
+                    <input type="text" matInput [matAutocomplete]="autoprogram" formControlName="idProgram"
+                      style="font-family: 'Open Sans' !important;font-size: 16px;">
+                    <mat-autocomplete #autoprogram="matAutocomplete">
+                      <mat-option *ngFor="let programa of filteredOptionsProgram | async" [value]="programa.desprogram"
+                        (click)="selectRonda(programa.idProgram)">
+                        {{ programa.desprogram}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <small *ngIf="idProgramNoValido.errors?.required  && idProgramNoValido.touched"
+                    class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                </div>
+
+                <div role="group">
+                  <mat-label class="matLabelForm"
+                    style="font-size: 16px !important;">{{'MODULES.REPORTESDATOSCUALITATIVOS.FORMULARIO.RONDA'
+                    | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                  <mat-form-field class="serial-tamanio "
+                    style="width: 230px !important; display: unset !important;top: 7px;">
+                    <input type="text" matInput [matAutocomplete]="autoRonda" formControlName="idRonda"
+                      style="font-family: 'Open Sans' !important;font-size: 16px;">
+                    <mat-autocomplete #autoRonda="matAutocomplete">
+                      <mat-option *ngFor="let ronda of filteredOptionsRonda | async" [value]="ronda.nroround"
+                        (click)="selectSample(ronda.nroround)">
+                        {{ ronda.nroround}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <small *ngIf="idRondaNoValido.errors?.required  && idRondaNoValido.touched"
+                    class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                </div>
+
+                <div role="group">
+                  <mat-label class="matLabelForm"
+                    style="font-size: 16px !important;">{{'MODULES.REPORTESDATOSCUALITATIVOS.FORMULARIO.MUESTRA' |
+                    translate}}<span class="colorAsterisco"> *</span></mat-label>
+                  <mat-form-field class="serial-tamanio "
+                    style="width: 230px !important; display: unset !important;top: 7px;">
+                    <input type="text" matInput [matAutocomplete]="autoLote" formControlName="idMuestra"
+                      style="font-family: 'Open Sans' !important;font-size: 16px;">
+                    <mat-autocomplete #autoLote="matAutocomplete">
+                      <mat-option *ngFor="let sample of filteredOptionsSample | async" [value]="sample.Serialsample"
+                        (click)="selectAnalito(sample.IdSample)">
+                        {{ sample.Serialsample}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <small *ngIf="idmuestraNoValido.errors?.required  && idmuestraNoValido.touched"
+                    class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                </div>
+
+                <div role="group">
+                  <mat-form-field class="sf-2" style="width: 14em !important;">
+                    <mat-label class="matLabelForm">
+                      {{'MODULES.REPORTESDATOSCUALITATIVOS.FORMULARIO.ANALITOS' | translate}}
+                    </mat-label>
+                    <mat-select disableOptionCentering class="form-control styleForm" formControlName="idAnalito"
+                      multiple>
+                      <mat-option value="" (click)="selectNone('idAnalito')">
+                        {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                      </mat-option>
+                      <mat-option value="-1" (click)="selectAll('idAnalito')" *ngIf="analytes.length != 0">
+                        {{'MODULES.REPORTECUANTITATIVO.ALLANALITOS' | translate}}
+                      </mat-option>
+                      <mat-option *ngFor="let analito of analytes" [value]="analito.idanalytes"
+                        (click)="selectOne('idAnalito')">
+                        {{ analito.desanalytes }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+              </div>
+              <div class="form-row">
+                <div class="col-12 boxBtnAceptCancel">
+                  <button class="boton btnCreate" type="submit">{{'MODULES.BUSCAR' | translate}}</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-12 col-lg-10 col-xl-10" *ngIf="verInfo">
+            <div class="col-12">
+              <!-- SLIDE ANALITOS  -->
+              <div class="boxAnalitos">
+                <div class="arrow-left">
+                  <i class="fas fa-angle-left" (click)="scrollCards(-1)"></i>
+                </div>
+                <div #scroll class="boxAnalitosContainer">
+                  <div *ngFor="let analito of datosFiltro; let i = index">
+                    <div #btnSecc (click)="buscarAnalitos(analito, i, btnSecc)" id="bntSecc-{{i}}" class="styleAnalito"
+                      [ngClass]="{'backHover': analitoSeleccionado === analito }">
+                      <h3 style="color:purple;" class="text-capitalize text-nowrap mb-0">{{analito.desAnalytes}}</h3>
+                    </div>
+                  </div>
+                </div>
+                <div class="arrow-right" (click)="scrollCards(1)">
+                  <i class="fas fa-angle-right"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- GENERAR PDF -->
+            <ng-container >
+              <div class="d-flex justify-content-end " style="gap: 1em;">
+                <!-- <div class="">
+                  <img [src]="'pdf2.png' | imageCdn" alt="Reporte cuantitativo" style="height: 30px; cursor: pointer;"
+                    (click)="cargarGraficas()">
+                </div> -->
+                <div class="">
+                  <img [src]="'PDFconsolidado.svg' | imageCdn" alt="Reporte semicuantitativo"
+                    style="height: 30px; cursor: pointer;" (click)="reporteConsolidado()">
+                </div>
+              </div>
+            </ng-container>
+
+
+            <div class="col-12 mt-4 d-flex justify-content-around ">
+              <div class="col-1"
+                style="height: 25em; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+                <ng-container *ngFor="let img of imgFilter;index as i">
+                  <div *ngIf="img.flag"
+                    style="border:.1em solid rgb(211, 211, 211); border-radius: 7px; box-shadow: 0px 0px 7px -2px rgba(0, 0, 0, 0.4); width:5em; height: 5em;  display: flex; justify-content: center; align-items: center; "
+                    (click)="selecItem(img)">
+                    <img [src]="img.img | imageCdn" alt="Reporte cuantitativo"
+                      style="height: 80%; margin-left: 0.2em; cursor: pointer;">
+                  </div>
+                </ng-container>
+              </div>
+
+              <div class="col-10"
+                style="padding: .5em 0 0 .5em; border:.1em solid rgb(211, 211, 211); border-radius: 7px; box-shadow: 5px 5px 7px -2px rgba(0, 0, 0, 0.4);">
+                <ng-container [ngSwitch]="itemSelected">
+                  <ng-container *ngSwitchCase="1" [ngTemplateOutlet]="item_1"></ng-container>
+                  <ng-container *ngSwitchCase="2" [ngTemplateOutlet]="item_2"></ng-container>
+                  <ng-container *ngSwitchCase="3" [ngTemplateOutlet]="item_3"></ng-container>
+                  <ng-container *ngSwitchCase="4" [ngTemplateOutlet]="item_4"></ng-container>
+                  <ng-container *ngSwitchCase="5" [ngTemplateOutlet]="pdfConsolidado"></ng-container>
+                </ng-container>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showOverlay" style="position: absolute; background-color: gray;">
+  <app-cargador></app-cargador>
+</div>
+
+
+
+<!-- CONT 1 -->
+<ng-template #item_1>
+  <div *ngIf="itemSelected == 1" class="cont_report">
+    <h2>{{'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT1.TCONT1' | translate}}</h2>
+    <div style="height: 1px; width: 100%; background-color: gray;min-width: 110%;"></div>
+    <div style="display: flex; justify-content: space-between; padding: .5em; min-width: 110%; gap:2em"
+      [ngStyle]="{'width': datosFiltro[indexSelect].results.length > 0 ? (datosFiltro[indexSelect].results.length * 22)+'%' : '' }">
+
+      <div style=" display: flex; justify-content: space-evenly; flex-direction: column; margin-left: 1em;">
+        <h2 style="color: purple; font-size: 1.2em;">{{'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT1.TCONT2' |
+          translate}}</h2>
+        <h2 style="font-size: 1.2em;">{{'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT1.TCONT3' | translate}}:
+          {{datosFiltro[indexSelect].valorAsignado.length > 0 ?
+          datosFiltro[indexSelect].valorAsignado[0].desresultsdictionary : '' }}</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th [ngClass]="{'borderCol':i<datosFiltro[indexSelect].results.length-1}" scope="col"
+                *ngFor="let item of datosFiltro[indexSelect].results; let i = index">{{item.results}}</th>
+            </tr>
+          </thead>
+          <tr>
+            <th>Método</th>
+            <td [ngClass]="{'borderCol':i<datosFiltro[indexSelect].results.length-1}" scope="col"
+              *ngFor="let item of datosFiltro[indexSelect].results; let i = index">{{dataTablaEstGenMet[i].length}}</td>
+          </tr>
+          <tr>
+            <th>Todos los resultados</th>
+            <td [ngClass]="{'borderCol':i<datosFiltro[indexSelect].results.length-1}" scope="col"
+              *ngFor="let item of datosFiltro[indexSelect].results; let i = index">{{dataTablaEstGen[i].length}}</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- GRÁFICA CONT 1-->
+      <div style="height: 15em; width: auto; margin-top: 5em; border-radius: 7px; webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-content: center;">
+        <div [style]="'width:auto; height:100%;padding-top:1em; padding-left:.5em; '" id="graf1"></div>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<!-- CONT 2 -->
+<ng-template #item_2 id="key_2">
+  <div *ngIf="itemSelected == 2" class="cont_report">
+    <h2>{{'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TCONT2' | translate}}</h2>
+    <div style="height: 1px; width: 115%; background-color: gray;"></div>
+    <h2 class="mt-2" style="color: purple;">Evaluación de desempeño</h2>
+
+    <div style="width: 115%; display: flex; justify-content: space-evenly; padding-top: .5em;">
+      <div style="width: 40%; padding-top: 2.5em;">
+        <table>
+          <tr>
+            <th class="borderCol" scope="col">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TABLE1.COL1' | translate
+              }}</th>
+            <td>{{datosFiltro[indexSelect].name_Analyzer}}</td>
+          </tr>
+          <tr>
+            <th class="borderCol" scope="col">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TABLE1.COL2' | translate
+              }}</th>
+            <td>{{datosFiltro[indexSelect].desreagents}}</td>
+          </tr>
+          <tr>
+            <th class="borderCol" scope="col">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TABLE1.COL3' | translate
+              }}</th>
+            <td>{{datosFiltro[indexSelect].desAnalytes}}</td>
+          </tr>
+          <tr>
+            <th class="borderCol" scope="col">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TABLE1.COL4' | translate
+              }}</th>
+            <td>{{datosFiltro[indexSelect].desunits}}</td>
+          </tr>
+        </table>
+      </div>
+      <div style="width: 57%;">
+        <table>
+          <thead>
+            <tr>
+              <th class="borderCol" scope="col"></th>
+              <th *ngFor="let item of datosFiltro[indexSelect].tables" class="borderCol" scope="col">
+                {{item.serialSample}}</th>
+            </tr>
+          </thead>
+          <tr>
+            <th class="borderCol" scope="col">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TABLE2.COL1' | translate
+              }}</th>
+            <td *ngFor="let item of datosFiltro[indexSelect].tables" class="borderCol">{{item.results}}</td>
+          </tr>
+          <tr>
+            <th class="borderCol" scope="col">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TABLE2.COL2' | translate
+              }}</th>
+            <td *ngFor="let item of datosFiltro[indexSelect].tables" class="borderCol">{{item.valueAsing}}</td>
+          </tr>
+          <tr>
+            <th class="borderCol" scope="col">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TABLE2.COL3' | translate
+              }}</th>
+            <td *ngFor="let item of datosFiltro[indexSelect].tables" class="borderCol"
+              style="background-color: #32B26D; color:white;">{{item.score}}</td>
+          </tr>
+          <tr>
+            <th class="borderCol" scope="col">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT2.TABLE2.COL4' | translate
+              }}</th>
+            <td *ngFor="let item of datosFiltro[indexSelect].tables; let i = index;" class="borderCol">
+              <label>{{i==datosFiltro[indexSelect].tables.length-1 ? calcProm(datosFiltro[indexSelect].tables) :
+                0}}</label>
+              <!-- {{item.results == item.valueAsing ? '10':'0'}} -->
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div style="width: 100%; display: flex; justify-content: center; padding: 2em; margin-top: 2em;">
+      <div style="height: 15em; width: 70%; border-radius: 7px; webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center;">
+        <!-- GRÁFICA CONT 2 -->
+        <div [style]="'width:45em; height:17em;'" id="graf2"></div>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<!-- CONT 3 -->
+<ng-template #item_3 id="key_3">
+  <div *ngIf="itemSelected == 3" class="cont_report">
+    <h2 style="color:#3850EB; margin:0; padding-left: 0.4em;">{{'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT3.TCONT3' |
+      translate}}</h2>
+    <div style="height: 1px;  background-color: gray;"
+      [ngStyle]="{'width': arrDataGraf2.length > 4 ? (arrDataGraf2.length * 22)+'em': '100%' }"></div>
+
+
+    <div style="width: 100%; display: flex; padding-top: .5em;">
+      <div style="width: 80%;">
+        <table class="" id="tblConcord">
+          <thead>
+            <tr>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT3.TABLE1.COL1' | translate }}</th>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT3.TABLE1.COL2' | translate }}</th>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT3.TABLE1.COL3' | translate }}</th>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT3.TABLE1.COL4' | translate }}</th>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT3.TABLE1.COL5' | translate }}</th>
+              <th>{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT3.TABLE1.COL6' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of dataAnalitoTblConcord.Muestras; let i = index">
+              <ng-container *ngIf="item.samples === formulario.get('idMuestra')?.value">
+                <td class="borderCol">{{item.samples}}</td>
+                <td class="borderCol">{{item.total}}</td>
+                <td class="borderCol">{{item.aceptados}}</td>
+                <td class="borderCol">{{item.rechazados}}</td>
+                <td class="borderCol">{{item.acepPorcentaje === null ? 0 : item.acepPorcentaje}}%</td>
+                <td>{{item.recPorcentaje === null ? 0 : item.recPorcentaje}}%</td>
+              </ng-container>
+            </tr>
+              
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div [ngStyle]="{'width': (arrDataGraf2.length * 22)+'em' }"
+      style="display: flex; flex-direction: column; padding: 1em; margin-top: 2em;">
+
+      <div style="width: 40em;">
+        <h2 style="margin-bottom: .5em; color: #6B4B8B;">% Concordancia {{dataAnalitoTblConcord.desAnalytes}}</h2>
+        <div style="height: 15em; border-radius: 7px; webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center;">
+          <!-- GRÁFICA CONT 2 -->
+          <div [style]="'width:40em; height:20em;'" id="graf3"></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1em;">
+        <h2 style="margin-bottom: .5em; color: #6B4B8B;">% Concordancia por muestra</h2>
+        <div style="display: flex; justify-content: space-evenly; gap: 1em;">
+          <div *ngFor="let item of arrDataGraf2; let i = index"
+            style="height: 15em;  border-radius: 7px; webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+            -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+            box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center;">
+            <!-- GRÁFICA CONT 2 -->
+            <div [style]="'width:20em; height:15em;padding-left:.5em'" id="graf4{{i}}"></div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+</ng-template>
+
+<!-- CONT 4 -->
+<ng-template #item_4 id="key_4">
+  <div *ngIf="itemSelected == 4" class="cont_report">
+    <h2 style="color:#3850EB; margin:0; padding-left: 0.4em;">{{'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT4.TCONT4' |
+      translate}}</h2>
+    <div style="height: 1px; width: 100%; background-color: gray;"></div>
+
+
+    <div style="width: 100%; display: flex; flex-direction: column; padding-top: 4em;">
+      <div style="width: 60em;">
+        <table class="">
+          <thead>
+            <tr>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT4.TABLE1.COL1' | translate }}</th>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT4.TABLE1.COL2' | translate }}</th>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT4.TABLE1.COL3' | translate }}</th>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT4.TABLE1.COL4' | translate }}</th>
+              <th class="borderCol">{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT4.TABLE1.COL5' | translate }}</th>
+              <th>{{ 'MODULES.REPORTESDATOSSEMICUALITATIVOS.CONT4.TABLE1.COL6' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of dataFinCiclo.samples">
+              <td class="borderCol">{{item.serialNumber}}</td>
+              <td class="borderCol">{{item.total}}</td>
+              <td class="borderCol">{{item.aceptados}}</td>
+              <td class="borderCol">{{item.rechazados}}</td>
+              <td class="borderCol">{{item.acepPorcentaje}}</td>
+              <td>{{item.recPorcentaje}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="width: 50em; margin: 2em 1em;">
+        <div style="height: 13em; width: 100%; border-radius: 7px; webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);">
+          <div [style]="'width:50em; height:13em;padding-left:.5em'" id="graf5"></div>
+        </div>
+      </div>
+      <div style="margin-top: 2em; padding-left: 1em;">
+        <h2 style="margin-bottom: .5em; color: #6B4B8B;">Parámetros concordantes</h2>
+        <div style="display: flex; gap: 1em; padding-bottom: 1em;">
+          <div *ngFor="let item of dataFinCiclo.samples; let i = index"
+            style="height: 15em;  border-radius: 7px; webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+            -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4);
+            box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center;">
+            <!-- GRÁFICA CONT 2 -->
+            <div [style]="'width:20em; height:15em;padding-left:.5em'" id="graf6{{i}}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+
+<ng-template #pdfConsolidado>
+  <ng-container *ngFor="let item of datosFiltro;index as i">
+   <ng-container *ngIf="arrGraficasTres[i] !== 0">
+    <div [style]="'width:50em; height:13em;padding-left:.5em'" [id]="'primera'+i"></div>
+    <div [style]="'width:50em; height:13em;padding-left:.5em'" [id]="'segunda'+i"></div>
+    <ng-container *ngFor="let item of arrGraficasTres[i]; let j = index">
+      <div [style]="'width:50em; height:13em;padding-left:.5em'" [id]="'tercera'+i+'P'+j"></div>
+    </ng-container>
+    <ng-container *ngFor="let item of arrGraficasCuatro[i]; let j = index">
+      <div [style]="'width:50em; height:13em;padding-left:.5em'" [id]="'cuarta'+i+'Z'+j"></div>
+    </ng-container>
+   </ng-container>
+  </ng-container>
+</ng-template>

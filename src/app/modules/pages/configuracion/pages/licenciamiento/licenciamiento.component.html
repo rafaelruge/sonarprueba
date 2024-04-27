@@ -1,0 +1,205 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+                <div class="col-12 d-flex justify-content-center">
+                    <img class="imageSobreBorde" [src]="'ControlMaterial.png' | imageCdn">
+                </div>
+                <div class="row justify-content-center mt-4">
+
+                    <div class="col-12 titulo">{{'MODULES.LICENCIAMIENTO.TITLE' | translate}}</div>
+
+                    <div class="col-md-12 col-lg-9">
+
+                        <div class="row boxBtnCreateFilter">
+
+                            <div class="col-12 col-sm-5 boxBtnCreate form-group">
+                                <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                                    (click)="openModalRegistroLicencia(templateRegistroLicencia, '')">{{'MODULES.LICENCIAMIENTO.BOTONCREAR'
+                                    | translate}}</button>
+                            </div>
+
+
+                            <div class="col-12 col-sm-7 boxFilter">
+                                <i class="fa fa-search"></i>
+                                <mat-form-field class="filter">
+                                    <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                                    <input matInput (keyup)="applyFilter($event)"
+                                        placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col col-lg-9">
+                        <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+                            <ng-container matColumnDef="fechaInicial">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.LICENCIAMIENTO.COLUMNS.FECHA_INICIAL' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.fechaInicial}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="fechaFinal">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.LICENCIAMIENTO.COLUMNS.FECHA_FINAL' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.fechaFinal}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="codActLic">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.LICENCIAMIENTO.COLUMNS.COD_ACT_LIC' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.codActLic}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="cliente">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.LICENCIAMIENTO.COLUMNS.CLIENTE' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.cliente}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="modulos">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.LICENCIAMIENTO.COLUMNS.MODULOS' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.modulos}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="active">
+                                <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                    {{'MODULES.CIUDADES.COLUMNS.ESTADO' | translate}}</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <i *ngIf="!row.active" class="far fa-check-square botonInactive"
+                                        (click)="actualizarEstadoLicencia($event,row)"></i>
+                                    <i *ngIf="row.active" class="far fa-check-square botonActive"
+                                        (click)="actualizarEstadoLicencia($event,row)"></i>
+                                    <!--<mat-slide-toggle [checked]="row.active" (change)="actualizarEstadoLicencia($event,row)"></mat-slide-toggle>-->
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="editar">
+                                <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                    {{'MODULES.CIUDADES.COLUMNS.EDITAR' | translate}}</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <i class="far fa-edit botonEditar"
+                                        (click)="openModalRegistroLicencia(templateRegistroLicencia, row)"></i>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="borrar">
+                                <th style="width: 100px;" mat-header-cell *matHeaderCellDef>
+                                    {{'MODULES.CIUDADES.COLUMNS.ELIMINAR' | translate}}</th>
+                                <td mat-cell *matCellDef="let row; let i = index;">
+                                    <i class="fas fa-eraser botonEliminar" (click)="eliminarLicencia(row.id)"></i>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                            <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                            </tr>
+                        </table>
+                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #templateRegistroLicencia>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row">
+
+            <div class="col flex2">
+
+                <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+                <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+                <h3 class="tituloModal">{{tituloAccion}}</h3>
+                <div class="hr"></div>
+
+            </div>
+
+        </div>
+
+        <form [formGroup]="formaRegistroLicencia" autocomplete="off">
+            <div class="form-row">
+
+                <div class="col-md-6 form-group">
+                    <div role="group">
+                        <label for="fechaInicial">{{'MODULES.LICENCIAMIENTO.FORMULARIO.FECHA_INICIAL' |
+                            translate}}</label>
+                        <input formControlName="fechaInicial" type="date" class="form-control styleForm"
+                            id="fechaInicial">
+                        <small
+                            *ngIf="formaRegistroLicencia.controls.fechaInicial.errors?.required && formaRegistroLicencia.controls.fechaInicial.touched"
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <div role="group">
+                        <label for="fechaFinal">{{'MODULES.LICENCIAMIENTO.FORMULARIO.FECHA_FINAL' | translate}}</label>
+                        <input formControlName="fechaFinal" type="date" class="form-control styleForm" id="fechaFinal">
+                        <small
+                            *ngIf="formaRegistroLicencia.controls.fechaFinal.errors?.required && formaRegistroLicencia.controls.fechaFinal.touched"
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <div role="group">
+                        <label for="codActLic">{{'MODULES.LICENCIAMIENTO.FORMULARIO.COD_ACT_LIC'
+                            | translate}}</label>
+                        <input formControlName="codActLic" type="number" class="form-control styleForm" id="codActLic">
+                        <small
+                            *ngIf="formaRegistroLicencia.controls.codActLic.errors?.required && formaRegistroLicencia.controls.codActLic.touched"
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <div role="group">
+                        <label for="cliente">{{'MODULES.LICENCIAMIENTO.FORMULARIO.CLIENTE' | translate}}</label>
+                        <input formControlName="cliente" type="text" class="form-control styleForm" id="cliente">
+                        <small
+                            *ngIf="formaRegistroLicencia.controls.cliente.errors?.required && formaRegistroLicencia.controls.cliente.touched"
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <div role="group">
+                        <label for="modulos">{{'MODULES.LICENCIAMIENTO.FORMULARIO.MODULOS' |
+                            translate}}</label>
+                        <input formControlName="modulos" type="number" class="form-control styleForm" id="modulos">
+                        <small
+                            *ngIf="formaRegistroLicencia.controls.modulos.errors?.required && formaRegistroLicencia.controls.modulos.touched"
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 form-group text-center">
+                    <button (click)="closeVentana()" *ngIf="!accionEditar" class="col-4 col-md-3 mt-4 boton"
+                        type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                    <button (click)="closeVentana()" *ngIf="accionEditar" class="col-4 col-md-3 mt-4 boton"
+                        type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                    <button class="col-4 col-md-3 ml-1 botonCancelar" type="button"
+                        (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>

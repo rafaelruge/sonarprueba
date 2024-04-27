@@ -1,0 +1,130 @@
+<div id="fondo">
+
+  <div class="row estrow box">
+
+
+    <div class="col-10 col-sm-6 col-lg-4 col-xl-3 contForm">
+
+
+      <form id="fondoFormulario" [formGroup]="login" autocomplete="off">
+
+        <h1 class="title">{{'MODULES.LOGIN.TITLE' | translate}}</h1>
+
+        <div class="contImg">
+          <img src="../../assets/imagenes/logoAnnarQC_blanco.png" class="logo" alt="Annar QC">
+        </div>
+
+        <div class="row estrow">
+
+          <div class="col-md-12 form-group">
+            <div role="group">
+              <label for="username">{{'MODULES.LOGIN.FORMULARIO.USUARIO' | translate}}</label>
+              <input formControlName="username" type="text" class="form-control plhCustom login" id="username"
+                placeholder="{{'MODULES.LOGIN.FORMULARIO.PLACEHOLDER' | translate}}">
+
+              <!-- alert -->
+              <div class="contAlerta animate__animated animate__fadeIn fast"
+                *ngIf="login.get('username').errors?.required  && login.get('username').touched">
+                <div class="alerta">
+                  <img src="../../../../assets/imagenes/info.png" alt="info" />
+                  <p>{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</p>
+                </div>
+              </div>
+
+              <div class="contAlerta animate__animated animate__fadeIn fast" *ngIf="usuarioNoExiste">
+                <div class="alerta">
+                  <img src="../../../../assets/imagenes/info.png" alt="info" />
+                  <p>{{'MODULES.NOTIFICACIONES.USUARIONOEXSITE' | translate}}</p>
+                </div>
+              </div>
+
+              <div class="contAlerta animate__animated animate__fadeIn fast" *ngIf="caducado">
+                <div class="alerta">
+                  <img src="../../../../assets/imagenes/info.png" alt="info" />
+                  <p>{{'MODULES.NOTIFICACIONES.USUARIOCADUCADO' | translate}}</p>
+                </div>
+              </div>
+
+              <div class="contAlerta animate__animated animate__fadeIn fast" *ngIf="inactivo">
+                <div class="alerta">
+                  <img src="../../../../assets/imagenes/info.png" alt="info" />
+                  <p>{{'MODULES.NOTIFICACIONES.USUARIOINACTIVO' | translate}}</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-12 form-group">
+            <div role="group">
+              <label for="pass">{{'MODULES.LOGIN.FORMULARIO.CLAVE' | translate}}</label>
+              <input formControlName="pass" type="password" class="form-control plhCustom login" id="pass" placeholder="{{'MODULES.LOGIN.FORMULARIO.PLACEHOLDER2' | translate}}">
+
+              <!-- alert -->
+              <div class="contAlerta animate__animated animate__fadeIn fast"
+                *ngIf="login.get('pass').errors?.required  && login.get('pass').touched">
+                <div class="alerta">
+                  <img src="../../../../assets/imagenes/info.png" alt="info"/>
+                  <p>{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</p>
+                </div>
+              </div>
+
+              <div class="contAlerta animate__animated animate__fadeIn fast" *ngIf="claveIncorrecta">
+                <div class="alerta">
+                  <img src="../../../../assets/imagenes/info.png" alt="info"/>
+                  <p>{{'MODULES.NOTIFICACIONES.CLAVEINCORRECTA' | translate}}</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-12 form-group">
+            <div role="group">
+              <label>{{'MODULES.LOGIN.FORMULARIO.SEDE' | translate}}</label>
+              <ngx-select formControlName="sede" class="dl" [allowClear]="true" [items]="listaSedes"
+                optionValueField="idheadquarters" optionTextField="desheadquarters">
+              </ngx-select>
+
+              <!-- alert -->
+              <div class="contAlerta animate__animated animate__fadeIn fast"
+                *ngIf="login.get('sede').errors?.required  && login.get('sede').touched">
+                <div class="alerta">
+                  <img src="../../../../assets/imagenes/info.png" alt="info" />
+                  <p>{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</p>
+                </div>
+              </div>
+
+              <div class="contAlerta animate__animated animate__fadeIn fast" *ngIf="noSede">
+                <div class="alerta">
+                  <img src="../../../../assets/imagenes/info.png" alt="info" />
+                  <p>{{'MODULES.NOTIFICACIONES.NOSEDEASGINADA' | translate}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row estrow flex4">
+          <a class="recuperacionContrasena font-italic" routerLink="olvido-contrasena">
+            {{'MODULES.LOGIN.OLVIDO_CLAVE' | translate}}
+          </a>
+        </div>
+
+        <div class="row estrow flex4">
+          <button id="botonLogin" (click)="ingresar()" type="submit" class="btn btn2">
+            {{'MODULES.LOGIN.FORMULARIO.BOTON' | translate}}
+          </button>
+          
+        </div>
+        <div>
+          <p class="recuperacionContrasena font-italic" style="padding-left: 40%;">{{config[0].version}}</p>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+
+</div>

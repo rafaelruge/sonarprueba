@@ -1,0 +1,126 @@
+.boton {
+    border-radius: 25px;
+    height: 30px;
+    color: #fff;
+    background: var(--purple-01);
+    border: var(--purple-01);
+}
+
+@media(min-width: 320px) {
+
+    .boxBtnSearch {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 16px;
+    }
+
+    .boxBtnCreate {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0px;
+        margin-bottom: 40px;
+        margin-top: 16px;
+
+    }
+
+    .boxFilter {
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .boxFilter .filter {
+
+        width: 80%;
+        margin-left: 8px;
+    }
+
+    .btnCreate {
+
+        width: 30%;
+
+    }
+
+}
+
+@media(min-width: 375px) {
+
+    .btnCreate {
+        width: 24%;
+    }
+
+}
+
+@media(min-width: 425px) {
+
+    .boxFilter .filter {
+
+        width: 60%;
+    }
+
+    .btnCreate {
+
+        width: 22%;
+
+    }
+
+}
+
+@media(min-width: 500px) {
+
+    .btnCreate {
+
+        width: 18%;
+
+    }
+
+}
+
+@media(min-width: 576px) {
+
+    .boxBtnCreate {
+        margin: 0px;
+        justify-content: flex-start;
+    }
+    .boxBtnCreate .btnCreate {
+        width: 50%;
+    }
+    .boxFilter {
+        justify-content: flex-end;
+    }
+    .boxFilter .filter {
+        width: 80%;
+    }
+    .boxBtnCreateFilter {
+        margin-top: 40px;
+    }
+}
+
+@media(min-width: 768px) {
+    .boxBtnCreate .btnCreate {
+        width: 42%;
+    }
+}
+
+@media(min-width: 992px) {
+
+    .boxBtnCreate .btnCreate {
+        width: 34%;
+    }
+    .boxFilter .filter {
+        width: 60%;
+    }
+}
+
+@media(min-width: 1200px) {
+
+    .boxBtnCreate .btnCreate {
+        width: 36%;
+    }
+
+}

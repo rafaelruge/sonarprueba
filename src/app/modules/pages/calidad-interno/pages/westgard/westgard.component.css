@@ -1,0 +1,219 @@
+@media(min-width: 320px) {
+
+    .boxBtnAceptCancel {
+  
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 24px;
+  
+    }
+  
+    .btnCancel {
+  
+      margin-left: 8px;
+  
+    }
+  
+    .btnCancel,
+    .btnAceptar {
+  
+      width: 32%;
+  
+    }
+  
+    .boxBtnFilter {
+  
+      margin-top: 24px;
+  
+    }
+  
+    .boxBtnCreate {
+  
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  
+    }
+  
+    .btnCreate {
+  
+      width: 24%;
+  
+    }
+  
+    .boxFilter {
+  
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  
+    }
+  
+    .filter {
+  
+      width: 80%;
+      margin-left: 4px;
+  
+    }
+  
+  }
+  
+  @media(min-width: 375px) {
+  
+    .btnCancel,
+    .btnAceptar {
+  
+      width: 28%;
+  
+    }
+  
+    .btnCreate {
+  
+      width: 22%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 425px) {
+  
+    .btnCancel,
+    .btnAceptar {
+  
+      width: 23%;
+  
+    }
+  
+    .btnCreate {
+  
+      width: 20%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 500px) {
+  
+    .btnCancel,
+    .btnAceptar {
+  
+      width: 20%;
+  
+    }
+  
+    .btnCreate {
+  
+      width: 17%;
+  
+    }
+  
+    .filter {
+  
+      width: 60%;
+    }
+  
+  }
+  
+  @media(min-width: 576px) {
+  
+    .btnCancel,
+    .btnAceptar {
+  
+      width: 18%;
+  
+    }
+  
+    .btnActive {
+  
+      text-align: center;
+  
+    }
+  
+    .boxBtnCreate {
+  
+      margin: 0;
+      justify-content: flex-start;
+  
+    }
+  
+    .btnCreate {
+  
+      width: 48%;
+  
+    }
+  
+    .boxFilter {
+  
+      justify-content: flex-end;
+  
+    }
+  
+    .filter {
+  
+      width: 80%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 900px) {
+  
+    .btnCreate {
+  
+      width: 42%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 992px) {
+  
+    .btnCreate {
+  
+      width: 47%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 1100px) {
+  
+    .btnCreate {
+  
+      width: 43%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 1200px) {
+  
+    .btnCreate {
+  
+      width: 37%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 1370px) {
+  
+    .btnCreate {
+  
+      width: 32%;
+  
+    }
+  
+  }
+  
+  @media(min-width: 1500px) {
+  
+    .btnCreate {
+  
+      width: 35%;
+  
+    }
+  
+  }
+  

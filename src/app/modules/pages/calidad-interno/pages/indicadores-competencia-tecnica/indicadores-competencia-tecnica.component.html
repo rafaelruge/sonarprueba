@@ -1,0 +1,811 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+                <div class="col-12 d-flex justify-content-center" *ngIf="flagFromParent">
+                    <img class="imageSobreBorde" [src]="'ICT.png' | imageCdn">
+                </div>
+
+                <div class="row justify-content-center mt-4" *ngIf="flagFromParent">
+                    <div class="col-12 titulo">{{'MODULES.ICT.TITLE' | translate}}</div>
+                </div>
+
+                <!-- cont form -->
+                <div class="row styleRowForm">
+
+                    <form [formGroup]="formulario" autocomplete="off" class="mt-4">
+
+                        <div style="display: grid; grid-template-columns: repeat(2,1fr);gap: 2em;align-items: center; width: 73%;margin: 0 auto 0;">
+                            <!-- desde -->
+                            <div >
+                                <mat-form-field  class="stylePicker" style="width: 100% !important;">
+                                    <mat-label class="labelForm">{{'MODULES.ICT.DESDE' | translate}}<span
+                                            class="colorAsterisco"> *</span></mat-label>
+                                    <input disable matInput [matDatepicker]="picker" class="form-control styleForm"
+                                        style="background-image: none !important;font-size: 1rem"
+                                        formControlName="desde" (dateChange)="observeFechas('desde')">
+                                    <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker"
+                                        style="color:#2edad8; width: 18px;">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #picker style="color:white !important"></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- hasta -->
+                            <div >
+                                <mat-form-field class="stylePicker" style="width: 100% !important;">
+                                    <mat-label class="labelForm">{{'MODULES.ICT.HASTA' | translate}}<span
+                                            class="colorAsterisco"> *</span></mat-label>
+                                    <input matInput [matDatepicker]="picker1" class="form-control styleForm"
+                                        style="background-image: none !important;font-size: 1rem"
+                                        formControlName="hasta" (dateChange)="observeFechas('hasta')">
+                                    <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker1"
+                                        style="color:#2edad8; width: 18px;">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #picker1 style="color:white !important"></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3,1fr);gap: 2em;align-items: center; width: 73%;margin: 0 auto 0;">
+                            <!-- Calculado por -->
+                            <div >
+                                <mat-form-field class="sf-2" >
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.ICT.ICT' | translate}}<span class="colorAsterisco"> *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="ict">
+                                        <mat-option value="">
+                                            {{'MODULES.ICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="zscore">
+                                            {{'MODULES.ICT.OPT1' | translate}}
+                                        </mat-option>
+                                        <mat-option value="valor asignado">
+                                            {{'MODULES.ICT.OPT2' | translate}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <!-- Sedes -->
+                            <div >
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.SEDE' | translate}}<span
+                                            class="colorAsterisco"> *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="sedes" multiple>
+                                        <mat-option value="" (click)="selectNone('sedes')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" (click)="selectedAllheadquaerter('sedes') ">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLSEDES' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let sede of sedes" [value]="sede.idheadquarters"
+                                            [matTooltip]="sede.desheadquarters"
+                                            (click)="selectedHeadquarter0('sedes')">
+                                            {{sede.desheadquarters}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div >
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.SECCION' | translate}}<span
+                                            class="colorAsterisco"> *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="secciones" multiple>
+                                        <mat-option value="" (click)="selectNone('secciones')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" *ngIf="vertodassecciones"
+                                            (click)="selectedAllsection('secciones')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLSECCIONES' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let seccion of secciones_Tmp"
+                                            [value]="seccion.idsection" [matTooltip]="seccion.namesection" (click)="selectedsection('secciones')">
+                                            {{seccion.namesection}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <!-- Equipos -->
+                            <div >
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.EQUIPO' | translate}}<span
+                                            class="colorAsterisco"> *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="equipos" multiple>
+                                        <mat-option value="" (click)="selectNone('equipos')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" *ngIf="vertodosequipos"
+                                            (click)="selectedAllanalyzer('equipos')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLEQUIPOS' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let equipo of equipos" [value]="equipo.idAnalyzer"
+                                            [matTooltip]="equipo.nameAnalyzer"
+                                            (click)="selectedanalyzer('equipos')">
+                                            {{equipo.nameAnalyzer}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Analitos -->
+                            <div >
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.ANALITOS' | translate}}<span
+                                            class="colorAsterisco"> *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="analitos" multiple>
+                                        <mat-option value="" (click)="selectNone('analitos')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" *ngIf="vertodosanalitos"
+                                            (click)="selectedAllanalyte('analitos')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLANALITOS' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let analito of analitos" [value]="analito.idanalytes"
+                                            [matTooltip]="analito.desanalytes"
+                                            (click)="selectedanalyte('analitos')">
+                                            {{analito.desanalytes}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Lotes -->
+                            <div >
+                                <mat-form-field class="sf-2">
+                                    <mat-label class="matLabelForm">
+                                        {{'MODULES.REPORTECONSOLIDADOICT.LOTE' | translate}}<span
+                                            class="colorAsterisco"> *</span>
+                                    </mat-label>
+                                    <mat-select disableOptionCentering class="form-control styleForm"
+                                        formControlName="lotes" multiple>
+                                        <mat-option value="" (click)="selectNone('lotes')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="-1" (click)="selectAll('lotes')">
+                                            {{'MODULES.REPORTECONSOLIDADOICT.ALLOTES' | translate}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let lote of lotes" [value]="lote.idLot"
+                                            [matTooltip]="lote.numlot"
+                                            (click)="selectOne('lotes')">
+                                            {{lote.numlot}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+
+                        <div class="col-12 contBtn mt-2">
+                            <button class="boton" (click)="filtrar()">{{'MODULES.ICT.BOTON' | translate}}</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- **Botones  -->
+    <br>
+    <br>
+    <div class="row" *ngIf="ver">
+        <!-- <div class="col-md-6 text-left">
+            <button type="button" class="btn-select" [ngClass]="{'active': verTablaInt }" (click)="getCtiInterno()">ICT
+                Interno</button>
+            <button type="button" class="btn-select" [ngClass]="{'active': verTablaExt }" (click)="getCtiExterno()">ICT
+                Externo</button>
+
+        </div> -->
+        <div class="col-md-6 text-right">
+            <img *ngIf="verTablaInt && dataTableInterno.length > 0" [src]="'pdf2.png' | imageCdn"
+                alt="Reporte cuantitativo" style="height: 30px; margin-right: 20px; cursor: pointer;"
+                (click)="pdfInterno()">
+            <img *ngIf="verTablaInt && dataTableInterno.length > 0" [src]="'descargar_Excel.png' | imageCdn"
+                alt="Reporte cuantitativo" style="height: 30px; margin-right: 20px; cursor: pointer;"
+                (click)="exportToExcelInt()">
+
+            <img *ngIf="verTablaExt" [src]="'pdf2.png' | imageCdn" alt="Reporte cuantitativo"
+                style="height: 30px; margin-right: 20px; cursor: pointer;" (click)="pdfExterno()">
+            <!-- <img *ngIf="verTablaExt" [src]="'descargar_Excel.png' | imageCdn" alt="Reporte cuantitativo" style="height: 30px; margin-right: 20px; cursor: pointer;" (click)="exportToExcelExt()"> -->
+
+            <img id="noimagen" src="../../../../../../assets/imagenes/noimage.png" hidden="true">
+        </div>
+    </div>
+
+
+
+    <!-- **Nuevo diseño -->
+    <div class="row animate__animated animate__fadeIn fast" *ngIf="verCard">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+
+                <!-- ** Secciones - Menu -->
+
+                <h3 class="text-center mt-3 text-secondary" *ngIf="verTablaInt">Seleccione la sección que desea
+                    visualizar</h3>
+                <h3 class="mt-3 ml-3 text-secondary" *ngIf="verTablaExt">ICT Externo calculado por: {{tipo}}</h3>
+
+                <div class="boxSecciones" *ngIf="verTablaInt">
+                    <div class="arrow-left">
+                        <i class="fas fa-angle-left" (click)="scrollCards(-1)"></i>
+                    </div>
+                    <div #scroll class="boxSeccionesContainer">
+                        <div class="mr-2" *ngFor="let item of secciones; let i = index">
+                            <div #btnSecc id="bntSecc-{{i}}" class="styleSeccion"
+                                [ngClass]="{'backHover': seccionSeleccionado === item }">
+                                <h2 class="text-capitalize text-nowrap mb-0" (click)="buscarSeccion(item, btnSecc)">
+                                    {{item.namesection | lowercase}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="arrow-right" (click)="scrollCards(1)">
+                        <i class="fas fa-angle-right"></i>
+                    </div>
+                </div>
+
+
+                <!-- ***Tablas -->
+
+                <!-- tabla CTI Interno -->
+                <div class="row p-3" *ngIf="verTablaInt && dataTableInterno.length > 0" id="htmlData">
+                    <div class="col-12 contTables">
+                        <table class="table table-striped">
+                            <thead class="backTh thead-scroll">
+                                <tr>
+                                    <th colspan="5" class="borderTh">
+                                        Información de laboratorio
+                                    </th>
+
+                                    <th colspan="5" class="borderTh">
+                                        Información de test
+                                    </th>
+
+                                    <th colspan="4" class="borderTh">
+                                        Metas de calidad
+                                    </th>
+
+                                    <th colspan="7" class="borderTh">
+                                        Datos desempeño
+                                    </th>
+
+                                    <th colspan="4">
+                                        ICT
+                                    </th>
+
+                                </tr>
+                                <tr>
+                                    <th class="th-scroll">N°</th>
+                                    <th class="th-scroll">Sección</th>
+                                    <th class="th-scroll">Sede</th>
+                                    <th class="th-scroll">Ciudad</th>
+                                    <th class="th-scroll"># Lab</th>
+
+                                    <th class="w150px">Equipo</th>
+                                    <th class="th-scroll">Lote QC</th>
+                                    <th class="w150px">Analito</th>
+                                    <th class="th-scroll">Nivel</th>
+                                    <th class="th-scroll">Unidad</th>
+
+                                    <th class="th-scroll">Fuente</th>
+                                    <th class="th-scroll">%Tea</th>
+                                    <th class="th-scroll">%CVa</th>
+                                    <th class="th-scroll">%BIASa</th>
+
+                                    <th class="th-scroll">Objetivo de Calidad</th>
+                                    <th class="th-scroll">Media</th>
+                                    <th class="th-scroll">DS</th>
+                                    <th class="th-scroll">%CV</th>
+                                    <th class="th-scroll">%Bias</th>
+                                    <th class="th-scroll">%ET</th>
+                                    <th class="th-scroll">N° datos</th>
+
+                                    <th class="th-scroll">CVR</th>
+                                    <th class="th-scroll">SR</th>
+                                    <th class="th-scroll">IET</th>
+                                    <th class="th-scroll">σ</th>
+
+                                </tr>
+                            </thead>
+
+                            <tbody class="tbody-scroll">
+                                <tr *ngFor="let dato of dataTableInterno; let i = index">
+
+                                    <td class="td-scroll">{{ i + 1 }}</td>
+                                    <td class="td-scroll text-capitalize">{{ dato.Seccion | lowercase}}</td>
+                                    <td class="td-scroll">{{ dato.Sede }}</td>
+                                    <td class="td-scroll">{{ dato.Ciudad }}</td>
+                                    <td class="td-scroll">{{ dato.Laboratorio }}</td>
+
+                                    <td class="w150px">{{ dato.Equipo }}</td>
+                                    <td class="td-scroll">{{ dato.Lote }}</td>
+                                    <td class="w150px">{{ dato.Analito }}</td>
+                                    <td class="td-scroll">{{ dato.Nivel }}</td>
+                                    <td class="td-scroll">{{ dato.Unidad }}</td>
+
+                                    <td class="td-scroll">{{ dato.Fuente }}</td>
+                                    <td class="td-scroll">{{ dato.Tea }}</td>
+                                    <td class="td-scroll">{{ dato.Cva }}</td>
+                                    <td class="td-scroll">{{ dato.Sesgo }}</td>
+
+                                    <td class="td-scroll">{{ dato.Dianavalue }}</td>
+                                    <td class="td-scroll">{{ dato.Media }}</td>
+                                    <td class="td-scroll">{{ dato.Ds }}</td>
+                                    <td class="td-scroll">{{ dato.Cv }}</td>
+                                    <td class="td-scroll">{{ dato.Bias }}</td>
+                                    <td class="td-scroll">{{ dato.ET }}</td>
+                                    <td class="td-scroll">{{ dato.ndatos}}</td>
+
+                                    <td style="min-width: 130PX;" class="td-scroll"
+                                        [ngClass]="{ 'rojo td-scroll': dato.CVR > 1 , 'amarillo td-scroll': dato.CVR == 1, 'verde td-scroll': dato.CVR < 1   }">
+                                        {{ dato.CVR }}</td>
+                                    <td style="min-width: 130PX;"
+                                        [ngClass]="{ 'rojo td-scroll': dato.SR > 1 , 'amarillo td-scroll': dato.SR == 1, 'verde td-scroll': dato.SR < 1  }">
+                                        {{ dato.SR }}</td>
+                                    <td style="min-width: 130PX;"
+                                        [ngClass]="{ 'rojo td-scroll': dato.IET > 1 , 'amarillo td-scroll': dato.IET == 1, 'verde td-scroll': dato.IET < 1  }">
+                                        {{ dato.IET }}</td>
+                                    <td style="min-width: 130PX;"
+                                        [ngClass]="{ 'white text-dark': dato.SIG == '--', 'rojo td-scroll': dato.SIG < dato.Constz, 'azul td-scroll': dato.SIG >= dato.Constz && dato.SIG < 3, 'amarillo td-scroll': dato.SIG >= 3 && dato.SIG < 4, 'verde td-scroll': dato.SIG >= 4 && dato.SIG < 6, 'verdeOscuro td-scroll': dato.SIG > 6 }">
+                                        {{ dato.SIG }}
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- tabla CTI Externo -->
+                <!-- tabla por  zscore -->
+                <div class="row p-3" *ngIf="verTablaExt">
+                    <div class="col-12 contTables" *ngIf="verTablaExt && tipo == 'Z-Score'">
+                        <table class="table table-striped">
+                            <thead class="backTh thead-scroll">
+                                <tr>
+                                    <th colspan="6" class="borderTh">
+                                        Información de test
+                                    </th>
+
+                                    <th colspan="2" class="borderTh">
+                                        Grupo de comparación
+                                    </th>
+
+                                    <th colspan="3" class="borderTh">
+                                        Criterios de evaluación
+                                    </th>
+
+                                    <th colspan="2">
+                                        ICT Externo
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="th-scroll-1">N°</th>
+                                    <th class="w150px">Programa</th>
+                                    <th class="th-scroll-1">Equipo</th>
+                                    <th class="th-scroll-1">Analito</th>
+                                    <th class="th-scroll-1">Resultado</th>
+                                    <th class="th-scroll-1">Und analito</th>
+
+                                    <th class="th-scroll-1">Media</th>
+                                    <th class="th-scroll-1">DS</th>
+
+                                    <th class="th-scroll-1">Fuente</th>
+                                    <th class="th-scroll-1">Desv. permitida</th>
+                                    <th class="th-scroll-1">Unidades</th>
+
+                                    <th class="th-scroll-1">Z-Score</th>
+                                    <th class="th-scroll-1">ID</th>
+
+                                </tr>
+                            </thead>
+                            <tbody class="tbody-scroll">
+                                <tr *ngFor="let dato of dataTableExterno; let i = index">
+                                    <td class="td-scroll-1">{{ i + 1 }}</td>
+                                    <td class="w150px text-capitalize">{{ dato.Desprograma | lowercase}}</td>
+                                    <td class="td-scroll-1">{{ dato.Nameanalyzer }}</td>
+                                    <td class="td-scroll-1">{{ dato.Desanalytes }}</td>
+                                    <td class="td-scroll-1">{{ dato.Resultado }}</td>
+                                    <td class="td-scroll-1">{{ dato.UnidadObjetivo }}</td>
+                                    <td class="td-scroll-1">{{ dato.media }}</td>
+                                    <td class="td-scroll-1">{{ dato.ds }}</td>
+                                    <td class="td-scroll-1">{{ dato.Fuente }}</td>
+                                    <td class="td-scroll-1">{{ dato.DesvPermitida }}</td>
+                                    <td class="td-scroll-1">{{ dato.Unidad }}</td>
+                                    <td class="td-scroll-1">{{ dato.Zscore }}</td>
+                                    <td
+                                        [ngClass]="{ 'rojo td-scroll-1': dato.Indicedesvio > 1, 'verde td-scroll-1': dato.Indicedesvio < 1 }">
+                                        {{ dato.Indicedesvio }}
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- tabla por  valor asignado -->
+                    <div class="col-12 contTables" *ngIf="verTablaExt && tipo == 'Valor asignado'">
+
+                        <table class="table table-striped">
+                            <thead class="backTh thead-scroll">
+                                <tr>
+                                    <th colspan="7" class="borderTh">
+                                        Información de test
+                                    </th>
+
+                                    <th colspan="3" class="borderTh">
+                                        Criterios de evaluación
+                                    </th>
+
+                                    <th colspan="2">
+                                        ICT Externo
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="th-scroll-1">N°</th>
+                                    <th class="w150px">Programa</th>
+                                    <th class="th-scroll-1">Equipo</th>
+                                    <th class="th-scroll-1">Analito</th>
+                                    <th class="th-scroll-1">Resultado</th>
+                                    <th class="th-scroll-1">Und analito</th>
+                                    <th class="th-scroll-1">V. Asignado</th>
+
+                                    <th class="th-scroll-1">Fuente</th>
+                                    <th class="th-scroll-1">Desv. permitida</th>
+                                    <th class="th-scroll-1">Unidades</th>
+
+                                    <th class="th-scroll-1">Desv. obtenida</th>
+                                    <th class="th-scroll-1">ID</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbody-scroll">
+                                <tr *ngFor="let dato of dataTableExterno; let i = index">
+                                    <td class="td-scroll-1">{{ i + 1 }}</td>
+                                    <td class="w150px text-capitalize">{{ dato.Desprograma | lowercase}}</td>
+                                    <td class="td-scroll-1">{{ dato.Nameanalyzer }}</td>
+                                    <td class="td-scroll-1">{{ dato.Desanalytes }}</td>
+                                    <td class="td-scroll-1">{{ dato.Resultado }}</td>
+                                    <td class="td-scroll-1">{{ dato.Unidadobjetivo }}</td>
+                                    <td class="td-scroll-1">{{ dato.Valorasignado }}</td>
+                                    <td class="td-scroll-1">{{ dato.Fuente }}</td>
+                                    <td class="td-scroll-1">{{ dato.Desvpermitida }}</td>
+                                    <td class="td-scroll-1">{{ dato.Unidad }}</td>
+                                    <td class="td-scroll-1">{{ dato.Desvobtenida }}</td>
+                                    <td
+                                        [ngClass]="{ 'rojo td-scroll-1': dato.Indicedesvio > 1, 'verde td-scroll-1': dato.Indicedesvio < 1 }">
+                                        {{ dato.Indicedesvio }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- *** Graficas data -->
+                <div class="row p-3 animate__animated animate__fadeIn fast">
+                    <!-- <div class="col-12" *ngIf="dataTableInterno.length > 0">
+                        <div class="table-pagination">
+                            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" aria-label="Default pagination" (pageChange)="chanGraphic(page - 1)">
+                                <ng-template ngbPaginationPrevious>
+                                    <span>&#x025C2;</span>
+
+                                </ng-template>
+                                <ng-template ngbPaginationNext>
+                                    <span>&#x025B8;</span>
+                                </ng-template>
+                            </ngb-pagination>
+                        </div>
+                    </div> -->
+                    <div class="col-12" id="charts"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- **Graficas para el PDF -->
+    <div class="container-fluid">
+        <div id="main"></div>
+    </div>
+
+
+
+    <!-- **DISEÑO NO USADOS -->
+
+    <!-- **Data Anterior -->
+    <div class="row mt-5" [hidden]="true">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+                <!-- cont info -->
+                <div class="row boxAll">
+
+                    <!-- img -->
+                    <!-- <p>Open the PDF in new window : pdfMake.createPdf(docDefinition).open();</p> -->
+                    <div class="col-11 boxExport" *ngIf="ver">
+                        <img [src]="'pdf.png' | imageCdn" class="pdf" (click)="downloadPDF()">
+                    </div>
+
+                    <!-- info -->
+                    <div class="col-11" id="htmlData">
+
+                        <div class="row" *ngIf="ver">
+                            <div class="col-12 contCompany">
+                                <img [src]="logoSource" style="width: 250px;">
+                            </div>
+                        </div>
+
+                        <div class="row" *ngIf="ver">
+
+                            <div class="col-12 boxInfo boxDetalles">
+
+                                <h2>{{'MODULES.ICT.TITULOINFO' | translate}}</h2>
+                                <h3>{{'MODULES.ICT.FECHAS' | translate}}: {{ desde }} - {{ hasta }}</h3>
+                                <h3>{{'MODULES.ICT.FECHAREPORTE' | translate}}: {{ hoy }}</h3>
+                                <h3>{{'MODULES.ICT.ICT' | translate}}: {{ tipo }}</h3>
+
+                            </div>
+
+                        </div>
+
+                        <!-- tabla general -->
+                        <div class="col-12 contTables" *ngIf="ver">
+
+                            <table class="table table-striped">
+                                <thead class="backTh">
+                                    <tr>
+                                        <th colspan="5" class="borderTh">
+                                            Información de laboratorio
+                                        </th>
+
+                                        <th colspan="5" class="borderTh">
+                                            Información de test
+                                        </th>
+
+                                        <th colspan="4" class="borderTh">
+                                            Metas de calidad
+                                        </th>
+
+                                        <th colspan="7" class="borderTh">
+                                            Datos desempeño
+                                        </th>
+
+                                        <th colspan="4">
+                                            ICT
+                                        </th>
+
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">N°</th>
+                                        <th scope="col">Sección</th>
+                                        <th scope="col">Sede</th>
+                                        <th scope="col">Ciudad</th>
+                                        <th scope="col"># Lab</th>
+
+                                        <th scope="col">Equipo</th>
+                                        <th scope="col">Lote QC</th>
+                                        <th scope="col">Analito</th>
+                                        <th scope="col">Nivel</th>
+                                        <th scope="col">Unidad</th>
+
+                                        <th scope="col">Fuente</th>
+                                        <th scope="col">%Tea</th>
+                                        <th scope="col">%CVa</th>
+                                        <th scope="col">%BIASa</th>
+
+                                        <th scope="col">Diana</th>
+                                        <th scope="col">Media</th>
+                                        <th scope="col">DS</th>
+                                        <th scope="col">%CV</th>
+                                        <th scope="col">%Bias</th>
+                                        <th scope="col">%ET</th>
+                                        <th scope="col">N° datos</th>
+
+                                        <th scope="col">CVR</th>
+                                        <th scope="col">SR</th>
+                                        <th scope="col">IET</th>
+                                        <th scope="col">σ</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let dato of dataTableInterno; let i = index">
+
+                                        <td>{{ i + 1 }}</td>
+                                        <td>{{ dato.Seccion }}</td>
+                                        <td>{{ dato.Sede }}</td>
+                                        <td>{{ dato.Ciudad }}</td>
+                                        <td>{{ dato.Laboratorio }}</td>
+
+                                        <td>{{ dato.Equipo }}</td>
+                                        <td>{{ dato.Lote }}</td>
+                                        <td>{{ dato.Analito }}</td>
+                                        <td>{{ dato.Nivel }}</td>
+                                        <td>{{ dato.Unidad }}</td>
+
+                                        <td>{{ dato.Fuente }}</td>
+                                        <td>{{ dato.Tea }}</td>
+                                        <td>{{ dato.Cva }}</td>
+                                        <td>{{ dato.Sesgo }}</td>
+
+                                        <td>{{ dato.Dianavalue }}</td>
+                                        <td>{{ dato.Media }}</td>
+                                        <td>{{ dato.Ds }}</td>
+                                        <td>{{ dato.Cv }}</td>
+                                        <td>{{ dato.Bias }}</td>
+                                        <td>{{ dato.ET }}</td>
+                                        <td>{{ dato.ndatos }}</td>
+
+                                        <td [ngClass]="{ 'rojo': dato.CVR > 1, 'verde': dato.CVR < 1 }">{{ dato.CVR }}
+                                        </td>
+                                        <td [ngClass]="{ 'rojo': dato.SR > 1, 'verde': dato.SR < 1 }">{{ dato.SR }}</td>
+                                        <td [ngClass]="{ 'rojo': dato.IET > 1, 'verde': dato.IET < 1 }">{{ dato.IET }}
+                                        </td>
+                                        <td
+                                            [ngClass]="{ 'rojo': dato.SIG < dato.Constz, 'azul': dato.SIG >= dato.Constz && dato.SIG < 3, 'amarillo': dato.SIG >= 3 && dato.SIG < 4, 'verde': dato.SIG >= 4 && dato.SIG < 6, 'verdeOscuro': dato.SIG > 6 }">
+                                            {{ dato.SIG }}</td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <h1 *ngIf="ver">{{'MODULES.ICT.ICT' | translate}}: {{ tipo }}</h1>
+
+                        <!-- tabla por  zscore -->
+                        <div class="col-12" *ngIf="ver && tipo == 'Z-Score'">
+
+                            <table class="table table-striped">
+                                <thead class="backTh">
+                                    <tr>
+                                        <th colspan="6" class="borderTh">
+                                            Información de test
+                                        </th>
+
+                                        <th colspan="2" class="borderTh">
+                                            Grupo de comparación
+                                        </th>
+
+                                        <th colspan="3" class="borderTh">
+                                            Criterios de evaluación
+                                        </th>
+
+                                        <th colspan="2">
+                                            ICT Externo
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">N°</th>
+                                        <th scope="col">Programa</th>
+                                        <th scope="col">Equipo</th>
+                                        <th scope="col">Analito</th>
+                                        <th scope="col">Resultado</th>
+                                        <th scope="col">Und analito</th>
+
+                                        <th scope="col">Media</th>
+                                        <th scope="col">DS</th>
+
+                                        <th scope="col">Fuente</th>
+                                        <th scope="col">Desv. permitida</th>
+                                        <th scope="col">Unidades</th>
+
+                                        <th scope="col">Z-Score</th>
+                                        <th scope="col">ID</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let dato of dataTableExterno; let i = index">
+                                        <td>{{ i + 1 }}</td>
+                                        <td>{{ dato.Desprograma }}</td>
+                                        <td>{{ dato.Nameanalyzer }}</td>
+                                        <td>{{ dato.Desanalytes }}</td>
+                                        <td>{{ dato.Resultado }}</td>
+                                        <td>{{ dato.UnidadObjetivo }}</td>
+                                        <td>{{ dato.media }}</td>
+                                        <td>{{ dato.ds }}</td>
+                                        <td>{{ dato.Fuente }}</td>
+                                        <td>{{ dato.DesvPermitida }}</td>
+                                        <td>{{ dato.Unidad }}</td>
+                                        <td>{{ dato.Zscore }}</td>
+                                        <td
+                                            [ngClass]="{ 'rojo': dato.Indicedesvio > 1, 'verde': dato.Indicedesvio < 1 }">
+                                            {{ dato.Indicedesvio }}</td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <!-- tabla por  valor asignado -->
+                        <div class="col-12" *ngIf="ver && tipo == 'Valor asignado'">
+
+                            <table class="table table-striped">
+                                <thead class="backTh">
+                                    <tr>
+                                        <th colspan="7" class="borderTh">
+                                            Información de test
+                                        </th>
+
+                                        <th colspan="3" class="borderTh">
+                                            Criterios de evaluación
+                                        </th>
+
+                                        <th colspan="2">
+                                            ICT Externo
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">N°</th>
+                                        <th scope="col">Programa</th>
+                                        <th scope="col">Equipo</th>
+                                        <th scope="col">Analito</th>
+                                        <th scope="col">Resultado</th>
+                                        <th scope="col">Und analito</th>
+                                        <th scope="col">V. Asignado</th>
+
+                                        <th scope="col">Fuente</th>
+                                        <th scope="col">Desv. permitida</th>
+                                        <th scope="col">Unidades</th>
+
+                                        <th scope="col">Desv. obtenida</th>
+                                        <th scope="col">ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let dato of dataTableExterno; let i = index">
+                                        <td>{{ i + 1 }}</td>
+                                        <td>{{ dato.Desprograma }}</td>
+                                        <td>{{ dato.Nameanalyzer }}</td>
+                                        <td>{{ dato.Desanalytes }}</td>
+                                        <td>{{ dato.Resultado }}</td>
+                                        <td>{{ dato.Unidadobjetivo }}</td>
+                                        <td>{{ dato.Valorasignado }}</td>
+                                        <td>{{ dato.Fuente }}</td>
+                                        <td>{{ dato.Desvpermitida }}</td>
+                                        <td>{{ dato.Unidad }}</td>
+                                        <td>{{ dato.Desvobtenida }}</td>
+                                        <td
+                                            [ngClass]="{ 'rojo': dato.Indicedesvio > 1, 'verde': dato.Indicedesvio < 1 }">
+                                            {{ dato.Indicedesvio }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-12" id="charts-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+</div>
+
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white;">Por favor, espere.</p>
+</ngx-spinner>

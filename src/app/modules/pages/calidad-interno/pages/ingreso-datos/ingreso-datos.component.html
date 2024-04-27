@@ -1,0 +1,1180 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+                <div class="col-12 d-flex justify-content-center">
+                    <img class="imageSobreBorde" [src]="'IngresoDatos.png' | imageCdn">
+                </div>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-12 titulo">{{'MODULES.INGRESODATOS.TITLE' | translate}}</div>
+                    <!-- cont form filter -->
+                    <div class="col-12 formFilter">
+                        <form [formGroup]="formFiltro" autocomplete="off">
+                            <div class="form-row">
+                                <div class="col-sm-6 col-lg-3 form-group">
+                                    <div role="group">
+                                        <mat-form-field class="sf-2">
+                                            <mat-label class="matLabelForm">
+                                                {{'MODULES.INGRESODATOS.FORMULARIO.SEDES' | translate}}
+                                            </mat-label>
+                                            <mat-select #sedeselect disableOptionCentering class="form-control styleForm" formControlName="sede" disabled style="color: #B5B4B4 !important; border-bottom-color:#B5B4B4;">
+                                                <mat-option *ngFor="let sede of sedes" [value]="sede.Idheadquarters">
+                                                    {{ sede.Desheadquarters }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-lg-3 form-group">
+                                    <div role="group">
+                                        <mat-label class="matLabelForm" style="font-size: 17px !important; ">
+                                            {{'MODULES.INGRESODATOS.FORMULARIO.SECTION' | translate}}<span class="colorAsterisco"> *</span>
+                                        </mat-label>
+                                        <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                                            <input type="text" matInput  [matAutocomplete]="auto01" formControlName="seccion"   #seccionPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                                            <mat-autocomplete #auto01="matAutocomplete" (optionSelected)="cambiarSeccion(seccionPr.value)">
+                                                <mat-option *ngFor="let option of (filteredOptionsSections | async);" [value]="option.namesection" [matTooltip]="option.namesection | NombreSeccion">
+                                                    {{option.namesection | NombreSeccion}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                          </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-lg-3 form-group">
+                                    <div role="group">
+                                        <mat-label class="matLabelForm" style="font-size: 17px !important; ">
+                                            {{'MODULES.INGRESODATOS.FORMULARIO.NUMMATERIALCONTROL' | translate}}<span class="colorAsterisco"> *</span>
+                                        </mat-label>
+                                        <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                                            <input type="text" matInput  [matAutocomplete]="auto02" formControlName="material"  #contmatPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                                            <mat-autocomplete #auto02="matAutocomplete" (optionSelected)="cambiarControlMaterial(contmatPr.value)">
+                                                <mat-option *ngFor="let option of (filteredOptionsControlmaterial | async);" [value]="option.descontmat" [matTooltip]="option.descontmat | NombreControlmaterial">
+                                                    {{option.descontmat | NombreControlmaterial}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                          </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-lg-3 form-group">
+                                    <div role="group">
+                                        <mat-label class="matLabelForm" style="font-size: 17px !important; ">
+                                            {{'MODULES.INGRESODATOS.FORMULARIO.NUMLOTE' | translate}}<span class="colorAsterisco"> *</span>
+                                        </mat-label>
+                                        <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                                            <input type="text" matInput  [matAutocomplete]="auto03" formControlName="lote"  #lotPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                                            <mat-autocomplete #auto03="matAutocomplete" (optionSelected)="lotesPre(lotPr.value)">
+                                                <mat-option *ngFor="let option of (filteredOptionsLots | async);" [value]="option.Numlot" [matTooltip]="option.Numlot | nombreLote">
+                                                    {{option.Numlot | nombreLote}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                          </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-12 formFilter" *ngIf="tests.length > 0">
+
+                        <form [formGroup]="formFiltroTest" autocomplete="off" (ngSubmit)="search(true)">
+
+                            <div class="form-row">
+
+                                <div class="col-lg-12 col-xl-12 form-group">
+                                    <div role="group">
+                                        <mat-form-field class="sf-2">
+                                            <mat-label class="matLabelForm">
+                                                {{'MODULES.INGRESODATOS.FORMULARIO.TEST' | translate}}<span class="colorAsterisco"> *</span>
+                                            </mat-label>
+                                            <mat-select disableOptionCentering class="form-control styleForm" formControlName="test" (selectionChange)="byTest($event.value)">
+                                                <mat-option value="">
+                                                    {{'MODULES.INGRESODATOS.FORMULARIO.SELECCIONE' | translate}}
+                                                </mat-option>
+                                                <mat-option *ngFor="let test of tests" [value]="test.IdTest">
+                                                    {{ test.Desanalytes }} | {{ test.Desunits }} | {{ test.Desmethods }} | {{ test.Desreagents }} | {{ test.NameAnalyzer }}
+
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 boxBtnGT animate__animated animate__fadeIn fast">
+                                    <button class="boton btnGT" (click)="limpiarImgGraficas()" type="submit" *ngIf="verBtn">{{'MODULES.INGRESODATOS.FORMULARIO.SEARCH' | translate}}</button>
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                    <!-- infoprueba -->
+                    <div class="col-11 boxInfo" *ngIf="verInfoprueba">
+
+                        <h1>{{'MODULES.INGRESODATOS.FORMULARIO.INFOGENERAL' | translate}}</h1>
+
+                        <div class="row">
+
+                            <div class="col-xl-3">
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.SECCION' | translate}}: {{ dataTable[0].Namesection | uppercase }}</p>
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.LABORATORIO' | translate}}: {{ dataTable[0].Codheadquarters }}</p>
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.REGLASWESTGARD' | translate}}: {{ reglasW }}</p>
+                            </div>
+
+                            <div class="col-xl-3">
+                                <p><i class="fas fa-circle mr-2"></i>{{ mediaLvl1 }}</p>
+                                <p><i class="fas fa-circle mr-2"></i>{{ mediaLvl2 }}</p>
+                                <p><i class="fas fa-circle mr-2"></i>{{ mediaLvl3 }}</p>
+                            </div>
+
+                            <div class="col-xl-3">
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.MC' | translate}}: {{ dataTable[0].Descontmat }}</p>
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.LOTE' | translate}}: {{ dataTable[0].Numlot }}</p>
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.EQUIPO' | translate}}: {{ dataTable[0].NameAnalyzer }}</p>
+                            </div>
+
+                            <div class="col-xl-3">
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.FECHA' | translate}}: {{ dataTable[0].Expdate | date: 'dd-MM-yyyy' }}</p>
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.UNIDADMEDIDA' | translate}}: {{ dataTable[0].Desunits }}</p>
+                                <p><i class="fas fa-circle mr-2"></i>{{'MODULES.INGRESODATOS.INFOPRUEBA.REACTIVO' | translate}}: {{ dataTable[0].Desreagents }}</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- caja general -->
+                    <div class="col-11" [hidden]="!ver">
+
+                        <!-- options -->
+                        <div class="row boxOptions">
+
+                            <div class="col boxTitles" (click)="option('levey')" [ngClass]="{'otherClass' : opcion == 1}">Levey Jennings</div>
+                            <div class="col boxTitles" (click)="option('multi')" [ngClass]="{'otherClass' : opcion == 2}">Multi Levey Jennings</div>
+                            <div class="col boxTitles" (click)="option('youden')" [ngClass]="{'otherClass' : opcion == 3}">Youden Plot</div>
+                            <div class="col boxTitles" (click)="option('tabla')" [ngClass]="{'otherClass' : opcion == 4}">Tabla de datos</div>
+                            <div class="col boxTitles" (click)="option('dea')" [ngClass]="{'otherClass' : opcion == 5}">Datos Estadísticos Acumulados</div>
+
+                        </div>
+
+                        <!-- levey jennings -->
+                        <div class="row animate__animated animate__fadeIn fast" *ngIf="opcion == 1">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-3 boxForm mt-2" >
+
+                                <h2>Analito: {{ analito }}</h2>
+                                <h3>{{ usuario }}</h3>
+
+                                <h4>Valores</h4>
+
+                                <div>
+
+                                    <form [formGroup]="formularioDatos" autocomplete="off">
+
+                                        <div class="form-row">
+
+                                            <div class="col-4 form-group">
+                                                <div role="group">
+                                                    <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL1' | translate }}</label>
+                                                    <input type="number" class="form-control styleForm" formControlName="valuelevel1" (input)="validarDecimales($event.target.value, 1)">
+                                                    <!-- <small *ngIf="formularioDatos.get('valuelevel1').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small> -->
+                                                    <small *ngIf="decimalInvalidoLvl1" class="text-danger animated fadeIn alert">Máx {{ decimales }} decimales</small>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-4 form-group" *ngIf="levelTest >= 2">
+                                                <div role="group">
+                                                    <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL2' | translate }}</label>
+                                                    <input type="number" class="form-control styleForm" formControlName="valuelevel2" (input)="validarDecimales($event.target.value, 2)">
+                                                    <!-- <small *ngIf="formularioDatos.get('valuelevel2').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small> -->
+                                                    <small *ngIf="decimalInvalidoLvl2" class="text-danger animated fadeIn alert">Máx {{ decimales }} decimales</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-4 form-group" *ngIf="levelTest == 3">
+                                                <div role="group">
+                                                    <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL3' | translate }}</label>
+                                                    <input type="number" class="form-control styleForm" formControlName="valuelevel3" (input)="validarDecimales($event.target.value, 3)">
+                                                    <!-- <small *ngIf="formularioDatos.get('valuelevel3').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small> -->
+                                                    <small *ngIf="decimalInvalidoLvl3" class="text-danger animated fadeIn alert">Máx {{ decimales }} decimales</small>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-4 form-group" hidden="true">
+                                                    <div role="group">
+                                                        <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL1' | translate }}</label>
+                                                        <mat-form-field class="sf-2">
+                                                            <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel1">
+                                                                <mat-option value="">
+                                                                    {{'MODULES.ICT.SELECCIONE' | translate}}
+                                                                </mat-option>
+                                                                <mat-option value="A">
+                                                                    Aceptado
+                                                                </mat-option>
+                                                                <mat-option value="R">
+                                                                    Rechazado
+                                                                </mat-option>
+                                                                <mat-option value="I">
+                                                                    Alertado
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-4 form-group" *ngIf="levelTest >= 2" hidden="true">
+                                                    <div role="group">
+
+                                                        <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL2' | translate }}</label>
+                                                        <mat-form-field class="sf-2">
+                                                            <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel2">
+                                                                <mat-option value="">
+                                                                    {{'MODULES.ICT.SELECCIONE' | translate}}
+                                                                </mat-option>
+                                                                <mat-option value="A">
+                                                                    Aceptado
+                                                                </mat-option>
+                                                                <mat-option value="R">
+                                                                    Rechazado
+                                                                </mat-option>
+                                                                <mat-option value="I">
+                                                                    Alertado
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-4 form-group" *ngIf="levelTest == 3" hidden="true">
+                                                    <div role="group">
+                                                        <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL3' | translate }}</label>
+                                                        <mat-form-field class="sf-2">
+                                                            <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel3">
+                                                                <mat-option value="">
+                                                                    {{'MODULES.ICT.SELECCIONE' | translate}}
+                                                                </mat-option>
+                                                                <mat-option value="A">
+                                                                    Aceptado
+                                                                </mat-option>
+                                                                <mat-option value="R">
+                                                                    Rechazado
+                                                                </mat-option>
+                                                                <mat-option value="I">
+                                                                    Alertado
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- <small *ngIf="decimalInvalidoLvl1 || decimalInvalidoLvl2 || decimalInvalidoLvl3" class="text-danger animated fadeIn alert">Máx {{ decimales }} decimales</small> -->
+
+                                            <div class="col-12 form-group">
+                                                <div role="group">
+                                                    <label for="comments" class="labelForm">{{'MODULES.INGRESODATOS.FORMULARIO.COMENTARIOS' |
+                                            translate}}</label>
+                                                    <input type="text" formControlName="comments" class="form-control styleForm" id="comments">
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="col-12 form-group" >
+                                                <div role="group">
+                                                    <mat-label class="matLabelForm col-12" for="idcorrectiveactions" style="font-size: 16px !important;">
+                                                        {{'MODULES.INGRESODATOS.FORMULARIO.ACCIONCORECTIVA' | translate}}
+                                                    </mat-label>
+                                                    <mat-form-field class="serial-tamanio col-12" >
+                                                        <input type="text" matInput [matAutocomplete]="autoacccreate" formControlName="idcorrectiveactions"
+                                                          style="font-family: 'Open Sans' !important;font-size: 16px;">
+                                                        <mat-autocomplete #autoacccreate="matAutocomplete">
+                                                          <mat-option *ngFor="let listaAccion of filteredOptionsAccionesCorrectivasCreate | async" [value]="listaAccion.descorrectiveactions">
+                                                            {{ listaAccion.descorrectiveactions | titlecase }}
+                                                          </mat-option>
+                                                        </mat-autocomplete>
+                                                      </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="contBtn" [hidden]="!crearsi">
+                                    <button  type="button" class="boton" [ngClass]="{ 'off' : formularioDatos.invalid || decimalInvalidoLvl1 || decimalInvalidoLvl2 || decimalInvalidoLvl3 }" [disabled]="formularioDatos.invalid || decimalInvalidoLvl1 || decimalInvalidoLvl2 || decimalInvalidoLvl3 || desactivar "
+                                        (click)="crearEditar()" >{{ 'MODULES.INGRESODATOS.FORMULARIO.APLICAR' | translate }}</button>
+                                    <button type="button" class="btnClean ml-2" (click)="buildForm('')">{{ 'MODULES.INGRESODATOS.FORMULARIO.LIMPIAR' | translate }}</button>
+                                </div>
+
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-9 mt-2" >
+                                <!-- ** Boton calendar -->
+                                <button type="button" class="mt-0 float-right mr-3 border-0 bg-white" style="width: 35px!important; top: 1em; right:7.5rem ; position: relative; z-index: 2;" (click)="openGraficaModal(calendarModal, 'levey')">
+                                    <img style="width: 35px; margin-bottom: 1px;" [src]="'calendar-icon.png' | imageCdn">
+                                </button>
+                                <button type="button" class="mt-0 float-right mr-3 border-0 bg-white"
+                                        style="width: 35px!important; top: 1em; right: 12.5em; position: relative; z-index: 2;"
+                                        (click)="pdfGeneral()">
+                                    <img style="width: 100px; margin-bottom: 1px;" src="assets/imagenes/pdf.png" class="pdf" >
+                                </button>
+                                <!-- ** Graficas LJ -->
+                                <div class="boxCharts">
+                                    <app-error-total1 (loadGrafica)="loadLJ1($event)" (imgGrafica)="onImg($event)" *ngIf="dataTable.length >= 2 && graficaLJ1"></app-error-total1>
+                                    <app-error-total2 (loadGrafica02)="loadLJ2($event)"  (imgGrafica02)="onImg02($event)" *ngIf="levelTest >= 2 && dataTable.length >= 2 && graficaLJ2"></app-error-total2>
+                                    <app-error-total3  (loadGrafica03)="loadLJ3($event)"  (imgGrafica03)="onImg03($event)" *ngIf="levelTest == 3 && dataTable.length >= 2 && graficaLJ3"></app-error-total3>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Multi levey jennings -->
+                        <div class="row animate__animated animate__fadeIn fast" *ngIf="opcion == 2">
+                            <div class="col-12">
+                                <!-- ** Boton calendar -->
+                                <button type="button" class="mt-0 float-right mr-3 border-0 bg-white" style="width: 35px!important; top: 50px; right: 10px; position: relative; z-index: 2;" (click)="openGraficaModal(calendarModal, 'multi')">
+                                    <img style="width: 35px; margin-bottom: 1px;" [src]="'calendar-icon.png' | imageCdn">
+                                </button>
+                                <button type="button" class="mt-0 float-right mr-3 border-0 bg-white" style="width: 35px!important; top: 4em; right: 6.5em; position: relative; z-index: 2;"
+                                         (click)="pdfGeneral(1)">
+                                    <img style="width: 100px; margin-bottom: 1px;" [src]="'pdf.png' | imageCdn" class="pdf" >
+                                </button>
+                            </div>
+                            <div class="col-12 boxCharts">
+                                <app-multi (imgGraficamulti)="onImgGrafcamulti($event)" *ngIf="levelTest >= 2 && dataTable.length >= 2"></app-multi>
+                            </div>
+                        </div>
+
+                        <!-- youden -->
+                        <div class="row animate__animated animate__fadeIn fast" *ngIf="opcion == 3">
+                            <div class="col-12">
+                                <button type="button" class="mt-0 float-right mr-3 border-0 bg-white" style="width: 35px!important; top: 4em; right: 6.5em; position: relative; z-index: 2;"
+                                        (click)="pdfGeneral(2)">
+                                    <img style="width: 100px; margin-bottom: 1px;" [src]="'pdf.png' | imageCdn" class="pdf" >
+                                </button>
+                            </div>
+                            <div class="col-12 boxCharts">
+                                <app-youden  (imgGraficaYouden)="onImgYouden($event)" *ngIf="levelTest >= 2 && dataTable.length >= 2"></app-youden>
+                            </div>
+                        </div>
+
+                        <!-- tabla -->
+                        <div class="row animate__animated animate__fadeIn fast" [hidden]="opcion != 4">
+
+                            <img  [src]="'descargar_Excel.png' | imageCdn" alt="Reporte cuantitativo" style="height: 30px;cursor: pointer;margin-top: 1rem;margin-bottom: 1rem;margin-left: 80%;" (click)="exportToExcelTabledata()">
+
+
+                            <div class="col-12 animate__animated animate__fadeIn fast">
+
+
+                                <table mat-table [dataSource]="dataSource" class="table-responsive" matSort #tabla3="matSort" *ngIf="dataSource">
+                                    <ng-container matColumnDef="num">
+                                        <th style="min-width: 100px; width: 100px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.IT' | translate}} </th>
+                                        <td mat-cell *matCellDef="let row; index as i">
+                                            {{ TablaTresPaginator.pageSize * TablaTresPaginator.pageIndex + i + 1}}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="date">
+                                        <th style="min-width: 130px; width: 130px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.FECHA' | translate}} </th>
+                                        <td mat-cell *matCellDef="let row"> {{row.Date | date: 'dd-MM-yyyy'}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="hour">
+                                        <th style="min-width: 200px; width: 200px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.HORA' | translate}} </th>
+                                        <td mat-cell *matCellDef="let row"> {{row.Hour}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="summer">
+                                        <th mat-header-cell *matHeaderCellDef colspan="4">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.NIVEL1' | translate}}</th>
+                                        <td mat-cell *matCellDef="let company;let i = dataIndex"></td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="valuelevel1">
+                                        <th style="padding-left: 20px; min-width: 100px; width: 100px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                            {{'MODULES.INGRESODATOS.COLUMNS.VALOR' | translate}} </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{ row.Valuelevel1 != null ? row.Valuelevel1 : 'N/R' }} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="arlevel1">
+                                        <th mat-header-cell *matHeaderCellDef style="min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.AR' | translate}}
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <i *ngIf="row.Arlevel1 == 'R'" class="fas fa-times-circle botonTimesCircle" title="Rechazado"></i>
+                                            <i *ngIf="row.Arlevel1 == 'A'" class="fas fa-check-circle botonCheckCircle" title="Aceptado"></i>
+                                            <i *ngIf="row.Arlevel1 == 'I'" class="fas fa-exclamation-circle botonAlertCircle" title="Alerta"></i>
+                                    </ng-container>
+                                    <ng-container matColumnDef="ruleslevel1">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px; min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.REGLAS' | translate}} </th>
+
+                                        <td mat-cell *matCellDef="let row">
+                                            <span *ngIf="row.Ruleslevel1 !== '' && row.Ruleslevel1 !== null && row.Arlevel1flag === false">
+                                                {{row.Ruleslevel1}}
+                                            </span>
+                                            <span *ngIf="(row.Ruleslevel1 === '' || row.Ruleslevel1 === null) && row.Arlevel1flag === true">
+                                                {{'Manual'}}
+                                            </span>
+                                            <span *ngIf="(row.Ruleslevel1 === '' || row.Ruleslevel1 === null) && row.Arlevel1flag === false">
+                                                {{'N/R'}}
+                                            </span>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="zlevel1">
+                                        <th mat-header-cell *matHeaderCellDef style="min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.Z' | translate}}
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{ row.Zlevel1 != null ? row.Zlevel1 : 'N/R' }} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="summer2" *ngIf="levelTest >= 2">
+                                        <th mat-header-cell *matHeaderCellDef colspan="4">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.NIVEL2' | translate}}</th>
+                                        <td mat-cell *matCellDef="let company;let i = dataIndex"></td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="valuelevel2" *ngIf="levelTest >= 2">
+                                        <th style="padding-left: 20px; min-width: 100px; width: 100px" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                            {{'MODULES.INGRESODATOS.COLUMNS.VALOR' | translate}} </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{ row.Valuelevel2 != null ? row.Valuelevel2 : 'N/R' }} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="arlevel2" *ngIf="levelTest >= 2">
+                                        <th mat-header-cell *matHeaderCellDef style="min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.AR' | translate}}
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <i *ngIf="row.Arlevel2 == 'R'" class="fas fa-times-circle botonTimesCircle" title="Rechazado"></i>
+                                            <i *ngIf="row.Arlevel2 == 'A'" class="fas fa-check-circle botonCheckCircle" title="Aceptado"></i>
+                                            <i *ngIf="row.Arlevel2 == 'I'" class="fas fa-exclamation-circle botonAlertCircle" title="Alerta"></i>
+                                    </ng-container>
+                                    <ng-container matColumnDef="ruleslevel2" *ngIf="levelTest >= 2">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px; min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.REGLAS' | translate}} </th>
+                                        <span class="badge bg-secondary">Secondary</span>
+                                        <td mat-cell *matCellDef="let row">
+                                            <span *ngIf="row.Ruleslevel2 !== '' && row.Ruleslevel2 !== null && row.Arlevel2flag === false">
+                                                {{row.Ruleslevel2}}
+                                            </span>
+
+                                            <span *ngIf="(row.Ruleslevel2 === '' || row.Ruleslevel2 === null) && row.Arlevel2flag === true">
+                                                {{'Manual'}}
+                                            </span>
+                                            <span *ngIf="(row.Ruleslevel2 === '' || row.Ruleslevel2 === null) && row.Arlevel2flag === false">
+                                                {{'N/R'}}
+                                            </span>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="zlevel2" *ngIf="levelTest >= 2">
+                                        <th mat-header-cell *matHeaderCellDef style="min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.Z' | translate}}
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{  row.Zlevel2 != null ? row.Zlevel2 : 'N/R' }} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="summer3" *ngIf="levelTest == 3">
+                                        <th mat-header-cell *matHeaderCellDef colspan="4">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.NIVEL3' | translate}}</th>
+                                        <td mat-cell *matCellDef="let company;let i = dataIndex"></td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="valuelevel3" *ngIf="levelTest == 3">
+                                        <th style="padding-left: 20px; min-width: 100px; width: 100px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                            {{'MODULES.INGRESODATOS.COLUMNS.VALOR' | translate}} </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{row.Valuelevel3 != null ? row.Valuelevel3 : 'N/R' }} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="arlevel3" *ngIf="levelTest == 3">
+                                        <th mat-header-cell *matHeaderCellDef style="min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.AR' | translate}}
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <i *ngIf="row.Arlevel3 == 'R'" class="fas fa-times-circle botonTimesCircle" title="Rechazado"></i>
+                                            <i *ngIf="row.Arlevel3 == 'A'" class="fas fa-check-circle botonCheckCircle" title="Aceptado"></i>
+                                            <i *ngIf="row.Arlevel3 == 'I'" class="fas fa-exclamation-circle botonAlertCircle" title="Alerta"></i>
+                                    </ng-container>
+                                    <ng-container matColumnDef="ruleslevel3" *ngIf="levelTest == 3">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px; min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.REGLAS' | translate}} </th>
+                                        <span class="badge bg-secondary">Secondary</span>
+                                        <td mat-cell *matCellDef="let row">
+                                            <span *ngIf="row.Ruleslevel3 !== '' && row.Ruleslevel3 !== null && row.Arlevel3flag === false">
+                                                {{row.Ruleslevel3}}
+                                            </span>
+
+                                            <span *ngIf="(row.Ruleslevel3 === '' || row.Ruleslevel3 === null) && row.Arlevel3flag === true">
+                                                {{'Manual'}}
+                                            </span>
+                                            <span *ngIf="(row.Ruleslevel3 === '' || row.Ruleslevel3 === null) && row.Arlevel3flag === false">
+                                                {{'N/R'}}
+                                            </span>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="zlevel3" *ngIf="levelTest == 3">
+                                        <th mat-header-cell *matHeaderCellDef style="min-width: 100px; width: 100px;">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.Z' | translate}}
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{ row.Zlevel3 != null ? row.Zlevel3 : 'N/R' }} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="ac">
+                                        <th style="min-width: 200px; width: 200px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.ACC' | translate}} </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{row.Descorrectiveactions != '' && row.Descorrectiveactions != null ? row.Descorrectiveactions : 'N/R'}}
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="userName">
+                                      <th style="min-width: 200px; width: 200px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                                          {{'MODULES.INGRESODATOS.COLUMNS.USUARIOASIGNADO' | translate}} </th>
+                                      <td mat-cell *matCellDef="let row">
+                                          {{row.Name != '' && row.Name != null ? row.Username  : 'N/R'}}
+                                      </td>
+                                  </ng-container>
+                                    <ng-container matColumnDef="com">
+                                        <th style="min-width: 220px; width: 220px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.COM' | translate}} </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            {{row.Comments != null && row.Comments != '' ? row.Comments : 'N/R'}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="editar" >
+                                        <th style="min-width: 200px; width: 200px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.EDITAR' | translate}}</th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <img [src]="'imagenEditar.png' | imageCdn" style="cursor: pointer;" (click)="openTablaDatosModal(TablaDatosEdit,row)">
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="eliminar">
+                                        <th style="min-width: 200px; width: 200px;" mat-header-cell *matHeaderCellDef rowspan="2">
+                                            {{'MODULES.INGRESODATOS.COLUMNS.ELIMINAR' | translate}}</th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <img [src]="'imagenEliminar.png' | imageCdn" style="cursor: pointer;" (click)="eliminar(row.Idresult)">
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-row *matHeaderRowDef="summers">
+                                    </tr>
+                                    <tr mat-row *matHeaderRowDef="columnas">
+                                    </tr>
+
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                                </table>
+                                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" #TablaTresPaginator="matPaginator">
+                                </mat-paginator>
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- Datos acumulados -->
+                        <div class="row animate__animated animate__fadeIn fast" *ngIf="opcion == 5">
+
+                            <div class="row animate__animated animate__fadeIn fast ml-3" *ngIf="verTabla">
+
+                                <form [formGroup]="filtroFecha" autocomplete="off">
+
+                                    <div class="row">
+
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 stylePicker">
+
+                                            <!-- desde -->
+                                            <div role="group">
+                                                <label class="labelForm">{{'MODULES.REPORTECONSOLIDADOICT.DESDE' | translate}}
+                                                    <span class="colorAsterisco"> *</span></label>
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="picker1" class="form-control styleForm" style="background-image: none !important;font-size: 1rem" formControlName="desde">
+                                                    <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker1" style="color:#2edad8; width: 18px;">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker1 style="color:white !important"></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+
+                                            <!-- hasta -->
+                                            <div role="group">
+                                                <label class="labelForm">{{'MODULES.REPORTECONSOLIDADOICT.HASTA' | translate}}
+                                                    <span class="colorAsterisco"> *</span></label>
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="picker" class="form-control styleForm" style="background-image: none !important;font-size: 1rem" formControlName="hasta">
+                                                    <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker" style="color:#2edad8; width: 18px;">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker style="color:white !important"></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                            <!-- Datos acumulados -->
+                            <div class="row boxTables animate__animated animate__fadeIn fast" *ngIf="verTabla">
+
+                                <table class="table tables">
+                                    <thead class="backThead">
+                                        <tr>
+                                            <th colspan="3">
+                                                Nivel 1
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <thead class="backThead">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">
+                                                <p>Mes</p>
+                                            </th>
+                                            <th scope="col">
+                                                <p class="text-nowrap">Acumulado</p>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">MEDIA</th>
+                                            <td class="data">{{ porMes ? mediaNvl1Filtro : mediaNvl1XMes }}</td>
+                                            <td class="data">{{ mediaNvl1Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">DE</th>
+                                            <td class="data">{{ porMes ? dsNvl1Filtro : dsNvl1XMes }}</td>
+                                            <td class="data">{{ dsNvl1Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">CV</th>
+                                            <td class="data">{{ porMes ? cvNvl1Filtro : cvNvl1XMes }}</td>
+                                            <td class="data">{{ cvNvl1Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Total</th>
+                                            <td class="data">{{ porMes ? totalNvl1Filtro : totalNvl1XMes }}</td>
+                                            <td class="data">{{ totalNvl1Acumulado }}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                                <table class="table tables" *ngIf="levelTest >= 2">
+                                    <thead class="backThead">
+                                        <tr>
+                                            <th colspan="2">
+                                                Nivel 2
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <thead class="backThead">
+                                        <tr>
+                                            <th scope="col">
+                                                <p>Mes</p>
+                                            </th>
+                                            <th scope="col">
+                                                <p class="text-nowrap">Acumulado</p>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="data">{{ porMes ? mediaNvl2Filtro : mediaNvl2XMes }}</td>
+                                            <td class="data">{{ mediaNvl2Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="data">{{ porMes ? dsNvl2Filtro : dsNvl2XMes }}</td>
+                                            <td class="data">{{ dsNvl2Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="data">{{ porMes ? cvNvl2Filtro : cvNvl2XMes }}</td>
+                                            <td class="data">{{ cvNvl2Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="data">{{ porMes ? totalNvl2Filtro : totalNvl2XMes }}</td>
+                                            <td class="data">{{ totalNvl2Acumulado }}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                                <table class="table tables" *ngIf="levelTest == 3">
+                                    <thead class="backThead">
+                                        <tr>
+                                            <th colspan="2">
+                                                Nivel 3
+
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <thead class="backThead">
+                                        <tr>
+                                            <th scope="col">
+                                                <p>Mes</p>
+                                            </th>
+                                            <th scope="col">
+                                                <p class="text-nowrap">Acumulado</p>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="data">{{ porMes ? mediaNvl3Filtro : mediaNvl3XMes }}</td>
+                                            <td class="data">{{ mediaNvl3Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="data">{{ porMes ? dsNvl3Filtro : dsNvl3XMes }}</td>
+                                            <td class="data">{{ dsNvl3Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="data">{{ porMes ? cvNvl3Filtro : cvNvl3XMes }}</td>
+                                            <td class="data">{{ cvNvl3Acumulado }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="data">{{ porMes ? totalNvl3Filtro : totalNvl3XMes }}</td>
+                                            <td class="data">{{ totalNvl3Acumulado }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="row boxTables mt-4 animate__animated animate__fadeIn fast" *ngIf="verTabla">
+                                <table class="table tables">
+                                    <thead class="backThead">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">N1</th>
+                                            <th scope="col" *ngIf="levelTest >= 2">N2</th>
+                                            <th scope="col" *ngIf="levelTest == 3">N3</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">MEDIA</th>
+                                            <td class="data">{{ mediaNvl1XMes }}</td>
+                                            <td class="data" *ngIf="levelTest >= 2">{{ mediaNvl2XMes }}</td>
+                                            <td class="data" *ngIf="levelTest == 3">{{ mediaNvl3XMes }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">DE</th>
+                                            <td class="data">{{ dsNvl1XMes }}</td>
+                                            <td class="data" *ngIf="levelTest >= 2">{{ dsNvl2XMes }}</td>
+                                            <td class="data" *ngIf="levelTest == 3">{{ dsNvl3XMes }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">CV</th>
+                                            <td class="data">{{ cvNvl1XMes }}</td>
+                                            <td class="data" *ngIf="levelTest >= 2">{{ cvNvl2XMes }}</td>
+                                            <td class="data" *ngIf="levelTest == 3">{{ cvNvl3XMes }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Total</th>
+                                            <td class="data">{{ totalNvl1XMes }}</td>
+                                            <td class="data" *ngIf="levelTest >= 2">{{ totalNvl2XMes }}</td>
+                                            <td class="data" *ngIf="levelTest == 3">{{ totalNvl3XMes }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+    </div>
+
+
+
+    <!-- ***Modal Calendar -->
+
+    <ng-template #calendarModal>
+        <div class="modal-header">
+            <button type="button" class="close pull-right" arial-label="Close" (click)="closeVentana()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body text-center">
+            <div class="row mb-5">
+                <div class="col flex2">
+                    <img class="img img-fluid" [src]="'calendar-icon.png' | imageCdn">
+                    <h3 class="tituloModal" style="color: #3F2E63;">Filtrar Fechas</h3>
+                </div>
+            </div>
+            <form [formGroup]="formaCalendarModal" autocomplete="off" (submit)="enviarFechaForm()">
+                <div class="row">
+                    <div class="col"></div>
+
+                    <div class="col-sm-5 form-group">
+                        <div role="group">
+                            <label class="labelForm" for="startDate">Fecha Inicio<span class="colorAsterisco"> *</span></label>
+                            <mat-form-field style="display: inherit;">
+                                <input matInput [matDatepicker]="pickerstart" formControlName="startDate" class="form-control styleForm" id="startDate" autocomplete="off" (change)="changeDate()" style="background-image: none !important;font-size: 1rem">
+                                <mat-datepicker-toggle matSuffix [for]="pickerstart" style="color:#2edad8; width: 18px;">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #pickerstart style="color:white !important"></mat-datepicker>
+                            </mat-form-field>
+                            <small *ngIf="startDateNoValido.invalid  && startDateNoValido.touched" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-5 form-group">
+                        <div role="group">
+                            <label class="labelForm" for="endDate">Fecha Fin<span
+                      class="colorAsterisco"> *</span></label>
+                            <mat-form-field style="display: inherit;">
+                                <input matInput [matDatepicker]="pickerend" formControlName="endDate" class="form-control styleForm" id="endDate" autocomplete="off" (change)="changeDate()" style="background-image: none !important;font-size: 1rem">
+                                <mat-datepicker-toggle matSuffix [for]="pickerend" style="color:#2edad8; width: 18px;">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #pickerend style="color:white !important"></mat-datepicker>
+                            </mat-form-field>
+                            <small *ngIf="endDateNoValido.invalid  && endDateNoValido.touched" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12 boxBtnAceptCancel text-center">
+                        <button type=" button " class="boton btnAceptar " style="width: 100px !important; " (click)="closeVentana() ">Aceptar</button>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+
+    <!-- ***Modal Tabla de datos -->
+
+    <ng-template #TablaDatos>
+        <div class="modal-header">
+            <button type="button" class="close pull-right" arial-label="Close" (click)="closeVentana()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+        </div>
+        <div class="modal-body text-center">
+            <div class="row mb-5">
+                <div class="col flex2">
+                    <img class="img img-fluid" [src]="'edit.png' | imageCdn">
+                    <h3 class="tituloModal" style="color: #3F2E63;">Editar</h3>
+                </div>
+            </div>
+
+            <form [formGroup]="formularioDatos" (ngSubmit)="editar()" autocomplete="off">
+
+                <div class="form-row">
+
+                    <div class="col-4 form-group">
+                        <div role="group">
+                            <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL1' | translate }}</label>
+                            <input type="number" class="form-control styleForm" formControlName="valuelevel1" (input)="validarDecimales($event.target.value, 1)">
+                            <small *ngIf="formularioDatos.get('valuelevel1').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+                        </div>
+                    </div>
+
+                    <div class="col-4 form-group" *ngIf="levelTest >= 2">
+                        <div role="group">
+                            <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL2' | translate }}</label>
+                            <input type="number" class="form-control styleForm" formControlName="valuelevel2" (input)="validarDecimales($event.target.value, 2)">
+                            <small *ngIf="formularioDatos.get('valuelevel2').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+                        </div>
+                    </div>
+
+                    <div class="col-4 form-group" *ngIf="levelTest == 3">
+                        <div role="group">
+                            <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL3' | translate }}</label>
+                            <input type="number" class="form-control styleForm" formControlName="valuelevel3" (input)="validarDecimales($event.target.value, 3)">
+                            <small *ngIf="formularioDatos.get('valuelevel3').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+                        </div>
+                    </div>
+
+                    <small *ngIf="decimalInvalidoLvl1 || decimalInvalidoLvl2 || decimalInvalidoLvl3" class="text-danger animated fadeIn alert">Máx {{ decimales }} decimales</small>
+
+                    <div class="row">
+
+                        <div class="col-4 form-group">
+                            <div role="group">
+                                <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL1' | translate }}</label>
+                                <mat-form-field class="sf-2">
+                                    <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel1">
+                                        <mat-option value="">
+                                            {{'MODULES.ICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="A">
+                                            Aceptado
+                                        </mat-option>
+                                        <mat-option value="R">
+                                            Rechazado
+                                        </mat-option>
+                                        <mat-option value="I">
+                                            Alertado
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="col-4 form-group" *ngIf="levelTest >= 2">
+                            <div role="group">
+                                <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL2' | translate }}</label>
+                                <mat-form-field class="sf-2">
+                                    <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel2">
+                                        <mat-option value="">
+                                            {{'MODULES.ICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="A">
+                                            Aceptado
+                                        </mat-option>
+                                        <mat-option value="R">
+                                            Rechazado
+                                        </mat-option>
+                                        <mat-option value="I">
+                                            Alertado
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="col-4 form-group" *ngIf="levelTest == 3">
+                            <div role="group">
+                                <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL3' | translate }}</label>
+                                <mat-form-field class="sf-2">
+                                    <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel3">
+                                        <mat-option value="">
+                                            {{'MODULES.ICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="A">
+                                            Aceptado
+                                        </mat-option>
+                                        <mat-option value="R">
+                                            Rechazado
+                                        </mat-option>
+                                        <mat-option value="I">
+                                            Alertado
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <small *ngIf="decimalInvalidoLvl1 || decimalInvalidoLvl2 || decimalInvalidoLvl3" class="text-danger animated fadeIn alert">Máx {{ decimales }} decimales</small>
+
+                    <div class="col-12 form-group">
+                        <div role="group">
+                            <label for="comments" class="labelForm">{{'MODULES.INGRESODATOS.FORMULARIO.COMENTARIOS' |
+                translate}}</label>
+                            <input type="text" formControlName="comments" class="form-control styleForm" id="comments">
+                        </div>
+                    </div>
+
+                    <div class="col-12 form-group" >
+                        <div role="group">
+                            <mat-form-field class="sf-2">
+                                <mat-label class="matLabelForm" for="idcorrectiveactions">
+                                    {{'MODULES.INGRESODATOS.FORMULARIO.ACCIONCORECTIVA' | translate}}
+                                </mat-label>
+
+                                <mat-select disableOptionCentering formControlName="idcorrectiveactions" class="form-control styleForm">
+                                    <mat-option value="">{{'MODULES.INGRESODATOS.FORMULARIO.SELECCIONE' | translate}}
+                                    </mat-option>
+                                    <mat-option *ngFor="let listaAccion of listaAccionesC" [value]="listaAccion.idcorrectiveactions">
+                                        {{ listaAccion.descorrectiveactions }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="form-row">
+                    <div class="col-12 boxBtnAceptCancel">
+                        <button class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                        <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </ng-template>
+
+    <ng-template #TablaDatosEdit>
+        <div class="modal-header">
+            <button type="button" class="close pull-right" arial-label="Close" (click)="closeVentana()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+        </div>
+        <div class="modal-body text-center">
+            <div class="row mb-5">
+                <div class="col flex2">
+                    <img class="img img-fluid" [src]="'edit.png' | imageCdn">
+                    <h3 class="tituloModal" style="color: #3F2E63;">Editar</h3>
+                </div>
+            </div>
+
+            <form [formGroup]="formularioDatosEditar" (ngSubmit)="editar()" autocomplete="off">
+
+                <div class="form-row">
+
+                    <div class="col-4 form-group">
+                        <div role="group">
+                            <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL1' | translate }}</label>
+                            <input type="number" class="form-control styleForm" formControlName="valuelevel1" (input)="validarDecimales($event.target.value, 1)">
+                            <small *ngIf="formularioDatos.get('valuelevel1').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+                        </div>
+                    </div>
+
+                    <div class="col-4 form-group" *ngIf="levelTest >= 2">
+                        <div role="group">
+                            <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL2' | translate }}</label>
+                            <input type="number" class="form-control styleForm" formControlName="valuelevel2" (input)="validarDecimales($event.target.value, 2)">
+                            <small *ngIf="formularioDatos.get('valuelevel2').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+                        </div>
+                    </div>
+
+                    <div class="col-4 form-group" *ngIf="levelTest == 3">
+                        <div role="group">
+                            <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.NIVEL3' | translate }}</label>
+                            <input type="number" class="form-control styleForm" formControlName="valuelevel3" (input)="validarDecimales($event.target.value, 3)">
+                            <small *ngIf="formularioDatos.get('valuelevel3').errors?.min" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+                        </div>
+                    </div>
+
+                    <small *ngIf="decimalInvalidoLvl1 || decimalInvalidoLvl2 || decimalInvalidoLvl3" class="text-danger animated fadeIn alert">Máx {{ decimales }} decimales</small>
+
+                    <div class="row">
+
+                        <div class="col-4 form-group">
+                            <div role="group">
+                                <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL1' | translate }}</label>
+                                <mat-form-field class="sf-2">
+                                    <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel1">
+                                        <mat-option value="">
+                                            {{'MODULES.ICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="A">
+                                            Aceptado
+                                        </mat-option>
+                                        <mat-option value="R">
+                                            Rechazado
+                                        </mat-option>
+                                        <mat-option value="I">
+                                            Alertado
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="col-4 form-group" *ngIf="levelTest >= 2">
+                            <div role="group">
+                                <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL2' | translate }}</label>
+                                <mat-form-field class="sf-2">
+                                    <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel2">
+                                        <mat-option value="">
+                                            {{'MODULES.ICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="A">
+                                            Aceptado
+                                        </mat-option>
+                                        <mat-option value="R">
+                                            Rechazado
+                                        </mat-option>
+                                        <mat-option value="I">
+                                            Alertado
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="col-4 form-group" *ngIf="levelTest == 3">
+                            <div role="group">
+                                <label class="labelForm">{{ 'MODULES.INGRESODATOS.FORMULARIO.ARLEVEL3' | translate }}</label>
+                                <mat-form-field class="sf-2">
+                                    <mat-select disableOptionCentering class="form-control styleForm" formControlName="arlevel3">
+                                        <mat-option value="">
+                                            {{'MODULES.ICT.SELECCIONE' | translate}}
+                                        </mat-option>
+                                        <mat-option value="A">
+                                            Aceptado
+                                        </mat-option>
+                                        <mat-option value="R">
+                                            Rechazado
+                                        </mat-option>
+                                        <mat-option value="I">
+                                            Alertado
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <small *ngIf="decimalInvalidoLvl1 || decimalInvalidoLvl2 || decimalInvalidoLvl3" class="text-danger animated fadeIn alert">Máx {{ decimales }} decimales</small>
+
+                    <div class="col-12 form-group">
+                        <div role="group">
+                            <label for="comments" class="labelForm">{{'MODULES.INGRESODATOS.FORMULARIO.COMENTARIOS' |
+                translate}}</label>
+                            <input type="text" formControlName="comments" class="form-control styleForm" id="comments">
+                        </div>
+                    </div>
+
+                    <div class="col-12 form-group" >
+                        <div role="group">
+                            <mat-label class="matLabelForm col-12" for="idcorrectiveactions" style="font-size: 16px !important;">
+                                {{'MODULES.INGRESODATOS.FORMULARIO.ACCIONCORECTIVA' | translate}}
+                            </mat-label>
+                            <mat-form-field class="serial-tamanio col-12" >
+
+                                <input type="text" matInput [matAutocomplete]="autoaccedit" formControlName="idcorrectiveactions"
+                                  style="font-family: 'Open Sans' !important;font-size: 16px;">
+                                <mat-autocomplete #autoaccedit="matAutocomplete">
+                                  <mat-option *ngFor="let listaAccion of filteredOptionsAccionesCorrectivasCreate | async" [value]="listaAccion.descorrectiveactions">
+                                    {{ listaAccion.descorrectiveactions | titlecase }}
+                                  </mat-option>
+                                </mat-autocomplete>
+                              </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-12 boxBtnAceptCancel">
+                        <button class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                        <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </ng-template>
+
+
+
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+        <p style="font-size: 20px; color: white">Por favor, espere.</p>
+    </ngx-spinner>
+</div>

@@ -1,0 +1,35 @@
+.breadcrumb {
+    font-size: 12px;
+    padding: .25rem 1rem;
+    border-radius: 0px;
+    background: #DAD3E0;
+    margin-bottom: 0px !important;
+}
+
+.bread-container {
+    background-color: rgba(107, 75, 139, 0.2);
+}
+
+nav {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    /* z-index: 1; */
+    background-color: white;
+    /* z-index: 100; */
+}
+
+.breadcrumb-item a,
+.breadcrumb-item.active {
+    color: var(--color-header);
+    font-style: italic;
+    font-size: 12px;
+    margin-right: 12px;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    content: "\25B6";
+    color: #6B4B8B;
+    font-size: 8px;
+    margin-right: 12px;
+}

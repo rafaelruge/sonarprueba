@@ -1,0 +1,126 @@
+<section class="container-fluid mt-5" *ngIf="moduleAccesses | async as moduleAccesses">
+  <!-- IMAGEN CABECERA -->
+  <article class="card mt-3 mb-5 borderTable">
+    <header class="col-12 d-flex justify-content-center">
+      <img class="imageSobreBorde" [src]="'permisos.png' | imageCdn" />
+    </header>
+    <br />
+
+    <!-- FORMULARIO FILTRO -->
+    <mat-card-content *ngIf="form">
+      <form [formGroup]="form" class="m-5">
+        <fieldset class="form-row justify-content-center align-items-center">
+
+          <!-- seleción de modulo -->
+          <div class="col-md-4 form-group">
+            <mat-form-field class="sf-2 w-100">
+              <mat-label class="matLabelForm" style="font-size: 12px !important">
+                {{ "MODULES.PERMISOSESPECIALES.FORMULARIO.MODULO" | translate }}
+              </mat-label>
+              <mat-select class="form-control styleForm formulario" formControlName="Modulo" required>
+                <mat-option *ngFor="let modulo of moduleAccesses" [value]="modulo">
+                  {{modulo.desmoduleaccess}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- seleción de rol -->
+          <div class="col-md-4 form-group">
+            <mat-form-field class="sf-2 w-100">
+              <mat-label class="matLabelForm" style="font-size: 12px !important">
+                {{ "MODULES.PERMISOSESPECIALES.FORMULARIO.ROL" | translate }}
+              </mat-label>
+              <mat-select class="form-control styleForm formulario" formControlName="Rol" required>
+                <mat-option *ngFor="let rol of roles" [value]="rol">
+                  {{rol.namerol}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- seleción de usario
+          <div class="col-md-4 form-group">
+            <mat-form-field class="sf-2 w-100">
+              <mat-label class="matLabelForm" style="font-size: 12px !important">
+                {{ "MODULES.PERMISOSESPECIALES.FORMULARIO.USUARIO" | translate }}
+              </mat-label>
+              <mat-select class="form-control styleForm formulario" formControlName="Usuario" required>
+                <mat-option *ngFor="let usuario of usuarios" [value]="usuario">
+                  {{usuario.Name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div> -->
+        </fieldset>
+
+        <div class="row justify-content-center" style="margin: 60px 0">
+          <div>
+            <button type="submit" class="botones" (click)="showCard()" [disabled]="!form.valid">
+              {{ "MODULES.PERMISOSESPECIALES.BOTONCREAR" | translate }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <!-- Tabla permisos  -->
+
+    <app-tabla-permisos></app-tabla-permisos>
+  </article>
+</section>
+
+<!-- INICIO DE CARD DESPEGABLE  -->
+<div [formGroup]="form" (ngSubmit)="sendForm()" *ngIf="cardVisible">
+  <section class="card asignacion-permiso-card  max-w-50">
+    <article class="container">
+      <div class="card-body">
+        <header class="d-flex flex-column align-items-center">
+          <div class="btn-close align-self-end">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="showCard()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <img class="mb-4" [src]="'permisos_2.png' | imageCdn" />
+          <legend class="titulo m-0 d-flex flex-wrap text-center text-wrap">
+            <strong>{{"MODULES.PERMISOSESPECIALES.ASIGNACIONPERMISO.SUBTITLE" | translate}}</strong></legend>
+        </header>
+        <hr>
+        <br>
+        <fieldset class="container row justify-content-center align-items-center justify-content-around mt-3 mb-5">
+          <div role="group" class="row custom-label-group">
+            <div class="col-md-12">
+              <mat-slide-toggle formControlName="Crear" class="custom-slide-toggle"></mat-slide-toggle>
+              <mat-label class="ml-1 custom-label">{{'MODULES.PERMISOSESPECIALES.ASIGNACIONPERMISO.CREAR' |
+                translate}}</mat-label>
+            </div>
+          </div>
+          <div role="group" class="row custom-label-group">
+            <div class="col-md-12">
+              <mat-slide-toggle formControlName="Editar" class="custom-slide-toggle"></mat-slide-toggle>
+              <mat-label class="ml-1 custom-label">{{'MODULES.PERMISOSESPECIALES.ASIGNACIONPERMISO.EDITAR' |
+                translate}}</mat-label>
+            </div>
+          </div>
+          <div role="group" class="row custom-label-group">
+            <div class="col-md-12">
+              <mat-slide-toggle formControlName="Eliminar" class="custom-slide-toggle"></mat-slide-toggle>
+              <mat-label class="ml-1 custom-label">{{'MODULES.PERMISOSESPECIALES.ASIGNACIONPERMISO.ELIMINAR' |
+                translate}}</mat-label>
+            </div>
+          </div>
+        </fieldset>
+        <div class="row justify-content-center pr-5">
+          <div>
+            <button type="submit" class="botones" (click)="sendForm()">Aceptar</button>
+          </div>
+        </div>
+      </div>
+
+    </article>
+    <div class="border-footer-card"></div>
+  </section>
+
+</div>
+<!-- EFECTO OPACIDAD -->
+<div class="modal-backdrop" *ngIf="cardVisible" (click)="showCard()"></div>

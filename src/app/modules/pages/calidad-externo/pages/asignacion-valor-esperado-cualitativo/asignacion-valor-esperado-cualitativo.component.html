@@ -1,0 +1,267 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'CasasComerciales.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> Valores esperados cualitativos y semi-cuantitativos</div>
+
+          <div class="col-10 my-4 ">
+            <form [formGroup]="formaBuscarDatos" (submit)="buscar()"  autocomplete="off" class="d-flex justify-content-center  boxBtnSelects">
+              <div class="col-md-4 col-xl-3">
+                  <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.ASIGNACIONVALORESPERADO.FORMULARIO.LOTE' | translate}}<span class="colorAsterisco">*</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="lote"
+                                  class="form-control styleForm"
+                                  (selectionChange)="verTabla = false">
+                          <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                          </mat-option>
+                          <mat-option *ngFor="let lote of lotes" [value]="lote.IdLot" [matTooltip]="lote.Numlot">
+                              {{ lote.Numlot }}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+
+              <div class="col-md-4 col-xl-3">
+                  <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.ASIGNACIONVALORESPERADO.FORMULARIO.PROGRAMA' | translate}}<span class="colorAsterisco">*</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="programa"
+                                  class="form-control styleForm"
+                                  (selectionChange)="getAnalitosPorPrograma($event)">
+                          <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                          </mat-option>
+                          <mat-option *ngFor="let programa of listaProgramas" [value]="programa.IdProgram" [matTooltip]="programa.Desprogram">
+                            {{ programa.Desprogram }}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+
+
+              <div class="col-xl-2 boxBtnSearch" style="display: flex; justify-content: center; align-items: center;">
+                  <button class="boton btnSearch animate__animated animate__fadeIn fast" style="width: 10em;" type="submit">{{'MODULES.RONDASQCE.FILTRO.BOTON' | translate}}</button>
+              </div>
+          </form>
+          </div>
+
+          
+          <div class="col-11 col-lg-9 col-xl-9" *ngIf="verTabla">
+
+            <div class="col-12">
+              <div class="col-6 contBtn mt-2 mb-2">
+                <button type="button" class="boton " (click)="modalCrear(crearOeditar)">Crear</button>
+              </div>
+            </div>
+
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort >
+
+              <ng-container matColumnDef="analito">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONVALORESPERADO.COLUMNS.ANALITO' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.desanalytes}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="equipo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONVALORESPERADO.COLUMNS.EQUIPO' | translate}}</th>
+                <td mat-cell *matCellDef="let row" style="width: 3em !important;">
+                  {{ row.nameAnalyzer }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="reactivo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONVALORESPERADO.COLUMNS.REACTIVO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.desreagents }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="metodo">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONVALORESPERADO.COLUMNS.METODO' | translate}}</th>
+                  <td mat-cell *matCellDef="let row">
+                  {{ row.desmethods }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="unidades">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.ASIGNACIONVALORESPERADO.COLUMNS.UNIDADES' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.codunits }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="valor">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.ASIGNACIONVALORESPERADO.COLUMNS.VALOR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  {{row.desresults}}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="editar">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.ASIGNACIONVALORESPERADO.COLUMNS.VALOR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <img [src]="'imagenEditar.png' | imageCdn" (click)="modalEditar(crearOeditar,row)"
+                  style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="estado">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.ASIGNACIONVALORESPERADO.COLUMNS.VALOR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.active" (change)="editarToggle($event,row)"></mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <!-- <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td> -->
+              </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #crearOeditar>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()" >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+        <img *ngIf="flagEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!flagEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 *ngIf="flagEditar" class="tituloModal">Editar</h3>
+        <h3 *ngIf="!flagEditar" class="tituloModal">Crear</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <form [formGroup]="formCrearEditar" (submit)="buscar()"  autocomplete="off" 
+          style="display: grid;grid-template-columns: 1fr 1fr 1fr auto;gap: 1em; align-items: center;padding: 1em;">
+      <div >
+          <mat-form-field >
+              <mat-label class="matLabelForm">Analito<span class="colorAsterisco">*</span></mat-label>
+              <mat-select formControlName="idAnalytes" (selectionChange)="getValorEsperado(this.formaBuscarDatos.value.programa,$event.value)">
+                  <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let analito of analitos" [value]="analito.idanalytes" [matTooltip]="analito.desanalytes">
+                      {{ analito.desanalytes}}
+                  </mat-option>
+              </mat-select>
+              <mat-error>Obligatorio</mat-error>
+          </mat-form-field>
+      </div>
+  
+      <div >
+          <mat-form-field >
+              <mat-label class="matLabelForm">Equipo<span class="colorAsterisco">*</span></mat-label>
+              <mat-select formControlName="idAnalyzer" >
+                  <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let analyzer of analyzers" [value]="analyzer.idAnalyzer" [matTooltip]="analyzer.nameAnalyzer">
+                    {{ analyzer.nameAnalyzer }}
+                  </mat-option>
+              </mat-select>
+              <mat-error>Obligatorio</mat-error>
+          </mat-form-field>
+      </div>
+  
+      <div >
+          <mat-form-field >
+              <mat-label class="matLabelForm">Reactivo<span class="colorAsterisco">*</span></mat-label>
+              <mat-select formControlName="idReagents" >
+                  <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let reactivo of reactivos" [value]="reactivo.idreagents" [matTooltip]="reactivo.desreagents">
+                    {{ reactivo.desreagents }}
+                  </mat-option>
+              </mat-select>
+              <mat-error>Obligatorio</mat-error>
+          </mat-form-field>
+      </div>
+  
+      <div></div>
+  
+      <div >
+          <mat-form-field >
+              <mat-label class="matLabelForm">Metodo<span class="colorAsterisco">*</span></mat-label>
+              <mat-select formControlName="idMethods" >
+                  <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let metodo of methodsActive" [value]="metodo.idmethods" [matTooltip]="metodo.desmethods">
+                      {{ metodo.desmethods }}
+                  </mat-option>
+              </mat-select>
+              <mat-error>Obligatorio</mat-error>
+          </mat-form-field>
+      </div>
+  
+      <div >
+          <mat-form-field >
+              <mat-label class="matLabelForm">Unidades<span class="colorAsterisco">*</span></mat-label>
+              <mat-select formControlName="idUnits" >
+                  <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                  </mat-option>
+                  <mat-option *ngFor="let unidad of listaUnits" [value]="unidad.idunits" [matTooltip]="unidad.codunits">
+                    {{ unidad.codunits }}
+                  </mat-option>
+              </mat-select>
+              <mat-error>Obligatorio</mat-error>
+          </mat-form-field>
+      </div>
+  
+      <div >
+          <mat-form-field >
+            <mat-label class="matLabelForm">Valor esperado<span class="colorAsterisco">*</span></mat-label>
+            <mat-select formControlName="idResultsDictionary" >
+                <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                </mat-option>
+                <mat-option *ngFor="let valor of resultadosEsperados" [value]="valor.Idresultsdictionary" [matTooltip]="valor.Desresults">
+                  {{ valor.Desresults }}
+                </mat-option>
+            </mat-select>
+            <mat-error>Obligatorio</mat-error>
+        </mat-form-field>
+      </div>
+  
+      <div style="position: relative;">
+        <mat-label class="labelBeforeSlide">Activo<span class="colorAsterisco">*</span></mat-label>
+        <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+      </div>
+  
+    </form>
+
+    <div class="form-row">
+      <div class="col-12 boxBtnAceptCancel">
+        <button *ngIf="flagEditar" class="boton btnAceptar" type="submit" (click)="editar(formCrearEditar.get('idAssignValuesExpectedCuali')?.value)">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+        <button *ngIf="!flagEditar" class="boton btnAceptar" type="submit" (click)="crearAsignacion()">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+        <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' |
+          translate}}</button>
+      </div>
+    </div>
+    
+  </div>
+</ng-template>
+

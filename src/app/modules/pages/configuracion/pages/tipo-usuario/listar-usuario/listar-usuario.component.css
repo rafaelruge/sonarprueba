@@ -1,0 +1,344 @@
+.foto {
+
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+
+}
+.scroll-permisos{
+  overflow-y: scroll !important;
+    height: 33em  !important;
+    border-radius: 1.25rem !important;
+    padding-left: 19%;
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
+.example-list-section{
+  text-align: left;
+  font: normal normal 606 15px/19px Open Sans;
+  letter-spacing: 0px;
+  color: #3F2E63;
+  opacity: 1;
+}
+
+
+.scroll-permisos::-webkit-scrollbar {
+  width: 10px;               /* width of the entire scrollbar */
+}
+.scroll-permisos::-webkit-scrollbar-track {
+  background: #d3d2d0;
+  border: 3px solid #d7d2c8;
+  border-radius: 20px;
+     /* color of the tracking area */
+}
+
+.SubtituloModal {
+  color: var(--purple-02);
+  font-size: 22px !important;
+  font-weight: bold !important;
+  line-height: 30px;
+  margin: 0px !important;
+  margin-top: 20px !important;
+  padding-left: 9%;
+}
+.alineado-derecha{
+  float: right;
+}
+
+::ng-deep .mat-slide-toggle-bar {
+  background-color:#f7f0f0!important;
+
+}
+
+.boton{
+  list-style:none;
+}
+
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: #f5f2f2!important;
+}
+
+
+
+.fondoMenu{
+  background: #DAD3E0 0% 0% no-repeat padding-box;
+    opacity: 2.2;
+}
+
+.scroll-permisos::-webkit-scrollbar-thumb {
+  background-color: #3A49A5;    /* color of the scroll thumb */
+  border-radius: 5px;       /* roundness of the scroll thumb */
+  border: 1px solid  #d7d2c8;  /* creates padding around scroll thumb */
+}
+
+
+.borderTable {
+  border-color: #e9e8e8;
+  box-shadow: 5px 6px 10px #888888;
+  padding-bottom: 3%;
+  /*padding: 0px 0px 72px 0px;
+  margin-left: 12px;*/
+}
+
+.example-section {
+  margin: 12px 0;
+}
+
+.example-margin {
+  margin: 0 12px;
+}
+
+ul {
+  list-style-type: none;
+  margin-top: 4px;
+}
+
+
+.card {
+  height: 100%;
+  position: relative;
+  display: revert !important;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, .125);
+  border-radius: .25rem;
+}
+
+.camera {
+
+  font-size: 20px;
+  background: #6B4B8B;
+  cursor: pointer;
+  border-radius: 100%;
+  padding: 7px;
+  color: white;
+  font-size: 20px;
+  width: 34px;
+
+}
+
+@media(min-width: 320px) {
+
+  .camera {
+
+    position: absolute;
+    top: 80%;
+    right: 30%;
+
+  }
+
+  .boxImg {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+  }
+
+  .boxBtnAceptCancel {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24px;
+
+  }
+
+  .btnCancel {
+
+    margin-left: 8px;
+
+  }
+
+  .btnCancel,
+  .btnAceptar {
+
+    width: 76px;
+
+  }
+
+  .boxBtnFilter {
+
+    margin-top: 24px;
+
+  }
+
+  .boxBtnCreate {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+
+  .btnCreate {
+
+    width: 70px;
+
+  }
+
+  .boxFilter {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+
+  .filter {
+
+    width: 80%;
+    margin-left: 4px;
+
+  }
+
+}
+
+@media(min-width: 330px) {
+
+  .camera {
+
+    right: 32%;
+
+  }
+
+}
+
+@media(min-width: 350px) {
+
+  .camera {
+
+    right: 34%;
+
+  }
+
+}
+
+@media(min-width: 380px) {
+
+  .camera {
+
+    right: 35%;
+
+  }
+
+}
+
+@media(min-width: 380px) {
+
+  .camera {
+
+    right: 35%;
+
+  }
+
+}
+
+@media(min-width: 410px) {
+
+  .camera {
+
+    right: 37%;
+
+  }
+
+}
+
+@media(min-width: 460px) {
+
+  .camera {
+
+    right: 39%;
+
+  }
+
+}
+
+@media(min-width: 500px) {
+
+  .filter {
+
+    width: 60%;
+  }
+
+}
+
+@media(min-width: 530px) {
+
+  .camera {
+
+    right: 40%;
+
+  }
+
+}
+
+@media(min-width: 576px) {
+
+  .boxBtnCreate {
+
+    margin: 0;
+    justify-content: flex-start;
+
+  }
+
+  .boxFilter {
+
+    justify-content: flex-end;
+
+  }
+
+  .filter {
+
+    width: 80%;
+
+  }
+
+  .camera {
+
+    right: 31%;
+  }
+
+}
+
+@media(min-width: 992px) {
+
+  .btnActive {
+
+    text-align: center;
+
+  }
+
+  .boxImg {
+
+    align-items: flex-start;
+
+  }
+
+  .spin {
+
+    margin-left: 46px;
+
+  }
+
+  .camera {
+
+    right: 74%;
+
+  }
+
+}
+
+@media(min-width: 1200px) {
+
+  .filter {
+
+    width: 60%;
+
+  }
+
+}

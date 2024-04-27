@@ -1,0 +1,308 @@
+    .table-striped>tbody>tr:nth-child(odd)>td,
+    .table-striped>tbody>tr:nth-child(odd)>th {
+        background-color: #fff;
+    }
+    
+    .table-striped>tbody>tr:nth-child(even)>td,
+    .table-striped>tbody>tr:nth-child(even)>th {
+        background-color: #F5F5F5;
+    }
+    
+    .boxFilterForm {
+        margin-top: 40px;
+    }
+    
+    .boxBtnAceptCancel {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .btnCancel {
+        margin-left: 8px;
+    }
+    
+    .tableSamples {
+        width: 100% !important;
+    }
+    
+    a {
+        text-decoration: underline;
+        color: var(--purple-01);
+        font-weight: 600;
+        cursor: pointer;
+    }
+    
+    .btnAddProgAnalyte {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+        background-color: var(--purple-01);
+        border-radius: 100%;
+        color: white;
+        cursor: pointer;
+    }
+    
+    .contTable {
+        margin: 32px 0px;
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+    
+    .btn-close {
+        cursor: pointer;
+        font-weight: bolder;
+        margin-left: 50px;
+        position: relative;
+        top: -10px;
+        right: -46px;
+    }
+    
+    .table-pagination {
+        float: right !important;
+        position: relative;
+        top: -25px;
+        padding: 0px;
+        margin: 0px;
+    }
+    
+    ngb-pagination ::ng-deep .page-item .page-link {
+        border: 0px;
+    }
+    
+    ngb-pagination ::ng-deep .page-item:first-child .page-link {
+        color: #3850EB;
+        font-size: 36px !important;
+        position: relative;
+        padding: 0px;
+        top: -7px;
+        right: -4px;
+    }
+    
+    ngb-pagination ::ng-deep .page-item:last-child .page-link {
+        color: #3850EB;
+        font-size: 36px !important;
+        position: relative;
+        padding: 0px;
+        top: -7px;
+        right: -4px;
+    }
+    
+    ngb-pagination ::ng-deep .page-item:first-child .page-link:hover,
+    ngb-pagination ::ng-deep .page-item:first-child .page-link:focus {
+        background-color: white;
+        box-shadow: none;
+    }
+    
+    ngb-pagination ::ng-deep .page-item:last-child .page-link:hover,
+    ngb-pagination ::ng-deep .page-item:last-child .page-link:focus {
+        background-color: white;
+        box-shadow: none;
+    }
+    
+    ngb-pagination ::ng-deep a {
+        font-size: 14px !important;
+    }
+    
+    ngb-pagination ::ng-deep .page-item.active .page-link {
+        border-radius: 50%;
+    }
+    
+    ngb-pagination ::ng-deep .page-item .page-link:hover {
+        border-radius: 50%;
+    }
+    
+    @media(min-width: 320px) {
+        .dateInput {
+            display: inherit;
+            margin-top: 33px;
+            margin-left: 8px;
+            width: 70%;
+        }
+        .boxFilterDos {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: column;
+            margin: 16px 0px;
+            flex-wrap: wrap;
+        }
+        .btnAceptar,
+        .btnCancel,
+        .btnAceptarDetalles {
+            width: 33%;
+        }
+        .btnAceptarDetalles {
+            margin-top: 16px;
+        }
+        .boxBtnSearch {
+            text-align: center;
+        }
+        .btnSearch {
+            width: 30%;
+            margin-top: 8px;
+        }
+        .boxBtnCreatefilter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 32px;
+        }
+        .boxFilter {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .filter {
+            width: 100%;
+            margin-left: 4px;
+        }
+        .btnCreate {
+            width: 90%;
+        }
+    }
+    
+    @media(min-width: 375px) {
+        .btnSearch {
+            width: 26%;
+        }
+        .btnCreate {
+            width: 80%;
+        }
+        .btnAceptar,
+        .btnCancel,
+        .btnAceptarDetalles {
+            width: 27%;
+        }
+    }
+    
+    @media(min-width: 425px) {
+        .dateInput {
+            width: 60%;
+        }
+        .btnSearch {
+            width: 22%;
+        }
+        .btnCreate {
+            width: 65%;
+        }
+        .btnAceptar,
+        .btnCancel,
+        .btnAceptarDetalles {
+            width: 23%;
+        }
+    }
+    
+    @media(min-width: 470px) {
+        .dateInput {
+            width: 45%;
+        }
+        .btnSearch {
+            width: 18%;
+        }
+        .btnCreate {
+            width: 56%;
+        }
+    }
+    
+    @media(min-width: 500px) {
+        .btnAceptar,
+        .btnCancel,
+        .btnAceptarDetalles {
+            width: 18%;
+        }
+    }
+    
+    @media(min-width: 576px) {
+        .btnAddProgAnalyte {
+            margin-top: 16px;
+            margin-left: 36px;
+        }
+        .select {
+            width: 40% !important;
+        }
+        .boxFilterDos {
+            flex-direction: row;
+        }
+        .boxbtnFilter2 {
+            display: flex;
+            justify-content: flex-start;
+        }
+    }
+    
+    @media(min-width: 768px) {
+        .boxBtnSelects {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .btnSearch {
+            width: 15%;
+        }
+        .btnCreate {
+            width: 50%;
+        }
+    }
+    
+    @media(min-width: 900px) {
+        .btnSearch {
+            width: 13%;
+        }
+        .btnCreate {
+            width: 43%;
+        }
+    }
+    
+    @media(min-width: 992px) {
+        .btnAceptar,
+        .btnCancel {
+            width: 11%;
+        }
+        .btnSearch {
+            width: 11%;
+        }
+        .btnCreate {
+            width: 36%;
+        }
+    }
+    
+    @media(min-width: 1100px) {
+        .btnSearch {
+            width: 10%;
+        }
+        .btnCreate {
+            width: 32%;
+        }
+    }
+    
+    @media(min-width: 1200px) {
+        .contTable {
+            display: flex;
+            justify-content: center;
+        }
+        .filter {
+            width: 60%;
+        }
+        .boxBtnSearch {
+            text-align: left;
+        }
+        .btnSearch {
+            width: 54%;
+            margin-top: 27px;
+            margin-left: 4px;
+        }
+        .btnCreate {
+            width: 27%;
+        }
+    }
+    
+    @media(min-width: 1400px) {
+        .btnSearch {
+            width: 45%;
+        }
+        .btnCreate {
+            width: 23%;
+        }
+    }

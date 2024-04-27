@@ -1,0 +1,445 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card mt-3 mb-3 borderTable">
+                <div class="col-12 d-flex justify-content-center">
+                    <img class="imageSobreBorde" [src]="'rondas.svg' | imageCdn">
+                </div>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-12 titulo">{{'MODULES.RONDASQCE.TITLE' | translate}}</div>
+
+                    <div class="col-xl-11 mt-4">
+
+                        <form [formGroup]="formaBuscarDatos" (ngSubmit)="buscarDatos()" autocomplete="off">
+
+                            <div class="form-row boxBtnSelects">
+
+                                <div class="col-md-4 col-xl-3">
+                                    <mat-form-field class="sf-2">
+                                        <mat-label class="matLabelForm">{{'MODULES.RONDASQCE.FILTRO.CLIENTE' |
+                                            translate}}<span class="colorAsterisco">
+                                                *</span></mat-label>
+                                        <mat-select disableOptionCentering formControlName="cliente"
+                                            class="form-control styleForm" (valueChange)="limpiarFormBuscarDatos()">
+                                            <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' |
+                                                translate}}
+                                            </mat-option>
+                                            <mat-option *ngFor="let cliente of listaClientes"
+                                                [value]="cliente.idclient"
+                                                [matTooltip]="cliente.name"
+                                                (click)="selectFilter(1,cliente)">
+                                                {{ cliente.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-md-4 col-xl-3">
+                                    <mat-form-field class="sf-2">
+                                        <mat-label class="matLabelForm">{{'MODULES.RONDASQCE.FILTRO.SEDE' | translate}}<span class="colorAsterisco">*</span></mat-label>
+                                        <mat-select disableOptionCentering formControlName="sede"
+                                            class="form-control styleForm"  (valueChange)="limpiarFormBuscarDatosSede()">
+                                            <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                                            </mat-option>
+                                            <mat-option *ngFor="let sede of sedesActive" [value]="sede.idheadquarters"
+                                              [matTooltip]=" sede.desheadquarters"
+                                              (click)="selectFilter(2,sede)">
+                                              {{ sede.desheadquarters | titlecase }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-md-4 col-xl-3">
+
+                                    <mat-form-field class="sf-2">
+                                        <mat-label class="matLabelForm">{{'MODULES.RONDASQCE.FILTRO.PROGRAMA' |
+                                            translate}}<span class="colorAsterisco"> *</span></mat-label>
+                                        <mat-select disableOptionCentering formControlName="programa"
+                                            class="form-control styleForm" (valueChange)="Limpiarprograma()">
+                                            <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' |
+                                                translate}}
+                                            </mat-option>
+                                            <mat-option *ngFor="let programa of listaProgramas" (click)="AsignacionesProgram(programa.IdProgram)"
+                                                [value]="programa.IdProgram" [matTooltip]="programa.Desprogram" >
+                                                {{ programa.Desprogram}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 boxBtnSearch" >
+                                    <button class="boton btnSearch animate__animated animate__fadeIn fast"
+                                        [disabled]="!bloquearbuscar"
+                                        type="submit">{{'MODULES.RONDASQCE.FILTRO.BOTON' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-11 animate__animated animate__fadeIn fast" [hidden]="!show">
+
+                        <div class="row boxBtnCreatefilter">
+
+                            <div class="col-4 form-group m-0">
+                                <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                                    (click)="openModalRegistroRondasQce(templateRegistroRondasQce, '')">
+                                    {{'MODULES.RONDASQCE.BOTONCREAR' | translate}}
+                                </button>
+                            </div>
+
+
+                            <div class="col-8 boxFilter">
+                                <i class="fa fa-search"></i>
+                                <mat-form-field class="filter">
+                                    <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                                    <input matInput (keyup)="applyFilter($event)"
+                                        placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-11 animate__animated animate__fadeIn fast" [hidden]="!show">
+                        <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+                            <ng-container matColumnDef="Name">
+                                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.RONDASQCE.COLUMNS.CLIENTE' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.name | titlecase}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Nroround">
+                                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.RONDASQCE.COLUMNS.RONDAS' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.nroround}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Nrosample">
+                                <th style="width: 450px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.RONDASQCE.COLUMNS.CANTMUESTRAS' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.nrosample}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="inicial">
+                                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.RONDASQCE.COLUMNSDETALLE.INICIAL' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.begindate | date: 'dd-MM-yyyy':'+0000'}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="final">
+                                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.RONDASQCE.COLUMNSDETALLE.FINAL' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.enddate | date: 'dd-MM-yyyy':'+0000'}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="detalle">
+                                <th style="width: 250px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{'MODULES.RONDASQCE.COLUMNS.DETALLES' | translate}}</th>
+                                <td mat-cell *matCellDef="let row"><a class="vsm-link"
+                                        (click)="openModalDetalleRondasQce(templateDetalleQce, row)">Ver más</a></td>
+                            </ng-container>
+                            <ng-container matColumnDef="editar">
+                                <th style="width: 250px;" mat-header-cell *matHeaderCellDef>
+                                    {{'MODULES.RONDASQCE.COLUMNS.EDITAR' | translate}}</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <img [src]="'imagenEditar.png' | imageCdn"
+                                        (click)="openModalRegistroRondasQce(templateRegistroRondasQce, row)"
+                                        style="cursor: pointer;">
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="borrar">
+                                <th style="width: 250px;" mat-header-cell *matHeaderCellDef>
+                                    {{'MODULES.RONDASQCE.COLUMNS.ELIMINAR' | translate}}</th>
+                                <td mat-cell *matCellDef="let row; let i = index;">
+                                    <img [src]="'imagenEliminar.png' | imageCdn" (click)="eliminarRondaQce(row)"
+                                        style="cursor: pointer;">
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                    </div>
+                </div>
+            </div>
+<!-- ***MODAL* -->
+<ng-template #templateRegistroRondasQce>
+    <div class="modal-header">
+        <button type="button" class="close pull-right" arial-label="Close" (click)="closeVentana()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col flex2">
+                <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+                <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+                <h3 class="tituloModal">{{tituloAccion}}</h3>
+            </div>
+        </div>
+
+        <form [formGroup]="formaRegistroRondasQce" autocomplete="off">
+
+            <div class="form-row boxFilterForm">
+
+                <div class="col-sm-5 form-group">
+                    <div role="group">
+                        <label class="labelForm" for="cliente">{{'MODULES.RONDASQCE.FORMULARIO.CLIENTE' |
+                            translate}}<span class="colorAsterisco"> *</span></label>
+                        <input formControlName="idclient" type="text" class="form-control"
+                            [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'" id="cliente">
+                            <small
+                            *ngIf="formaRegistroRondasQce.get('idclient').touched && formaRegistroRondasQce.get('idclient').invalid "
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |translate}}</small>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 form-group">
+                    <div role="group">
+                        <label class="labelForm" for="programa">{{'MODULES.RONDASQCE.FORMULARIO.PROGRAMA' |
+                            translate}}<span class="colorAsterisco"> *</span></label>
+                        <input formControlName="IdProgramConfClientHeadq" type="text" class="form-control"
+                            [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'" id="programa">
+                            <small
+                            *ngIf="formaRegistroRondasQce.get('IdProgramConfClientHeadq').touched && formaRegistroRondasQce.get('IdProgramConfClientHeadq').invalid "
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |translate}}</small>
+                    </div>
+                </div>
+
+                <div class="col-sm-3 form-group">
+                    <div role="group">
+                        <label class="labelForm" for="nroround">{{'MODULES.RONDASQCE.FORMULARIO.RONDAS' |
+                            translate}}<span class="colorAsterisco"> *</span></label>
+                        <input formControlName="nroround" type="number" class="form-control"
+                            [ngClass]="!accionEditar ? 'styleForm' : 'styleForm2'" id="nroround">
+                            <small
+                            *ngIf="formaRegistroRondasQce.get('nroround').touched && formaRegistroRondasQce.get('nroround').invalid "
+                            class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |translate}}</small>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+        <form [formGroup]="formularioSamples" autocomplete="off" [hidden]="!show2"
+            class="animate__animated animate__fadeIn fast">
+            <div class="form-row">
+
+                <div class="col-12 boxFilterDos">
+
+                    <mat-form-field class="sf-2 select">
+                        <mat-label class="matLabelForm">{{'MODULES.RONDASQCE.COLUMNS.MUESTRA' |
+                            translate}}<span class="colorAsterisco"> *</span></mat-label>
+                        <mat-select disableOptionCentering formControlName="idSample"
+                            class="form-control styleForm">
+                            <mat-option value="">{{'MODULES.RONDASQCE.FORMULARIO.SELECCIONE' | translate}}
+                            </mat-option>
+                            <mat-option *ngFor="let muestra of listaSamples" [value]="muestra.idSample" [matTooltip]="muestra.serialsample">
+                                {{ muestra.serialsample }}
+                            </mat-option>
+                        </mat-select>
+                        <small
+                        *ngIf="formularioSamples.get('idSample').touched && formularioSamples.get('idSample').invalid"
+                        class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |translate}}</small>
+                    </mat-form-field>
+
+                    <mat-form-field class="sf-2 select">
+                        <mat-label class="matLabelForm">
+                            {{'MODULES.REPORTECONSOLIDADOICT.ANALITOS' | translate}}<span
+                                class="colorAsterisco"> *</span>
+                        </mat-label>
+                        <mat-select disableOptionCentering class="form-control styleForm"
+                            formControlName="idAnalyte" multiple >
+                            <mat-option value="" (click)="selectNone('idAnalyte')">
+                                {{'MODULES.REPORTECONSOLIDADOICT.SELECCIONE' | translate}}
+                            </mat-option>
+                            <mat-option value="-1" *ngIf="validselect()"
+                                (click)="selectedAllanalyte('idAnalyte')">
+                                {{'MODULES.REPORTECONSOLIDADOICT.ALLANALITOS' | translate}}
+                            </mat-option>
+                            <mat-option *ngFor="let analito of listaAnalitosXPrograma" [value]="analito.idanalytes"
+                                [matTooltip]="analito.desanalytes"
+                                (click)="selectedanalyte('idAnalyte')">
+                                {{analito.desanalytes}}
+                            </mat-option>
+                          </mat-select>
+                          <small
+                          *ngIf="formularioSamples.get('idAnalyte').touched && formularioSamples.get('idAnalyte').invalid "
+                          class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |translate}}</small>
+                    </mat-form-field>
+
+                    <div role="group" style="margin-top: 7px; margin-left: 12px;">
+                      <mat-form-field style="display: inherit; width: 160px;">
+                        <mat-label class="labelForm" for="expdate">{{'MODULES.RONDASQCE.COLUMNSDETALLE.INICIAL' | translate}}
+                            <span class="colorAsterisco">*</span>
+                        </mat-label>
+                          <input matInput [matDatepicker]="picker" formControlName="fechaInicio" class="form-control styleForm"
+                              id="fechaInicio" [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" autocomplete="off"
+                              [min]="today" readonly style="background-image: none !important;font-size: 1rem">
+                          <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker"
+                              style="color:#2edad8; width: 18px;">
+                          </mat-datepicker-toggle>
+                          <mat-datepicker #picker style="color:white !important"></mat-datepicker>
+                      </mat-form-field>
+                      <small *ngIf="formularioSamples.get('fechaInicio').touched && formularioSamples.get('fechaInicio').invalid "
+                          class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |translate}}</small>
+                  </div>
+
+
+                    <div role="group" style="margin-top: 7px; margin-left: 12px;">
+                      <mat-form-field style="display: inherit; width: 160px;">
+                        <mat-label class="labelForm" for="expdate">{{'MODULES.RONDASQCE.COLUMNSDETALLE.FINAL' |
+                            translate}}<span class="colorAsterisco">
+                                *</span></mat-label>
+                            <input matInput [matDatepicker]="picker2" formControlName="fechaFin"
+                                class="form-control styleForm" id="fechaFin"
+                                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'"
+                                autocomplete="off" [min]="today" readonly
+                                style="background-image: none !important;font-size: 1rem;">
+                            <mat-datepicker-toggle matSuffix disableOptionCentering [for]="picker2"
+                                style="color:#2edad8; width: 18px;">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #picker2 style="color:white !important"></mat-datepicker>
+                          </mat-form-field>
+                          <small
+                          *ngIf="formularioSamples.get('fechaFin').touched && formularioSamples.get('fechaFin').invalid "
+                          class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |translate}}</small>
+                    </div>
+
+                    <div class="btnAddProgAnalyte" (click)="isHabilited &&  addProgramAnalyteConfig()" *ngIf="verBtnAdd">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="row" [hidden]="programAnalytes.length == 0" *ngIf="!verSamples">
+            <div class="col-12">
+                <div class="table-pagination">
+                    <ngb-pagination class="animate__animated animate__fadeIn fast"
+                        [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize"
+                        [maxSize]="maxSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="false"
+                        aria-label="Default pagination" (pageChange)="refreshprogramAnalytes()">
+                        <ng-template ngbPaginationPrevious>
+                            <span>&#x025C2;</span>
+                        </ng-template>
+                        <ng-template ngbPaginationNext>
+                            <span>&#x025B8;</span>
+                        </ng-template>
+                    </ngb-pagination>
+                </div>
+            </div>
+        </div>
+
+        <!-- ***Table nroSample** -->
+        <div class="contTable form-row animate__animated animate__fadeIn fast"
+            *ngIf="nroSamples.length !== 0">
+
+            <table class="table tableSamples table-striped">
+                <thead style="background: #3850EB; color: white;">
+                    <tr>
+                        <th scope="col">{{ 'MODULES.RONDASQCE.COLUMNSDETALLE.NUMMUESTRA' | translate }}</th>
+                        <th scope="col">{{ 'MODULES.RONDASQCE.COLUMNSDETALLE.IDMUESTRA' | translate }}</th>
+                        <th scope="col">{{ 'MODULES.RONDASQCE.COLUMNSDETALLE.INICIAL' | translate }}</th>
+                        <th scope="col">{{ 'MODULES.RONDASQCE.COLUMNSDETALLE.FINAL' | translate }}</th>
+                        <th scope="col" [hidden]="show2">{{ 'MODULES.RONDASQCE.COLUMNS.EDITAR' | translate
+                            }}</th>
+                        <th scope="col">{{ 'MODULES.RONDASQCE.COLUMNS.ELIMINAR' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let sample of nroSamples; let i = index">
+
+                        <td style="font-weight: 600;">{{ i + 1 }}</td>
+                        <td style="font-weight: 600;">{{ sample.Serialsample }}</td>
+                        <td style="font-weight: 600;">{{ sample.Begindate | date: 'dd-MM-yyyy' }}</td>
+                        <td style="font-weight: 600;">{{ sample.Enddate | date: 'dd-MM-yyyy' }}</td>
+                        <td [hidden]="show2">
+                            <img [src]="'imagenEditar.png' | imageCdn" style="cursor: pointer;"
+                                (click)="editarSample( sample )">
+                        </td>
+                        <td>
+                            <img [src]="'imagenEliminar.png' | imageCdn" style="cursor: pointer;"
+                                (click)="removeSample( sample, i )">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="form-row">
+            <div class="col-12 boxBtnAceptCancel">
+                <!-- <button *ngIf="nroSamples.length == 0" class="boton btnAceptar" type="button" (click)="addSample()">{{'MODULES.BOTONACEPTAR' | translate}}
+                </button> -->
+                <button *ngIf="!verSamples && programAnalytes.length > 0" class="boton btnAceptar"
+                    type="button" (click)="addSample()">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                <button
+                    class="boton btnAceptar" type="button"
+                    [disabled]="isButtonDisabled"
+                    (click)="crearEditarRodasQce()">{{'MODULES.BOTONACEPTAR' | translate}}
+                </button>
+                <!-- <button *ngIf="verSamples && accionEditar && nroSamples.length > 0" class="boton btnAceptar"
+                    type="button" (click)="crearEditarRodasQce()">{{'MODULES.BOTONACEPTAR' |
+                    translate}}</button> -->
+                <button class="botonCancelar btnCancel" type="button"
+                    (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}
+                </button>
+            </div>
+        </div>
+
+    </div>
+</ng-template>
+
+<ng-template #templateDetalleQce>
+    <div class="modal-header">
+        <button type="button" class="close pull-right" arial-label="Close" (click)="closeVentana()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="row">
+
+            <div class="col flex2">
+
+                <img class="img" [src]="'detalles.png' | imageCdn">
+                <h3 class="tituloModal">{{'MODULES.GESTIONTEST.COLUMNS.DETALLES' | translate}}</h3>
+                <div class="hr"></div>
+
+            </div>
+
+        </div>
+
+        <table mat-table [dataSource]="dataSourceDetalle" class="table-responsive" matSort>
+            <ng-container matColumnDef="numuestra">
+                <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{'MODULES.RONDASQCE.COLUMNSDETALLE.NUMMUESTRA' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Nrosample}} </td>
+            </ng-container>
+            <ng-container matColumnDef="idmuestra">
+                <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{'MODULES.RONDASQCE.COLUMNSDETALLE.IDMUESTRA' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Serialsample}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="inicial">
+                <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{'MODULES.RONDASQCE.COLUMNSDETALLE.INICIAL' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Begindate | date: 'dd-MM-yyyy':'+0000'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="final">
+                <th style="width: 360px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{'MODULES.RONDASQCE.COLUMNSDETALLE.FINAL' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Enddate | date: 'dd-MM-yyyy':'+0000'}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsDetalle"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsDetalle;"></tr>
+        </table>
+        <div class="form-row">
+            <div class="col-12 boxBtnAceptCancel">
+                <button class="boton btnAceptarDetalles" type="button"
+                    (click)="closeVentana()">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</ng-template>

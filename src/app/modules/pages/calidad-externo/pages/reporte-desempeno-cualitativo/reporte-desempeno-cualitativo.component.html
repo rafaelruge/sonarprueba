@@ -1,0 +1,283 @@
+<div class="container-fluid">
+  <div class="row" style="margin-right: -13px !important;">
+      <div class="div-container col-md-12 mt-2">
+          <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'CasasComerciales.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> {{'MODULES.REPORTESDATOSCUALITATIVOS.TITLE' | translate}}</div>
+
+          <div class="col-10 my-4 ">
+            <form [formGroup]="formulario" (ngSubmit)="buscar()" autocomplete="off">
+              <div class="d-flex justify-content-around">
+
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 16px !important;">{{'MODULES.REPORTESDATOSCUALITATIVOS.FORMULARIO.PROGRAMA'
+                      | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio "
+                      style="width: 230px !important; display: unset !important;top: 7px;">
+                      <input type="text" matInput [matAutocomplete]="autoprogram" formControlName="idProgram"
+                        style="font-family: 'Open Sans' !important;font-size: 16px;">
+                      <mat-autocomplete #autoprogram="matAutocomplete">
+                        <mat-option *ngFor="let programa of filteredOptionsProgram | async" [matTooltip]="programa.desprogram" [value]="programa.desprogram" (click)="selectRonda(programa.idProgram)">
+                          {{ programa.desprogram}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="idProgramNoValido.errors?.required  && idProgramNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 16px !important;">{{'MODULES.REPORTESDATOSCUALITATIVOS.FORMULARIO.RONDA'
+                      | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio "
+                      style="width: 230px !important; display: unset !important;top: 7px;">
+                      <input type="text" matInput [matAutocomplete]="autoRonda" formControlName="idRonda"
+                        style="font-family: 'Open Sans' !important;font-size: 16px;">
+                      <mat-autocomplete #autoRonda="matAutocomplete">
+                        <mat-option *ngFor="let ronda of filteredOptionsRonda | async" [value]="ronda.nroround"(click)="selectLote(ronda.nroround)">
+                          {{ ronda.nroround}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="idRondaNoValido.errors?.required  && idRondaNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 16px !important;">{{'MODULES.REPORTESDATOSCUALITATIVOS.FORMULARIO.LOTE' | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio "
+                      style="width: 230px !important; display: unset !important;top: 7px;">
+                      <input type="text" matInput [matAutocomplete]="autoLote" formControlName="idLote"
+                        style="font-family: 'Open Sans' !important;font-size: 16px;">
+                      <mat-autocomplete #autoLote="matAutocomplete">
+                        <mat-option *ngFor="let lote of filteredOptionsLote | async" [matTooltip]="lote.numlot" [value]="lote.numlot" (click)="selectAnalito(lote.idLot)">
+                          {{ lote.numlot}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="idLoteNoValido.errors?.required  && idLoteNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+
+                  <div role="group">
+                      <mat-form-field class="sf-2" style="width: 14em !important;">
+                        <mat-label class="matLabelForm">
+                            {{'MODULES.REPORTESDATOSCUALITATIVOS.FORMULARIO.ANALITOS' | translate}}
+                        </mat-label>
+                        <mat-select disableOptionCentering class="form-control styleForm" formControlName="idAnalito" multiple>
+                            <mat-option value="" (click)="selectNone('idAnalito')">
+                                {{'MODULES.REPORTECUANTITATIVO.SELECCIONE' | translate}}
+                            </mat-option>
+                            <mat-option value="-1" (click)="selectAll('idAnalito')" *ngIf="analitos.length != 0">
+                                {{'MODULES.REPORTECUANTITATIVO.ALLANALITOS' | translate}}
+                            </mat-option>
+                            <mat-option *ngFor="let analito of analytes" [matTooltip]="analito.desanalytes" [value]="analito.idanalytes" (click)="selectOne('idAnalito')">
+                                {{ analito.desanalytes }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                  </div>
+
+              </div>
+              <div class="form-row">
+                <div class="col-12 boxBtnAceptCancel">
+                  <button class="boton btnCreate" type="submit">{{'MODULES.BUSCAR' | translate}}</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-12 col-lg-10 col-xl-10" *ngIf="verInfo">
+            <div class="col-12" >
+              <!-- SLIDE ANALITOS  -->
+              <div class="boxAnalitos"  >
+                <div class="arrow-left">
+                    <i class="fas fa-angle-left" (click)="scrollCards(-1)"></i>
+                </div>
+                <div #scroll class="boxAnalitosContainer">
+                    <div *ngFor="let analito of datosFiltro.analytesList; let i = index">
+                        <div #btnSecc (click)="buscarAnalitos(analito, btnSecc,i)" id="bntSecc-{{i}}" class="styleAnalito" [ngClass]="{'backHover': analitoSeleccionado=== analito }">
+                            <h3 style="color:purple;" class="text-capitalize text-nowrap mb-0" >{{analito.desAnalytes}}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="arrow-right" (click)="scrollCards(1)">
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
+
+            <div class="cont_report" style="">
+              <div style="display: flex; justify-content: center;">
+                <!-- <img [src]="'pdf2.png' | imageCdn" alt="Reporte cuantitativo" style="height: 30px; cursor: pointer;"
+                    (click)="pdfTodosAnalitos()"> -->
+                <!-- <img [src]="'PDFconsolidado.svg' | imageCdn" alt="Reporte cuantitativo" style="height: 30px; cursor: pointer;"
+                    > -->
+              </div>
+              <div [ngStyle]="{'width': 90 +(datosFiltro.reactivoValueList.length * 40)+'em' }" style="overflow: scroll;  overflow: hidden; display: flex;">
+                <div style="width:60em; margin:1em;">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th style="width:4em">ID Laboratorio</th>
+                        <th style="width:4em">ID Sede</th>
+                        <th style="width:8em">Nombre del Laboratorio</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let obj of datosFiltro.listResult">
+                        <td>{{obj.idLab}}</td>
+                        <td>{{obj.idHeader}}</td>
+                        <td>{{obj.nameLab}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="width:70em; margin:1em;" *ngFor="let obj of datosFiltro.reactivoValueList; let i = index">
+                  <div>
+                    <!-- <div *ngFor="let item of obj.analiList; let j = index"> -->
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th style="width:15em;">{{obj.sample}}</th>
+                            <th >VP</th>
+                            <th >VN</th>
+                            <th >FN</th>
+                            <th >FP</th>
+                            <th >I</th>
+                            <th >%C</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of obj.tableSample; let l = index">
+                            <th>{{item.nameSample}}</th>
+                            <td>{{item.result == 'VP' ? 1 : 0}}</td>
+                            <td>{{item.result == 'VN' ? 1 : 0}}</td>
+                            <td>{{item.result == 'FN' ? 1 : 0}}</td>
+                            <td>{{item.result == 'FP' ? 1 : 0}}</td>
+                            <td>{{item.result == 'I' ? 1 : 0}}</td>
+                            <td>{{item.c}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    <!-- </div> -->
+                  </div>
+                </div>
+                <div style="width:42em; margin:1em;">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th >%Concordancia global</th>
+                        <th >Desempeño global</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let obj of datosFiltro.listResult">
+                        <th>{{obj.conGlobal}}</th>
+                        <td>{{obj.deseGlobal}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div [ngStyle]="{'width': 90 +(datosFiltro.reactivoValueList.length * 40)+'em' }" style="overflow: scroll;  overflow: hidden; display: flex; ">
+                <div style="width:60em; margin:1em;  display: flex; justify-content: flex-end; ">
+                  <table class="table table-striped" style="width: 22em !important;">
+                    <thead>
+                      <tr>
+                        <th style="width:22em">Valor asignado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>CONSENSO</td>
+                      </tr>
+                      <tr>
+                        <td>Reactivo</td>
+                      </tr>
+                      <tr>
+                        <td>No reactivo</td>
+                      </tr>
+                      <tr>
+                        <td>Indeterminado</td>
+                      </tr>
+                      <tr>
+                        <td>N° total de participantes </td>
+                      </tr>
+                      <tr>
+                        <td>Mínimo consenso (80%)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="width:70em; margin:1em;" *ngFor="let itemReac of datosFiltro.reactivoValueList">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th style="width:15em" >Reactivo</th>
+                        <th *ngFor="let obj of [1,2,3,4,5,6]"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{itemReac.consenso}}</td>
+                        <td>{{itemReac.tvp}}</td>
+                        <td>{{itemReac.tvn}}</td>
+                        <td>{{itemReac.tfn}}</td>
+                        <td>{{itemReac.tfp}}</td>
+                        <td>{{itemReac.ti}}</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td>{{itemReac.reactivo}}</td>
+                        <td *ngFor="let obj of [1,2,3,4,5,6]"></td>
+                      </tr>
+                      <tr>
+                        <td>{{itemReac.noReactivo}}</td>
+                        <td *ngFor="let obj of [1,2,3,4,5,6]"></td>
+                      </tr>
+                      <tr>
+                        <td>{{itemReac.indeterminado}}</td>
+                        <td *ngFor="let obj of [1,2,3,4,5,6]"></td>
+                      </tr>
+                      <tr>
+                        <td>{{itemReac.nTotalPacientes}}</td>
+                        <td *ngFor="let obj of [1,2,3,4,5,6]"></td>
+                      </tr>
+                      <tr>
+                        <td>{{itemReac.minimoConsen}}</td>
+                        <td *ngFor="let obj of [1,2,3,4,5,6]"></td>
+                      </tr>
+                    </tbody>
+                    <!-- <tbody>
+                      <tr>
+                        <th>{{itemReac.consenso}}</th>
+                        <td>{{itemReac.reactivo}}</td>
+                        <th>{{itemReac.noReactivo}}</th>
+                        <td>{{itemReac.indeterminado}}</td>
+                        <th>{{itemReac.nTotalPacientes}}</th>
+                        <td>{{itemReac.minimoConsen}}</td>
+                        <td></td>
+                      </tr>
+                    </tbody> -->
+                  </table>
+                </div>
+                <div style="width:42em;margin:1em; visibility: hidden;"></div>
+              </div>
+
+            </div>
+          </div>
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

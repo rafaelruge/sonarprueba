@@ -1,0 +1,275 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'muestras.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+
+          <div class="col-12 titulo"> {{'MODULES.MUESTRAS.TITLE' | translate}}</div>
+          <div class="col-11 col-lg-8 col-xl-7">
+
+            <div class="row boxBtnFilter">
+
+              <div class="col-12 col-sm-4 boxBtnCreate form-group">
+                <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                  (click)="openModalGestionMuestras(templateGestionMuestras, '')">{{'MODULES.MUESTRAS.BOTONCREAR'
+                                    | translate}}</button>
+              </div>
+
+
+              <div class="col-12 col-sm-8 boxFilter">
+                <i class="fa fa-search"></i>
+                <mat-form-field class="filter">
+                  <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                  <input matInput (keyup)="applyFilter($event)"
+                    placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-11 col-lg-8 col-xl-7">
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+              <ng-container matColumnDef="numuestra">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.MUESTRAS.COLUMNS.NUMEROMUESTRA' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Serialsample}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="numlote">
+                <th style="width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.MUESTRAS.COLUMNS.NUMLOTE' | translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.Numlot}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="active">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.MUESTRAS.COLUMNS.ESTADO' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-slide-toggle [checked]="row.Active" (change)="actualizarEstadoGestionMuestras(row)">
+                  </mat-slide-toggle>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="editar">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.MUESTRAS.COLUMNS.EDITAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <img [src]="'imagenEditar.png' | imageCdn"
+                    (click)="openModalGestionMuestrasEdit(templateGestionMuestrasEdit, row)" style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="borrar">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.MUESTRAS.COLUMNS.ELIMINAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row; let i = index;">
+                  <img [src]="'imagenEliminar.png' | imageCdn" (click)="eliminarGestionMuestras(row)"
+                    style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+              </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #templateGestionMuestras>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <form [formGroup]="formulario" (ngSubmit)="crearEditarGestionMuestras()">
+      <div class="form-row">
+
+        <div class="col-sm-4 form-group">
+          <div role="group">
+            <label for="serialsample" class="labelForm">{{'MODULES.MUESTRAS.FORMULARIO.NUMEROMUESTRA' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <input formControlName="serialsample" type="text" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" autocomplete="off">
+
+            <small *ngIf="serialsampleNoValido.errors?.required  && serialsampleNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            <small *ngIf="serialsampleNoValido.errors?.minlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMODOS' | translate}}</small>
+
+          </div>
+        </div>
+
+        <div class="col-sm-4 form-group">
+          <div role="group">
+
+            <!-- <mat-form-field class="sf-2 labelInput">
+              <mat-label class="matLabelForm">{{'MODULES.MUESTRAS.FORMULARIO.NUMLOTE'
+                                | translate}}<span class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="idLot" class="form-control"
+                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.MUESTRAS.FORMULARIO.SELECCIONE' |
+                                translate}}</mat-option>
+                <mat-option *ngFor="let lote of lotesActive" [value]="lote.idLot">
+                  {{ lote.numlot }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-label class="matLabelForm" style="font-size: 16px !important;">{{'MODULES.MUESTRAS.FORMULARIO.NUMLOTE'
+              | translate}}<span class="colorAsterisco"> *</span></mat-label>
+            <mat-form-field class="serial-tamanio "
+              style="width: 230px !important; display: unset !important;top: 7px;">
+              <input type="text" matInput [matAutocomplete]="autoanalytecreate" formControlName="idLot"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autoanalytecreate="matAutocomplete">
+                <mat-option *ngFor="let lote of filteredOptionsLotsCreate | async" [value]="lote.numlot">
+                  {{ lote.numlot}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="idLotNoValido.errors?.required  && idLotNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+
+        <div class="col-sm-2 form-group btnActive">
+          <div role="group">
+            <label class="labelForm">{{'MODULES.MUESTRAS.FORMULARIO.ESTADO' | translate}}</label><br>
+            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button [disabled]="desactivar" class="boton btnAceptar"
+            type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+          <button class="botonCancelar btnCancel" type="button"
+            (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</ng-template>
+<ng-template #templateGestionMuestrasEdit>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <form [formGroup]="formularioEdit" (ngSubmit)="crearEditarGestionMuestrasEdit()">
+      <div class="form-row">
+
+        <div class="col-sm-4 form-group">
+          <div role="group">
+            <label for="serialsample" class="labelForm">{{'MODULES.MUESTRAS.FORMULARIO.NUMEROMUESTRA' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <input formControlName="serialsample" type="text" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" autocomplete="off">
+
+            <small *ngIf="serialsampleNoValidoEdit.errors?.required  && serialsampleNoValidoEdit.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            <small *ngIf="serialsampleNoValidoEdit.errors?.minlength"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMODOS' | translate}}</small>
+
+          </div>
+        </div>
+
+        <div class="col-sm-4 form-group">
+          <div role="group">
+
+            <!-- <mat-form-field class="sf-2 labelInput">
+              <mat-label class="matLabelForm">{{'MODULES.MUESTRAS.FORMULARIO.NUMLOTE'
+                                | translate}}<span class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="idLot" class="form-control"
+                [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.MUESTRAS.FORMULARIO.SELECCIONE' |
+                                translate}}</mat-option>
+                <mat-option *ngFor="let lote of lotesActive" [value]="lote.idLot">
+                  {{ lote.numlot }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-label class="matLabelForm" style="font-size: 16px !important;">{{'MODULES.MUESTRAS.FORMULARIO.NUMLOTE'
+              | translate}}<span class="colorAsterisco"> *</span></mat-label>
+            <mat-form-field class="serial-tamanio "
+              style="width: 230px !important; display: unset !important;top: 7px;">
+              <input type="text" matInput [matAutocomplete]="autoanalytecreate" formControlName="idLot"
+                style="font-family: 'Open Sans' !important;font-size: 16px;">
+              <mat-autocomplete #autoanalytecreate="matAutocomplete">
+                <mat-option *ngFor="let lote of filteredOptionsLotsCreate | async" [value]="lote.numlot">
+                  {{ lote.numlot}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <small *ngIf="idLotNoValidoEdit.errors?.required  && idLotNoValidoEdit.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+
+        <div class="col-sm-2 form-group btnActive">
+          <div role="group">
+            <label class="labelForm">{{'MODULES.MUESTRAS.FORMULARIO.ESTADO' | translate}}</label><br>
+            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+          <button [disabled]="desactivar" class="boton btnAceptar"
+            type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+          <button class="botonCancelar btnCancel" type="button"
+            (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</ng-template>

@@ -1,0 +1,309 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mt-4">
+      <div class="card mt-3 mb-3 borderTable">
+        <div class="col-12 d-flex justify-content-center">
+          <img class="imageSobreBorde" [src]="'ConfiguracionMediaDS.png' | imageCdn">
+        </div>
+        <div class="row justify-content-center mt-4">
+          <div class="col-12 titulo"> {{'MODULES.CONFIGMEDIADS.TITLE' | translate}} </div>
+          <div class="col-11 boxMainFilters">
+            <form [formGroup]="formaBuscarDatos">
+              <div class="form-row">
+                <div class="col-md-6 col-lg-3 form-group">
+                  <div role="group">
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SEDES' | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering formControlName="numLaboratorio"
+                        class="form-control styleForm" [disabled]="habilitarSede">
+                        <mat-option value="">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                        <mat-option *ngFor="let sede of sedesActive" [value]="sede.idheadquarters"> 
+                          {{sede.desheadquarters | titlecase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <small *ngIf="numLaboratorioNoValido.invalid  && numLaboratorioNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 17px !important; ">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SECCION'
+                      | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto01" formControlName="seccion"   #seccionPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto01="matAutocomplete" (optionSelected)="cambiarSeccion(seccionPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsSections | async);" [value]="option.namesection" [matTooltip]="option.namesection | NombreSeccion">
+                            
+                              {{option.namesection | NombreSeccion}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="seccionNoValido.invalid  && seccionNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 17px !important; ">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.NUMMATERIALCONTROL'
+                      | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto02" formControlName="numMaterialControl"  #contmatPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto02="matAutocomplete" (optionSelected)="cambiarControlMaterial(contmatPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsControlmaterial | async);" [value]="option.descontmat" [matTooltip]="option.descontmat | NombreControlmaterial">
+                            
+                              {{option.descontmat | NombreControlmaterial}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="numMaterialControlNoValido.invalid  && numMaterialControlNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' |
+                                            translate}}</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3 form-group">
+                  <div role="group">
+                    <mat-label class="matLabelForm" style="font-size: 17px !important; ">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.NUMLOTE'
+                      | translate}}<span class="colorAsterisco"> *</span></mat-label>
+                    <mat-form-field class="serial-tamanio" style="width:100% !important;">
+                      <input type="text" matInput  [matAutocomplete]="auto03" formControlName="numLote"  #lotPr style="font-family: 'Open Sans' !important;font-size: 16px;" >
+                      <mat-autocomplete #auto03="matAutocomplete" (optionSelected)="lotesPre(lotPr.value)">
+                          <mat-option *ngFor="let option of (filteredOptionsLots | async);" [value]="option.Numlot" [matTooltip]="option.Numlot | nombreLote">
+                              {{option.Numlot | nombreLote}}
+                          </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <small *ngIf="numLoteNoValido.invalid  && numLoteNoValido.touched"
+                      class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="form-row animate__animated animate__fadeIn fast" *ngIf="tests.length !== 0">
+
+                <div class="col-12 col-sm-12 form-group">
+                  <div role="group">
+                    <mat-form-field class="sf-2">
+                      <mat-label class="matLabelForm">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.TEST'| translate}}<span class="colorAsterisco"> *</span></mat-label>
+                      <mat-select disableOptionCentering class="form-control styleForm"
+                        [ngClass]="{ 'is-valid': verBtn }" (selectionChange)="setTest( $event.value )"
+                        formControlName="idtest">
+                        <mat-option value="">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.SELECCIONE' | translate}}</mat-option>
+                        <mat-option *ngFor="let test of tests" [value]="test.IdTest"> {{
+                          test.Desanalytes | titlecase }} | {{ test.Desunits }} | {{
+                          test.Desmethods | titlecase }} | {{
+                          test.Desreagents | titlecase }} |
+                          {{ test.NameAnalyzer | titlecase }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-3 boxBtnSearch">
+                  <button class="boton btnSearch animate__animated animate__fadeIn fast" type="button"
+                    (click)="loadData()" *ngIf="verBtn">{{'MODULES.CONFIGURACIONOBJETIVOSANALITO.FORMULARIO.BOTON' |
+                                    translate}}</button>
+                </div>
+
+              </div>
+
+            </form>
+
+          </div>
+
+          <div class="col-11 boxTable animate__animated animate__fadeIn fast" [hidden]="!ver">
+
+            <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+
+              <ng-container matColumnDef="desanalytes">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.ANALITO' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Desanalytes | titlecase }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="desunits">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.UNIDADES' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Desunits}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="level">
+                <th style="width: 100px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.NIVEL' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Level}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="average">
+                <th style="width: 100px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.MEDIA' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Average}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="ds">
+                <th style="width: 100px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.DS' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Ds}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="cv">
+                <th style="width: 100px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.CV' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Cv}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="datatype">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.TIPO' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Datatype | titlecase }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="date">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.ULTACTUALIZACION' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Date | date: 'dd-MM-yyyy':'+0000'}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="username">
+                <th style="width: 200px;" mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.RESPONSABLE' | translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.Username | titlecase}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="editar">
+                <th style="width: 150px;" mat-header-cell *matHeaderCellDef>
+                  {{'MODULES.CONFIGMEDIADS.COLUMNS.EDITAR' | translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                  <img [src]="'imagenEditar.png' | imageCdn" (click)="openModalConfiMedia(templateConfigMedia, row)"
+                    style="cursor: pointer;">
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #templateConfigMedia>
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col flex2">
+
+        <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+        <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+        <h3 class="tituloModal">{{tituloAccion}}</h3>
+        <div class="hr"></div>
+
+      </div>
+
+    </div>
+
+    <form [formGroup]="formaRegistroConfiMedia" (ngSubmit)="validarSeleccion()">
+      <div class="form-row">
+        <div class="col-md-9 form-group">
+          <div role="group">
+            <mat-form-field class="sf-2">
+              <mat-label class="matLabelForm">{{'MODULES.CONFIGMEDIADS.COLUMNS.TIPO'
+                                | translate}}<span class="colorAsterisco"> *</span></mat-label>
+              <mat-select disableOptionCentering formControlName="datatype" class="form-control"
+                (selectionChange)="changeValue()" [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'">
+                <mat-option value="">{{'MODULES.CONFIGMEDIADS.FORMULARIO.SELECCIONE' |
+                                translate}}</mat-option>
+                <mat-option *ngFor="let tipo of arrayTipo" [value]="tipo.value"> {{ tipo.text }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <small *ngIf="datatypeNoValido.invalid  && datatypeNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div *ngIf="hidden" class="col-md-6 form-group">
+          <div role="group">
+            <label for="fechaInicio">{{'MODULES.CONFIGMEDIADS.COLUMNS.FECHAINICIO' | translate}}<span
+                class="colorAsterisco"> *</span></label>
+            <input formControlName="fechaInicio" type="date" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" id="fechaInicio" autocomplete="off" >
+            <small *ngIf="fechaInicioNoValido.invalid  && fechaInicioNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div *ngIf="hidden" class="col-md-6 form-group">
+          <div role="group">
+            <label for="fechaFin">{{'MODULES.CONFIGMEDIADS.COLUMNS.FECHAFIN' | translate}}<span class="colorAsterisco">
+                *</span></label>
+            <input formControlName="fechaFin" type="date" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" id="fechaFin" autocomplete="off" >
+            <small *ngIf="fechaFinNoValido.invalid  && fechaFinNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-4 form-group">
+          <div role="group">
+            <label for="average">{{'MODULES.CONFIGMEDIADS.COLUMNS.MEDIA' | translate}}<span class="colorAsterisco">
+                *</span></label>
+            <input formControlName="average" type="number" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" id="average" autocomplete="off">
+            <small *ngIf="averageNoValido.invalid  && averageNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            <small *ngIf="averageNoValido.errors?.min"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-4 form-group">
+          <div role="group">
+            <label for="ds">{{'MODULES.CONFIGMEDIADS.COLUMNS.DS' | translate}}<span class="colorAsterisco">
+                *</span></label>
+            <input formControlName="ds" type="number" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" id="ds" autocomplete="off">
+            <small *ngIf="dsNoValido.invalid  && dsNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            <small *ngIf="dsNoValido.errors?.min"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+          </div>
+        </div>
+        <div class="col-md-4 form-group">
+          <div role="group">
+            <label for="cv">{{'MODULES.CONFIGMEDIADS.COLUMNS.CV' | translate}}<span class="colorAsterisco">
+                *</span></label>
+            <input formControlName="cv" type="number" class="form-control"
+              [ngClass]="accion == 'Crear' ? 'styleForm' : 'styleForm2'" id="cv" autocomplete="off">
+            <small *ngIf="cvNoValido.invalid  && cvNoValido.touched"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+            <small *ngIf="cvNoValido.errors?.min"
+              class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MIN_0' | translate}}</small>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 boxBtnAceptCancel">
+            <button *ngIf="!accionEditar" class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+            <button *ngIf="accionEditar" class="boton btnAceptar" type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+            <button class="botonCancelar btnCancel" type="button" (click)="closeVentana()">{{'MODULES.BOTONCANCELAR' | translate}}</button>
+        </div>
+    </div>
+    </form>
+  </div>
+</ng-template>
+
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Por favor, espere.</p>
+</ngx-spinner>

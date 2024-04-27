@@ -1,0 +1,235 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row justify-content-center">
+
+                <div class="col-12 titulo">{{'MODULES.GESTIONASOCIACIONES.TITLE' | translate}}</div>
+
+                <div class="col-md-12">
+
+                    <div class="row boxBtnCreateFilter">
+
+                        <div class="col-12 col-sm-5 boxBtnCreate form-group">
+                            <button class="boton btnCreate animate__animated animate__fadeIn fast" type="button"
+                            (click)="openModalGestionAsociaciones(templateGestionAsociaciones, '')">{{'MODULES.GESTIONASOCIACIONES.BOTONCREAR'
+                                | translate}}</button>
+                        </div>
+
+
+                        <div class="col-12 col-sm-7 boxFilter">
+                            <i class="fa fa-search"></i>
+                            <mat-form-field class="filter">
+                                <mat-label>{{'MODULES.FILTER.LABEL' | translate}}</mat-label>
+                                <input matInput (keyup)="applyFilter($event)"
+                                    placeholder="{{'MODULES.FILTER.PLACEHOLDER' | translate}}" #input>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <table mat-table [dataSource]="dataSource" class="table-responsive" matSort>
+                        <ng-container matColumnDef="nombrematerial">
+                            <th style="padding-left: 20px; width: 130px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.NOMBREMATERIAL' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.nombrematerial}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="numerolote">
+                            <th style="padding-left: 85px; padding-right: 60px; width: 300px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.NUMEROLOTE' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.numerolote}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombreanalito">
+                            <th style="padding-left: 20px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.NOMBREANALITICO' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.nombreanalito}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombreinstrumento">
+                            <th style="padding-left: 20px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.NOMBREINSTRUMENTO' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.nombreinstrumento}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombrereactivo">
+                            <th style="padding-left: 20px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.NOMBREREACTIVO' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.nombrereactivo}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombremetodo">
+                            <th style="padding-left: 20px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.NOMBREMETODO' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.nombremetodo}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="unidadesmedida">
+                            <th style="padding-left: 20px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.UNIDADESMEDIDA' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.unidadesmedida}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nivelescontrol">
+                            <th style="padding-left: 20px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.NIVELESCONTROL' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.nivelescontrol}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="decimales">
+                            <th style="padding-left: 20px;" mat-header-cell *matHeaderCellDef mat-sort-header> {{'MODULES.GESTIONASOCIACIONES.COLUMNS.DECIMALES' | translate}} </th>
+                            <td mat-cell *matCellDef="let row"> {{row.decimales}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="active">
+                            <th style="padding-right: 25px; padding-left: 25px;" mat-header-cell *matHeaderCellDef>{{'MODULES.GESTIONASOCIACIONES.COLUMNS.ESTADO' | translate}}</th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-slide-toggle [checked]="row.active" (change)="actualizarEstadoGestionAsociaciones($event,row)"></mat-slide-toggle>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="editar">
+                            <th style="padding-left: 20px; padding-right: 20px;" mat-header-cell *matHeaderCellDef>{{'MODULES.GESTIONASOCIACIONES.COLUMNS.EDITAR' | translate}}</th>
+                            <td mat-cell *matCellDef="let row">
+                                <i class="far fa-edit" (click)="openModalGestionAsociaciones(templateGestionAsociaciones, row)" style="font-size: 20px; color: #6B4B8B ;"></i>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="borrar">
+                            <th style="padding-left: 20px;" mat-header-cell *matHeaderCellDef>{{'MODULES.GESTIONASOCIACIONES.COLUMNS.ELIMINAR' | translate}}</th>
+                            <td mat-cell *matCellDef="let row let i = index;">
+                                <i class="fas fa-eraser" (click)="eliminarGestionAsociaciones(row)" style="font-size: 20px; color: #6B4B8B ;"></i>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                        </tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #templateGestionAsociaciones>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeVentana()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row">
+
+            <div class="col flex2">
+
+                <img *ngIf="accionEditar" class="img" [src]="'edit.png' | imageCdn">
+                <img *ngIf="!accionEditar" class="img" [src]="'crear2.png' | imageCdn">
+                <h3 class="tituloModal">{{tituloAccion}}</h3>
+                <div class="hr"></div>
+
+            </div>
+
+        </div>
+        <div class="table-responsive-sm table table-striped">
+            <form [formGroup]="formaGestionAsociaciones" (ngSubmit)="crearEditarGestionAsociaciones()">
+                <div class="form-row">
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="nombrematerial">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.NOMBREMATERIAL' | translate}}</label>
+                            <input formControlName="nombrematerial" type="text" class="form-control styleForm" id="nombrematerial" autocomplete="off">
+                            <small *ngIf="nombreMaterialNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="nombreMaterialNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="nombreMaterialNoValido.invalid  && nombreMaterialNoValido.touched && !nombreMaterialNoValido.errors?.minlength && !nombreMaterialNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="numerolote">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.NUMEROLOTE' | translate}}</label>
+                            <input formControlName="numerolote" type="text" class="form-control styleForm" id="numerolote" autocomplete="off">
+                            <small *ngIf="numeroLoteNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="numeroLoteNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="numeroLoteNoValido.invalid  && numeroLoteNoValido.touched && !numeroLoteNoValido.errors?.minlength && !numeroLoteNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="nombreanalito">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.NOMBREANALITICO' | translate}}</label>
+                            <input formControlName="nombreanalito" type="text" class="form-control styleForm" id="nombreanalito" autocomplete="off">
+                            <small *ngIf="nombreAnalitoNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="nombreAnalitoNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="nombreAnalitoNoValido.invalid  && nombreAnalitoNoValido.touched && !nombreAnalitoNoValido.errors?.minlength && !nombreAnalitoNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="nombreinstrumento">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.NOMBREINSTRUMENTO' | translate}}</label>
+                            <input formControlName="nombreinstrumento" type="text" class="form-control styleForm" id="nombreinstrumento" autocomplete="off">
+                            <small *ngIf="nombreInstrumentoNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="nombreInstrumentoNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="nombreInstrumentoNoValido.invalid  && nombreInstrumentoNoValido.touched && !nombreInstrumentoNoValido.errors?.minlength && !nombreInstrumentoNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="nombrereactivo">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.NOMBREREACTIVO' | translate}}</label>
+                            <input formControlName="nombrereactivo" type="text" class="form-control styleForm" id="nombrereactivo" autocomplete="off">
+                            <small *ngIf="nombreReactivoNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="nombreReactivoNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="nombreReactivoNoValido.invalid  && nombreReactivoNoValido.touched && !nombreReactivoNoValido.errors?.minlength && !nombreReactivoNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="nombremetodo">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.NOMBREMETODO' | translate}}</label>
+                            <input formControlName="nombremetodo" type="text" class="form-control styleForm" id="nombremetodo" autocomplete="off">
+                            <small *ngIf="nombreMetodoNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="nombreMetodoNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="nombreMetodoNoValido.invalid  && nombreMetodoNoValido.touched && !nombreMetodoNoValido.errors?.minlength && !nombreMetodoNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="unidadesmedida">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.UNIDADESMEDIDA' | translate}}</label>
+                            <input formControlName="unidadesmedida" type="text" class="form-control styleForm" id="unidadesmedida" autocomplete="off">
+                            <small *ngIf="unidadesMedidaNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="unidadesMedidaNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="unidadesMedidaNoValido.invalid  && unidadesMedidaNoValido.touched && !unidadesMedidaNoValido.errors?.minlength && !unidadesMedidaNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="nivelescontrol">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.NIVELESCONTROL' | translate}}</label>
+                            <input formControlName="nivelescontrol" type="text" class="form-control styleForm" id="nivelescontrol" autocomplete="off">
+                            <small *ngIf="nivelescontrolNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="nivelescontrolNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="nivelescontrolNoValido.invalid  && nivelescontrolNoValido.touched && !nivelescontrolNoValido.errors?.minlength && !nivelescontrolNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4 form-group">
+                        <div role="group">
+                            <label for="decimales">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.DECIMALES' | translate}}</label>
+                            <input formControlName="decimales" type="text" class="form-control styleForm" id="decimales" autocomplete="off">
+                            <small *ngIf="decimalesNoValido.errors?.minlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MINIMOTRES' | translate}}</small>
+                            <small *ngIf="decimalesNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.MAXIMOCIEN' | translate}}</small>
+                            <small *ngIf="decimalesNoValido.invalid  && decimalesNoValido.touched && !decimalesNoValido.errors?.minlength && !decimalesNoValido.errors?.maxlength" class="text-danger animated fadeIn">{{'MODULES.CAMPOS.CAMPOREQUIRED' | translate}}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-1 form-group">
+                        <div role="group">
+                            <label for="active">{{'MODULES.GESTIONASOCIACIONES.FORMULARIO.ESTADO' | translate}}</label><br>
+                            <mat-slide-toggle formControlName="active"></mat-slide-toggle>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-12 mb-1 form-group text-center">
+                        <button *ngIf="!accionEditar" class="col-4 col-md-3 boton" type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                        <button *ngIf="accionEditar" class="col-4 col-md-3 boton" type="submit">{{'MODULES.BOTONACEPTAR' | translate}}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>
